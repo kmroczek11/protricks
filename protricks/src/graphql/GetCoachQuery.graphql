@@ -1,0 +1,16 @@
+query GetCoach($id: Int!) {
+  getCoach(id: $id) {
+    id
+    groups {
+      id
+      name
+      limit
+      exercises {
+        id
+        day
+        start
+        end
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+query GetJwtUser($input: String!) {
+  getJwtUser(jwt: $input) {
+    id
+    firstName
+    lastName
+    email
+    roles
+  }
+}

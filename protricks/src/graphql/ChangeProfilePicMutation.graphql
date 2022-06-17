@@ -1,0 +1,13 @@
+mutation ChangeProfilePic($input: ChangeProfilePicInput!) {
+  changeProfilePic(changeProfilePicInput: $input){
+    token
+    user {
+      id
+      firstName
+      lastName
+      email
+      imgSrc
+      roles
+    }
+  }
+}
