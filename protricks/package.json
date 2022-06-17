@@ -1,0 +1,69 @@
+{
+  "name": "protricks",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "latest",
+    "@emotion/styled": "latest",
+    "@graphql-codegen/cli": "latest",
+    "@graphql-codegen/typescript": "latest",
+    "@graphql-codegen/typescript-operations": "latest",
+    "@graphql-codegen/typescript-react-query": "latest",
+    "@mui/icons-material": "latest",
+    "@mui/lab": "latest",
+    "@mui/material": "latest",
+    "@mui/styled-engine-sc": "latest",
+    "@react-google-maps/api": "latest",
+    "apollo-upload-client": "^17.0.0",
+    "date-fns": "latest",
+    "formik": "^2.2.9",
+    "graphql": "latest",
+    "jwt-decode": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-pdf": "latest",
+    "react-phone-input-material-ui": "^2.17.4",
+    "react-query": "latest",
+    "react-router-dom": "latest",
+    "react-scripts": "latest",
+    "styled-components": "latest",
+    "typescript": "latest",
+    "web-vitals": "latest",
+    "yup": "^0.32.11",
+    "yup-password": "^0.2.2"
+  },
+  "devDependencies": {
+    "@types/google.maps": "latest",
+    "@types/jest": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "@types/react-router-dom": "latest",
+    "@types/styled-components": "latest"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "generate": "graphql-codegen --config codegen.yml"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

@@ -1,0 +1,5 @@
+mutation EditExercise($input: EditExerciseInput!) {
+  editExercise(editExerciseInput: $input){
+    msg
+  }
+}
