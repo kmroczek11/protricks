@@ -36,7 +36,8 @@ export type ChangeEmailInput = {
 
 export type ChangeEmailResponse = {
   __typename?: 'ChangeEmailResponse';
-  msg: Scalars['String'];
+  token: Scalars['String'];
+  user: User;
 };
 
 export type ChangePasswordInput = {
@@ -47,7 +48,8 @@ export type ChangePasswordInput = {
 
 export type ChangePasswordResponse = {
   __typename?: 'ChangePasswordResponse';
-  msg: Scalars['String'];
+  token: Scalars['String'];
+  user: User;
 };
 
 export type ChangeProfilePicInput = {
@@ -306,7 +308,6 @@ export type Query = {
   exercises: Array<Exercise>;
   findOne: User;
   getCoach: Coach;
-  getJwtUser: User;
   getTrainee: Trainee;
   groups: Array<Group>;
   trainees: Array<Trainee>;
@@ -321,11 +322,6 @@ export type QueryFindOneArgs = {
 
 export type QueryGetCoachArgs = {
   id: Scalars['Int'];
-};
-
-
-export type QueryGetJwtUserArgs = {
-  jwt: Scalars['String'];
 };
 
 
@@ -377,6 +373,20 @@ export type User = {
   password: Scalars['String'];
   roles: Array<Role>;
 };
+
+export type ChangeEmailMutationVariables = Exact<{
+  input: ChangeEmailInput;
+}>;
+
+
+export type ChangeEmailMutation = { __typename?: 'Mutation', changeEmail: { __typename?: 'ChangeEmailResponse', token: string, user: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
+
+export type ChangePasswordMutationVariables = Exact<{
+  input: ChangePasswordInput;
+}>;
+
+
+export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: { __typename?: 'ChangePasswordResponse', token: string, user: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
 
 export type ChangeProfilePicMutationVariables = Exact<{
   input: ChangeProfilePicInput;
@@ -446,13 +456,6 @@ export type GetCoachQueryVariables = Exact<{
 
 export type GetCoachQuery = { __typename?: 'Query', getCoach: { __typename?: 'Coach', id: number, groups?: Array<{ __typename?: 'Group', id: number, name: string, limit: number, exercises?: Array<{ __typename?: 'Exercise', id: number, day: any, start: any, end: any }> | null }> | null } };
 
-export type GetJwtUserQueryVariables = Exact<{
-  input: Scalars['String'];
-}>;
-
-
-export type GetJwtUserQuery = { __typename?: 'Query', getJwtUser: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, roles: Array<Role> } };
-
 export type GetTraineeQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
@@ -475,6 +478,62 @@ export type RegisterUserMutationVariables = Exact<{
 export type RegisterUserMutation = { __typename?: 'Mutation', registerUser: { __typename?: 'RegisterResponse', token: string, user: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
 
 
+export const ChangeEmailDocument = `
+    mutation ChangeEmail($input: ChangeEmailInput!) {
+  changeEmail(changeEmailInput: $input) {
+    token
+    user {
+      id
+      firstName
+      lastName
+      email
+      imgSrc
+      roles
+    }
+  }
+}
+    `;
+export const useChangeEmailMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<ChangeEmailMutation, TError, ChangeEmailMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<ChangeEmailMutation, TError, ChangeEmailMutationVariables, TContext>(
+      ['ChangeEmail'],
+      (variables?: ChangeEmailMutationVariables) => fetcher<ChangeEmailMutation, ChangeEmailMutationVariables>(client, ChangeEmailDocument, variables, headers)(),
+      options
+    );
+export const ChangePasswordDocument = `
+    mutation ChangePassword($input: ChangePasswordInput!) {
+  changePassword(changePasswordInput: $input) {
+    token
+    user {
+      id
+      firstName
+      lastName
+      email
+      imgSrc
+      roles
+    }
+  }
+}
+    `;
+export const useChangePasswordMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<ChangePasswordMutation, TError, ChangePasswordMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<ChangePasswordMutation, TError, ChangePasswordMutationVariables, TContext>(
+      ['ChangePassword'],
+      (variables?: ChangePasswordMutationVariables) => fetcher<ChangePasswordMutation, ChangePasswordMutationVariables>(client, ChangePasswordDocument, variables, headers)(),
+      options
+    );
 export const ChangeProfilePicDocument = `
     mutation ChangeProfilePic($input: ChangeProfilePicInput!) {
   changeProfilePic(changeProfilePicInput: $input) {
@@ -718,31 +777,6 @@ export const useGetCoachQuery = <
     useQuery<GetCoachQuery, TError, TData>(
       ['GetCoach', variables],
       fetcher<GetCoachQuery, GetCoachQueryVariables>(client, GetCoachDocument, variables, headers),
-      options
-    );
-export const GetJwtUserDocument = `
-    query GetJwtUser($input: String!) {
-  getJwtUser(jwt: $input) {
-    id
-    firstName
-    lastName
-    email
-    roles
-  }
-}
-    `;
-export const useGetJwtUserQuery = <
-      TData = GetJwtUserQuery,
-      TError = unknown
-    >(
-      client: GraphQLClient,
-      variables: GetJwtUserQueryVariables,
-      options?: UseQueryOptions<GetJwtUserQuery, TError, TData>,
-      headers?: RequestInit['headers']
-    ) =>
-    useQuery<GetJwtUserQuery, TError, TData>(
-      ['GetJwtUser', variables],
-      fetcher<GetJwtUserQuery, GetJwtUserQueryVariables>(client, GetJwtUserDocument, variables, headers),
       options
     );
 export const GetTraineeDocument = `

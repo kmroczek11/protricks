@@ -45,8 +45,9 @@ export class UsersService {
     return this.usersRepository.update(id, { roles: [...user.roles, role] });
   }
 
-  update(id: number, data: any) {
-    this.usersRepository.update(id, data);
+  async update(id: number, data: any) {
+    await this.usersRepository.update(id, data);
+    return this.usersRepository.findOne(id);
   }
 
   async changeProfilePic(changeProfilePicInput: ChangeProfilePicInput) {
@@ -69,9 +70,9 @@ export class UsersService {
 
     const filePath = await saveImage(imageData, 'users');
 
-    await this.update(userId, { imgSrc: filePath });
+    const updatedUser = await this.update(userId, { imgSrc: filePath });
 
-    const { password, ...payload } = user;
+    const { password, ...payload } = updatedUser;
 
     return {
       token: this.jwtService.sign({ user: payload }),

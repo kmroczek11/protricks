@@ -9,7 +9,7 @@ const VideoBlockRoot = styled('section')(({ theme }) => ({
   position: 'relative',
   display: 'flex',
   alignItems: 'center',
-  height: '60vh',
+  height: '75vh',
   minHeight: 500,
   maxHeight: 1300,
 }));
