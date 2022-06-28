@@ -1,4 +1,5 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
+import { EmailAddressResolver } from 'graphql-scalars';
 import { Role } from '../entities/role.enum';
 
 @InputType()
@@ -9,7 +10,7 @@ export class CreateUserInput {
   @Field()
   lastName: string;
 
-  @Field()
+  @Field(() => EmailAddressResolver)
   email: string;
 
   @Field()

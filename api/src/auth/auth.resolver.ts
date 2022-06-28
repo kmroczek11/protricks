@@ -35,15 +35,10 @@ export class AuthResolver {
     return this.authService.login(context.user);
   }
 
-  @Query(() => User)
-  getJwtUser(@Args('jwt') jwt: string): Promise<any> {
-    return this.authService.getJwtUser(jwt);
-  }
-
   @Mutation(() => ChangeEmailResponse)
   changeEmail(
     @Args('changeEmailInput') changeEmailInput: ChangeEmailInput,
-  ): Promise<ChangeEmailResponse> {
+  ) {
     return this.authService.changeEmail(changeEmailInput);
   }
 
@@ -51,7 +46,7 @@ export class AuthResolver {
   @Public()
   changePassword(
     @Args('changePasswordInput') changePasswordInput: ChangePasswordInput,
-  ): Promise<ChangePasswordResponse> {
+  ) {
     return this.authService.changePassword(changePasswordInput);
   }
 }

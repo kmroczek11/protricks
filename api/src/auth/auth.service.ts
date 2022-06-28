@@ -34,13 +34,16 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new HttpException('User doesn\'t exist', HttpStatus.BAD_REQUEST);
+      throw new HttpException("User doesn't exist", HttpStatus.BAD_REQUEST);
     }
 
     const valid = await bcrypt.compare(password, user.password);
 
     if (!valid) {
-      throw new HttpException('Invalid email or password', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Invalid email or password',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     if (user && valid) {
@@ -84,51 +87,47 @@ export class AuthService {
     };
   }
 
-  async getJwtUser(jwt: string): Promise<any> {
-    const { user } = await this.jwtService.verify(jwt);
-
-    if (!user) {
-      throw new UnauthorizedException();
-    }
-
-    return user;
-  }
-
   async changeEmail(changeEmailInput: ChangeEmailInput) {
-    this.usersService.update(changeEmailInput.id, {
+    const updatedUser = await this.usersService.update(changeEmailInput.id, {
       email: changeEmailInput.email,
     });
 
-    return { msg: 'success' };
+    const { password, ...payload } = updatedUser;
+
+    return {
+      token: this.jwtService.sign({ user: payload }),
+      user: payload,
+    };
   }
 
   async changePassword(changePasswordInput: ChangePasswordInput) {
-    const { password } = await this.usersService.findOneById(
+    const { password: oldPassword } = await this.usersService.findOneById(
       changePasswordInput.id,
       {
         select: ['password'],
       },
     );
 
-    const oldPassword = await bcrypt.hash(changePasswordInput.oldPassword, 12);
-
-    console.log(
-      password,
-      oldPassword,
+    const valid = await bcrypt.compare(
       changePasswordInput.oldPassword,
-      changePasswordInput.newPassword,
+      oldPassword,
     );
 
-    const valid = await bcrypt.compare(password, oldPassword);
-
     if (!valid) {
-      throw new HttpException('invalid_password.', HttpStatus.BAD_REQUEST);
+      throw new HttpException('Invalid password', HttpStatus.BAD_REQUEST);
     }
 
     const newPassword = await bcrypt.hash(changePasswordInput.newPassword, 12);
 
-    this.usersService.update(changePasswordInput.id, { password: newPassword });
+    const updatedUser = await this.usersService.update(changePasswordInput.id, {
+      password: newPassword,
+    });
 
-    return { msg: 'success' };
+    const { password, ...payload } = updatedUser;
+
+    return {
+      token: this.jwtService.sign({ user: payload }),
+      user: payload,
+    };
   }
 }

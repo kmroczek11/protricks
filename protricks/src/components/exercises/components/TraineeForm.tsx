@@ -7,8 +7,8 @@ import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { ColorButton, StyledTextField } from "../../lib";
-import ReactPhoneInput from 'react-phone-input-material-ui';
-import "react-phone-input-material-ui/lib/material.css";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/material.css";
 import { Formik, Form, useFormikContext } from "formik";
 import * as Yup from "yup";
 
@@ -36,17 +36,17 @@ interface TraineeFormProps {
 }
 
 interface FormObserverProps {
-  setFormValues:(values:FormValuesType) => void
+  setFormValues: (values: FormValuesType) => void;
 }
 
 const FormObserver: React.FC<FormObserverProps> = (props) => {
-  const {setFormValues} = props;
+  const { setFormValues } = props;
   const { values } = useFormikContext<FormValuesType>();
 
   useEffect(() => {
     setFormValues(values);
   }, [values]);
-  
+
   return null;
 };
 
@@ -71,7 +71,7 @@ const TraineeForm: React.FC<TraineeFormProps> = (props) => {
       validationSchema={Yup.object().shape({
         age: Yup.number().required("Wymagane"),
         parentName: Yup.string().required("Wymagane"),
-        parentPhone: Yup.string().min(11).required(),
+        parentPhone: Yup.string().min(7).required(),
         parentEmail: Yup.string()
           .email("Nieprawidłowy email")
           .required("Wymagane"),
@@ -92,7 +92,7 @@ const TraineeForm: React.FC<TraineeFormProps> = (props) => {
         } = props;
         return (
           <Form ref={setForm} onSubmit={handleSubmit}>
-            <FormObserver setFormValues={setFormValues}/>
+            <FormObserver setFormValues={setFormValues} />
             <Grid
               container
               alignItems="center"
@@ -134,25 +134,33 @@ const TraineeForm: React.FC<TraineeFormProps> = (props) => {
                 />
               </Grid>
               <Grid item>
-                <ReactPhoneInput
+                <PhoneInput
                   inputProps={{
                     variant: "standard",
                     name: "parentPhone",
-                    required: true,
-                    label:"Numer telefonu rodzica"
+                    required: true
                   }}
+                  specialLabel="Numer telefonu rodzica"
                   country={"pl"}
                   value={values.parentPhone}
                   onChange={(phone) => (values.parentPhone = phone)}
                   onBlur={handleBlur}
                   isValid={(value) => {
-                    if (value.length > 10) {
+                    if (value.length > 7) {
                       return true;
                     } else {
                       return "Nieprawidłowy numer telefonu";
                     }
                   }}
-                  component={StyledTextField}
+                  inputStyle={{
+                    width: window.innerWidth < 600 ? 250 : 600,
+                  }}
+                  onlyCountries={["pl", "de", "gb"]}
+                  localization={{
+                    pl: "Polska",
+                    de: "Niemcy",
+                    gb: "Wielka Brytania",
+                  }}
                 />
               </Grid>
               <Grid item>

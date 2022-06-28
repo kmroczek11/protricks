@@ -9,6 +9,7 @@ import Container from "@mui/material/Container";
 import { ImageBlock, PhotoCards } from "../lib";
 import Box from "@mui/material/Box";
 const imgUrl = "/static/images/home/team.png";
+const secondImgUrl = "/static/images/home/lg-team.png";
 
 const txt1 = {
   title: "Czym jest akrobatyka?",
@@ -80,11 +81,8 @@ const Home: React.FC = () => {
         <IconCards data={data2} />
       </Container>
       <ImageBlock
-        sxBackground={{
-          backgroundImage: `linear-gradient(90deg, #000 45%,rgba(6,6,7,0) 75%),url(${imgUrl})`,
-          backgroundColor: "primary",
-          backgroundPosition: "center",
-        }}
+        imgSrc={imgUrl}
+        secondImgSrc={secondImgUrl}
       >
         <TextBlock texts={txt3} variant="secondary" />
       </ImageBlock>

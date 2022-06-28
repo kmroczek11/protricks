@@ -66,7 +66,6 @@ const invalidMimeType = "Nieprawidłowy typ MIME.";
 const UserAvatar: React.FC<UserAvatarProps> = (props) => {
   const { name, size, imgSrc, BadgeIcon } = props;
   const [user, setUser] = useAuth();
-  console.log(user)
   const [changeProfilePicStatus, setChangeProfilePicStatus] =
     useState<string>("");
 
