@@ -3,9 +3,7 @@ import { useRoutes } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { routes } from "./routes";
 import { QueryClient, QueryClientProvider } from "react-query";
-import jwt from "jwt-decode";
-import User from "./context/models/user";
-import { AuthProvider } from "./context";
+import { AuthProvider } from "./components/auth";
 
 const theme = createTheme({
   palette: {
@@ -54,26 +52,15 @@ theme.typography.h2 = {
 
 const queryClient = new QueryClient();
 
-interface UserResponse {
-  user: User;
-  exp: number;
-  iat: number;
-}
-
 const App: React.FC = () => {
   const element = useRoutes(routes);
 
-  const token = localStorage.getItem("token")!;
-  const user: User | null = token ? (jwt(token) as UserResponse).user : null;
-
   return (
-    <AuthProvider userData={user}>
+    <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
-        <QueryClientProvider client={queryClient}>
-          {element}
-        </QueryClientProvider>
+        <AuthProvider>{element}</AuthProvider>
       </ThemeProvider>
-    </AuthProvider>
+    </QueryClientProvider>
   );
 };
 

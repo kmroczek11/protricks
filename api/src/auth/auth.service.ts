@@ -1,23 +1,27 @@
 import {
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/entities/user.entity';
-import { RegisterUserInput } from './dto/register-user.input';
+import { RegisterUserInput } from './inputs/register-user.input';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from 'src/users/users.service';
-import { RegisterResponse } from './dto/register-response';
-import { ChangeEmailInput } from './dto/change-email.input';
-import { ChangePasswordInput } from './dto/change-password.input';
+import { ChangeEmailInput } from './inputs/change-email.input';
+import { ChangePasswordInput } from './inputs/change-password.input';
+import { FileUpload } from 'graphql-upload';
+import { ChangeProfilePicInput } from './inputs/change-profile-pic.input';
+import { removeFile, saveImage } from './helpers/image-storage';
+import { TokensService } from 'src/tokens/tokens.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
-    private readonly jwtService: JwtService,
+    private readonly tokensService: TokensService,
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
@@ -33,30 +37,16 @@ export class AuthService {
       ],
     });
 
-    if (!user) {
-      throw new HttpException("User doesn't exist", HttpStatus.BAD_REQUEST);
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      throw new UnauthorizedException('Invalid email or password');
     }
 
-    const valid = await bcrypt.compare(password, user.password);
+    const { password: p, ...payload } = user;
 
-    if (!valid) {
-      throw new HttpException(
-        'Invalid email or password',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    if (user && valid) {
-      const { password, ...result } = user;
-      return result;
-    }
-
-    return null;
+    return payload;
   }
 
-  async register(
-    registerUserInput: RegisterUserInput,
-  ): Promise<RegisterResponse> {
+  async register(registerUserInput: RegisterUserInput) {
     const user = await this.usersService.findOneByEmail(
       registerUserInput.email,
     );
@@ -72,18 +62,28 @@ export class AuthService {
       password,
     });
 
+    return this.logIn(newUser);
+  }
+
+  async logIn(user: User) {
+    const refreshToken = await this.tokensService.generateRefreshToken(
+      user.email,
+    );
+
+    const accessToken = await this.tokensService.generateAccessToken(user.id);
+
     return {
-      token: this.jwtService.sign({ user: registerUserInput }),
-      user: newUser,
+      ...refreshToken,
+      ...accessToken,
+      user,
     };
   }
 
-  async login(user: User) {
-    const { password, ...payload } = user;
+  async logOut(user: User) {
+    await this.tokensService.removeRefreshToken(user.email);
 
     return {
-      token: this.jwtService.sign({ user: payload }),
-      user: payload,
+      msg: 'Success',
     };
   }
 
@@ -92,12 +92,7 @@ export class AuthService {
       email: changeEmailInput.email,
     });
 
-    const { password, ...payload } = updatedUser;
-
-    return {
-      token: this.jwtService.sign({ user: payload }),
-      user: payload,
-    };
+    return this.logIn(updatedUser);
   }
 
   async changePassword(changePasswordInput: ChangePasswordInput) {
@@ -123,11 +118,34 @@ export class AuthService {
       password: newPassword,
     });
 
-    const { password, ...payload } = updatedUser;
+    return {
+      user: updatedUser,
+    };
+  }
+
+  async changeProfilePic(changeProfilePicInput: ChangeProfilePicInput) {
+    const { userId, image } = changeProfilePicInput;
+
+    const imageData: FileUpload = await image;
+
+    if (!imageData) {
+      throw new HttpException('No file provided', HttpStatus.BAD_REQUEST);
+    }
+
+    const user = await this.usersService.findOneById(userId);
+
+    if (user.imgSrc) {
+      await removeFile(user.imgSrc);
+    }
+
+    const filePath = await saveImage(imageData, 'users');
+
+    const updatedUser = await this.usersService.update(userId, {
+      imgSrc: filePath,
+    });
 
     return {
-      token: this.jwtService.sign({ user: payload }),
-      user: payload,
+      user: updatedUser,
     };
   }
 }

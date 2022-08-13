@@ -5,8 +5,8 @@ export class CreateGroupInput {
   @Field()
   name: string;
 
-  @Field(() => Int)
-  coachId: number;
+  @Field()
+  coachId: string;
 
   @Field(() => Int)
   limit: number;

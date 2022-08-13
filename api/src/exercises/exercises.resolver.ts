@@ -52,7 +52,7 @@ export class ExercisesResolver {
   @Mutation(() => DeleteExerciseResponse)
   @Roles(Role.COACH)
   deleteExercise(
-    @Args('id', { type: () => Int }) id: number,
+    @Args('id') id: string,
   ): Promise<DeleteExerciseResponse> {
     return this.exercisesService.deleteExercise(id);
   }

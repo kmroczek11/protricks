@@ -23,7 +23,6 @@ const CustomList: React.FC<CustomListProps> = (props) => {
   return (
     <List
       sx={{ color: `${variant}.contrastText` }}
-      component="nav"
       aria-labelledby="nested-list-subheader"
       subheader={
         <ListSubheader
@@ -57,7 +56,7 @@ const CustomList: React.FC<CustomListProps> = (props) => {
           >
             <ListItemButton>
               {Icon}
-              <ListItemText primary={name} sx={{ textAlign: "center" }} />
+              <ListItemText primary={name} />
             </ListItemButton>
           </ListItem>
         </Link>

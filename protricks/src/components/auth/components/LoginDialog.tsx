@@ -1,31 +1,20 @@
 import Button from "@mui/material/Button";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import React, { useState } from "react";
 import { ColorButton } from "../../lib";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import { useQueryClient } from "react-query";
-import {
-  LoginUserMutation,
-  LoginUserMutationVariables,
-  useLoginUserMutation,
-} from "../../../generated/graphql";
-import graphqlRequestClient from "../../../graphql/clients/graphqlRequestClient";
 import LoadingScreen from "../../lib/LoadingScreen";
-import CustomAlert from "../../lib/CustomAlert";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { useAuth } from "../../../context";
+import { useAuth } from "..";
+import CustomAlert from "../../lib/CustomAlert";
 
-interface RegisterDialogProps {
+interface LogInDialogProps {
   open: boolean;
   handleClose: () => void;
   setActive: (name: string) => void;
@@ -36,38 +25,13 @@ const defaultValues = {
   password: "",
 };
 
-const userDoesntExistMessage = "Podany użytkownik nie istnieje.";
+const invalidEmailOrPasswordError = "Nieprawidłowy e-mail lub hasło.";
 
-const invalidEmailOrPasswordMessage = "Nieprawidłowy e-mail lub hasło.";
-
-const LoginDialog: React.FC<RegisterDialogProps> = (props) => {
+const LogInDialog: React.FC<LogInDialogProps> = (props) => {
   const { open, handleClose, setActive } = props;
-  const queryClient = useQueryClient();
-  const [user, setUser] = useAuth();
-  const [loginStatus, setLoginStatus] = useState<string>("");
+  const { isLogInLoading, logInError, logIn } = useAuth();
 
-  const { isLoading, error, mutate } = useLoginUserMutation<Error>(
-    graphqlRequestClient(),
-    {
-      onError: (error: Error) => {
-        let err: any = {};
-        err.data = error;
-        setLoginStatus(err?.data?.response.errors[0].message);
-      },
-      onSuccess: (
-        data: LoginUserMutation,
-        _variables: LoginUserMutationVariables,
-        _context: unknown
-      ) => {
-        // queryClient.invalidateQueries('GetAllAuthors');
-        localStorage.setItem("token", data.loginUser.token);
-        setUser(data.loginUser.user);
-        handleClose();
-      },
-    }
-  );
-
-  return isLoading ? (
+  return isLogInLoading ? (
     <LoadingScreen />
   ) : (
     <Dialog fullWidth maxWidth="sm" open={open} onClose={handleClose}>
@@ -94,7 +58,7 @@ const LoginDialog: React.FC<RegisterDialogProps> = (props) => {
 
             const { email, password } = values;
 
-            mutate({
+            logIn({
               input: {
                 email: email,
                 password: password,
@@ -159,15 +123,13 @@ const LoginDialog: React.FC<RegisterDialogProps> = (props) => {
                       required
                     />
                   </Grid>
-                  {loginStatus === "User doesn't exist" ? (
-                    <CustomAlert severity="error" msg={userDoesntExistMessage} />
-                  ) : loginStatus === "Invalid email or password" ? (
+                  {logInError === "Invalid email or password" ? (
                     <CustomAlert
                       severity="error"
-                      msg={invalidEmailOrPasswordMessage}
+                      msg={invalidEmailOrPasswordError}
                     />
                   ) : (
-                    loginStatus && (
+                    logInError && (
                       <CustomAlert severity="error" msg="Nieoczekiwany błąd." />
                     )
                   )}
@@ -197,4 +159,4 @@ const LoginDialog: React.FC<RegisterDialogProps> = (props) => {
   );
 };
 
-export default LoginDialog;
+export default LogInDialog;

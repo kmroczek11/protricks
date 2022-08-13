@@ -1,15 +1,13 @@
 import { useState } from "react";
 import TextField from "@mui/material/TextField";
-import Grid from "@mui/material/Grid";
 import { ColorButton } from "../../lib";
 import Box from "@mui/material/Box";
-import graphqlRequestClient from "../../../graphql/clients/graphqlRequestClient";
 import {
   useChangePasswordMutation,
   ChangePasswordMutation,
   ChangePasswordMutationVariables,
 } from "../../../generated/graphql";
-import { useAuth } from "../../../context";
+import { useAuth } from "../../auth";
 import LoadingScreen from "../../lib/LoadingScreen";
 import CustomAlert from "../../lib/CustomAlert";
 import { Formik, Form } from "formik";
@@ -25,17 +23,17 @@ const defaultValues = {
 const invalidPasswordMessage = "Nieprawidłowe hasło.";
 
 const PasswordForm: React.FC = () => {
-  const [user, setUser] = useAuth();
-  const [changePasswordStatus, setChangePasswordPicStatus] =
+  const { user, accessClient, setUser } = useAuth();
+  const [changePasswordStatus, setChangePasswordStatus] =
     useState<string>("");
 
   const { isLoading, mutate } = useChangePasswordMutation<Error>(
-    graphqlRequestClient(),
+    accessClient!,
     {
       onError: (error: Error) => {
         let err: any = {};
         err.data = error;
-        setChangePasswordPicStatus(err?.data?.response.errors[0].message);
+        setChangePasswordStatus(err?.data?.response.errors[0].message);
       },
       onSuccess: (
         data: ChangePasswordMutation,
@@ -43,7 +41,6 @@ const PasswordForm: React.FC = () => {
         _context: unknown
       ) => {
         // queryClient.invalidateQueries('GetAllAuthors');
-        localStorage.setItem("token", data.changePassword.token);
         setUser(data.changePassword.user);
       },
     }
@@ -91,15 +88,15 @@ const PasswordForm: React.FC = () => {
         } = props;
         return (
           <Form onSubmit={handleSubmit}>
-            <Grid
-              container
-              alignItems="center"
-              justifyContent="center"
-              direction="column"
-              spacing={2}
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
-              <Grid
-                item
+              <Box
                 sx={{
                   "& > :not(style)": { m: 1 },
                   display: "flex",
@@ -146,7 +143,7 @@ const PasswordForm: React.FC = () => {
                 <ColorButton type="submit" variant="outlined" color="secondary">
                   Zmień
                 </ColorButton>
-              </Grid>
+              </Box>
               {changePasswordStatus === "Invalid password" ? (
                 <CustomAlert severity="error" msg={invalidPasswordMessage} />
               ) : (
@@ -154,7 +151,7 @@ const PasswordForm: React.FC = () => {
                   <CustomAlert severity="error" msg="Nieoczekiwany błąd." />
                 )
               )}
-            </Grid>
+            </Box>
           </Form>
         );
       }}

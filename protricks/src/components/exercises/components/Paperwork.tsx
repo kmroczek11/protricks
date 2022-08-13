@@ -40,8 +40,9 @@ const Paperwork: React.FC<PaperworkProps> = (props) => {
         wzór umowy zawarty
         <a href="/static/documents/umowa.pdf" download>
           pod tym linkiem
-        </a>
-        . Następnie zaznajomić się z regulaminem:
+        </a>na adres
+        <a href="mailto:kontakt@protricks.pl">kontakt@protricks.pl</a>.
+        Następnie zaznajomić się z regulaminem:
       </Typography>
       <Box
         sx={{
@@ -49,10 +50,10 @@ const Paperwork: React.FC<PaperworkProps> = (props) => {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          
-          '&& .react-pdf__Page__canvas':{
-            width:'100% !important'
-          }
+
+          "&& .react-pdf__Page__canvas": {
+            width: "100% !important",
+          },
         }}
       >
         <Document

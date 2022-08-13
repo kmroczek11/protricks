@@ -13,19 +13,19 @@ import {
 @Entity('trainees')
 @ObjectType()
 export class Trainee {
-  @PrimaryGeneratedColumn()
-  @Field((type) => Int)
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  @Field()
+  id: string;
 
   @Column()
-  userId: number;
+  userId: string;
 
   @OneToOne(() => User, (user) => user.trainee)
   @Field(() => User)
   user: User;
 
   @Column()
-  groupId: number;
+  groupId: string;
 
   @ManyToOne(() => Group, (group) => group.trainees)
   group: Group;

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import LoginDialog from "./LoginDialog";
+import LogInDialog from "./LogInDialog";
 import RegisterDialog from "./RegisterDialog";
 
 interface UserDialogProps {
@@ -15,7 +15,7 @@ const UserDialog: React.FC<UserDialogProps> = (props) => {
     switch (activeDialog) {
       case "login":
         return (
-          <LoginDialog
+          <LogInDialog
             open={open}
             handleClose={handleClose}
             setActive={setActiveDialog}

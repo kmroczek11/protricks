@@ -1,14 +1,14 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import Cities from "./Cities";
 import City from "./City";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import {
-  GetAllCitiesQuery,
-  useGetAllCitiesQuery,
+  GetAllCoachesQuery,
+  useGetAllCoachesQuery,
 } from "../../../generated/graphql";
-import graphqlRequestClient from "../../../graphql/clients/graphqlRequestClient";
+import accessClient from "../../../graphql/clients/accessClient";
 import PhotoCardsLoader from "../../lib/PhotoCardsLoader";
 import TraineeForm from "./TraineeForm";
 import Paperwork from "./Paperwork";
@@ -18,7 +18,8 @@ import {
   useCreateTraineeMutation,
 } from "../../../generated/graphql";
 import CustomDialog from "../../lib/CustomDialog";
-import { useAuth } from "../../../context";
+import { useAuth } from "../../auth";
+import { useLocation } from "react-router-dom";
 
 const logInMessage = `Aby móc zapisać się na zajęcia, 
 konieczne jest posiadanie konta na naszej stronie. 
@@ -32,20 +33,28 @@ const successMessage = `Pomyślnie zapisano do grupy. Aby wyświetlić najbliżs
 const MultistepForm: () => JSX.Element | null = () => {
   const [step, setStep] = useState<number>(0);
   const [name, setName] = useState<string>("");
-  const [user, setUser] = useAuth();
-  const [selectedGroup, setSelectedGroup] = useState<number>();
+  const { user, setUser } = useAuth();
+  const [selectedGroup, setSelectedGroup] = useState<string>();
   const [registrationStatus, setRegistrationStatus] = useState<string>("");
   const [extraData, setExtraData] = useState<any>();
+  const { hash } = useLocation();
+  const form = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (hash === "#zarejestruj") {
+      form?.current?.scrollIntoView();
+    }
+  }, [hash]);
 
   const {
     data,
-    isLoading: citiesLoading,
+    isLoading: coachesLoading,
     error,
     refetch,
-  } = useGetAllCitiesQuery<GetAllCitiesQuery, Error>(graphqlRequestClient(), {});
+  } = useGetAllCoachesQuery<GetAllCoachesQuery, Error>(accessClient(), {});
 
   const { isLoading: creatingTraineeLoading, mutate } =
-    useCreateTraineeMutation<Error>(graphqlRequestClient(), {
+    useCreateTraineeMutation<Error>(accessClient(), {
       onError: (error: Error) => {
         let err: any = {};
         err.data = error;
@@ -57,7 +66,6 @@ const MultistepForm: () => JSX.Element | null = () => {
         _context: unknown
       ) => {
         setRegistrationStatus("Success");
-        localStorage.setItem("token", data.createTrainee.token);
         setUser(data.createTrainee.user);
       },
     });
@@ -92,14 +100,14 @@ const MultistepForm: () => JSX.Element | null = () => {
 
   const renderStep = () => {
     return (
-      <>
-        {citiesLoading ? (
+      <React.Fragment>
+        {coachesLoading ? (
           <PhotoCardsLoader />
         ) : (
           <Cities
             visible={step == 0 ? true : false}
             items={
-              data?.cities?.map((city) => ({
+              data?.coaches?.map(({ city }) => ({
                 id: city.id,
                 name: city.name,
                 imgSrc: `${process.env.REACT_APP_ENDPOINT}/uploads/${city.citySrc}`,
@@ -109,11 +117,11 @@ const MultistepForm: () => JSX.Element | null = () => {
             nextStep={nextStep}
           />
         )}
-        {data?.cities && name && (
+        {data?.coaches && name && (
           <City
             visible={step == 1 ? true : false}
             selectedGroup={selectedGroup}
-            item={data?.cities?.find((city) => city.name === name)!}
+            item={data?.coaches?.find(({ city }) => city.name === name)!}
             nextStep={nextStep}
             prevStep={prevStep}
             selectGroup={setSelectedGroup}
@@ -130,12 +138,12 @@ const MultistepForm: () => JSX.Element | null = () => {
           nextStep={joinGroup}
           prevStep={prevStep}
         />
-      </>
+      </React.Fragment>
     );
   };
 
   return (
-    <Box sx={{ backgroundColor: "secondary.main", py: 10 }}>
+    <Box sx={{ backgroundColor: "secondary.main", py: 10 }} ref={form}>
       <Container>{renderStep()}</Container>
       {registrationStatus === "Not logged in" ? (
         <CustomDialog

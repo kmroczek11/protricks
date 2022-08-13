@@ -29,37 +29,41 @@ export type Scalars = {
   Upload: any;
 };
 
+export type AutoLogInUserInput = {
+  userId: Scalars['String'];
+};
+
 export type ChangeEmailInput = {
-  email: Scalars['String'];
-  id: Scalars['Int'];
+  email: Scalars['EmailAddress'];
+  id: Scalars['String'];
 };
 
 export type ChangeEmailResponse = {
   __typename?: 'ChangeEmailResponse';
-  token: Scalars['String'];
+  refreshToken: Scalars['String'];
   user: User;
 };
 
 export type ChangePasswordInput = {
-  id: Scalars['Int'];
+  id: Scalars['String'];
   newPassword: Scalars['String'];
   oldPassword: Scalars['String'];
 };
 
 export type ChangePasswordResponse = {
   __typename?: 'ChangePasswordResponse';
-  token: Scalars['String'];
   user: User;
 };
 
 export type ChangeProfilePicInput = {
   image: Scalars['Upload'];
-  userId: Scalars['Int'];
+  userId: Scalars['String'];
 };
 
 export type ChangeProfilePicResponse = {
   __typename?: 'ChangeProfilePicResponse';
-  token: Scalars['String'];
+  accessToken: Scalars['String'];
+  expiresIn: Scalars['String'];
   user: User;
 };
 
@@ -67,7 +71,8 @@ export type City = {
   __typename?: 'City';
   citySrc: Scalars['String'];
   coach: Coach;
-  id: Scalars['Int'];
+  id: Scalars['String'];
+  mapSrc: Scalars['String'];
   name: Scalars['String'];
   room: Scalars['String'];
   roomSrc: Scalars['String'];
@@ -75,27 +80,28 @@ export type City = {
 
 export type Coach = {
   __typename?: 'Coach';
+  city: City;
   groups?: Maybe<Array<Group>>;
-  id: Scalars['Int'];
+  id: Scalars['String'];
   user: User;
 };
 
 export type CreateCityInput = {
   citySrc: Scalars['String'];
-  coachId: Scalars['Int'];
+  coachId: Scalars['String'];
   name: Scalars['String'];
   room: Scalars['String'];
   roomSrc: Scalars['String'];
 };
 
 export type CreateCoachInput = {
-  userId: Scalars['Int'];
+  userId: Scalars['String'];
 };
 
 export type CreateExerciseInput = {
   day: Scalars['LocalDate'];
   end: Scalars['LocalTime'];
-  groupId: Scalars['Int'];
+  groupId: Scalars['String'];
   start: Scalars['LocalTime'];
 };
 
@@ -105,7 +111,7 @@ export type CreateExerciseResponse = {
 };
 
 export type CreateGroupInput = {
-  coachId: Scalars['Int'];
+  coachId: Scalars['String'];
   limit: Scalars['Int'];
   name: Scalars['String'];
 };
@@ -118,21 +124,20 @@ export type CreateGroupResponse = {
 export type CreateTraineeInput = {
   age: Scalars['Int'];
   feedback: Scalars['String'];
-  groupId: Scalars['Int'];
+  groupId: Scalars['String'];
   parentEmail: Scalars['EmailAddress'];
   parentName: Scalars['String'];
   parentPhone: Scalars['PhoneNumber'];
-  userId: Scalars['Int'];
+  userId: Scalars['String'];
 };
 
 export type CreateTraineeResponse = {
   __typename?: 'CreateTraineeResponse';
-  token: Scalars['String'];
   user: User;
 };
 
 export type CreateUserInput = {
-  email: Scalars['String'];
+  email: Scalars['EmailAddress'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
   password: Scalars['String'];
@@ -149,10 +154,19 @@ export type DeleteGroupResponse = {
   msg: Scalars['String'];
 };
 
+export type DeleteTraineeInput = {
+  id: Scalars['String'];
+};
+
+export type DeleteTraineeResponse = {
+  __typename?: 'DeleteTraineeResponse';
+  msg: Scalars['String'];
+};
+
 export type EditExerciseInput = {
   day: Scalars['LocalDate'];
   end: Scalars['LocalTime'];
-  exerciseId: Scalars['Int'];
+  exerciseId: Scalars['String'];
   start: Scalars['LocalTime'];
 };
 
@@ -162,7 +176,7 @@ export type EditExerciseResponse = {
 };
 
 export type EditGroupInput = {
-  groupId: Scalars['Int'];
+  groupId: Scalars['String'];
   limit: Scalars['Int'];
   name: Scalars['String'];
 };
@@ -177,7 +191,7 @@ export type Exercise = {
   day: Scalars['LocalDate'];
   end: Scalars['LocalTime'];
   group: Group;
-  id: Scalars['Int'];
+  id: Scalars['String'];
   start: Scalars['LocalTime'];
 };
 
@@ -185,25 +199,33 @@ export type Group = {
   __typename?: 'Group';
   coach: Coach;
   exercises?: Maybe<Array<Exercise>>;
-  id: Scalars['Int'];
+  id: Scalars['String'];
   limit: Scalars['Int'];
   name: Scalars['String'];
   trainees?: Maybe<Array<Trainee>>;
 };
 
-export type LoginResponse = {
-  __typename?: 'LoginResponse';
-  token: Scalars['String'];
+export type LogInResponse = {
+  __typename?: 'LogInResponse';
+  accessToken: Scalars['String'];
+  expiresIn: Scalars['Float'];
+  refreshToken: Scalars['String'];
   user: User;
 };
 
-export type LoginUserInput = {
-  email: Scalars['String'];
+export type LogInUserInput = {
+  email: Scalars['EmailAddress'];
   password: Scalars['String'];
+};
+
+export type LogOutResponse = {
+  __typename?: 'LogOutResponse';
+  msg: Scalars['String'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
+  autoLogInUser: LogInResponse;
   changeEmail: ChangeEmailResponse;
   changePassword: ChangePasswordResponse;
   changeProfilePic: ChangeProfilePicResponse;
@@ -216,10 +238,18 @@ export type Mutation = {
   deleteCity: City;
   deleteExercise: DeleteExerciseResponse;
   deleteGroup: DeleteGroupResponse;
+  deleteTrainee: DeleteTraineeResponse;
   editExercise: EditExerciseResponse;
   editGroup: EditGroupResponse;
-  loginUser: LoginResponse;
-  registerUser: RegisterResponse;
+  logInUser: LogInResponse;
+  logOutUser: LogOutResponse;
+  refreshToken: RefreshTokenResponse;
+  registerUser: LogInResponse;
+};
+
+
+export type MutationAutoLogInUserArgs = {
+  autoLogInUserInput: AutoLogInUserInput;
 };
 
 
@@ -269,17 +299,22 @@ export type MutationCreateUserArgs = {
 
 
 export type MutationDeleteCityArgs = {
-  id: Scalars['Int'];
+  id: Scalars['String'];
 };
 
 
 export type MutationDeleteExerciseArgs = {
-  id: Scalars['Int'];
+  id: Scalars['String'];
 };
 
 
 export type MutationDeleteGroupArgs = {
-  id: Scalars['Int'];
+  id: Scalars['String'];
+};
+
+
+export type MutationDeleteTraineeArgs = {
+  deleteTraineeInput: DeleteTraineeInput;
 };
 
 
@@ -293,8 +328,13 @@ export type MutationEditGroupArgs = {
 };
 
 
-export type MutationLoginUserArgs = {
-  loginUserInput: LoginUserInput;
+export type MutationLogInUserArgs = {
+  logInUserInput: LogInUserInput;
+};
+
+
+export type MutationRefreshTokenArgs = {
+  refreshTokenInput: RefreshTokenInput;
 };
 
 
@@ -304,7 +344,7 @@ export type MutationRegisterUserArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  cities: Array<City>;
+  coaches: Array<Coach>;
   exercises: Array<Exercise>;
   findOne: User;
   getCoach: Coach;
@@ -321,18 +361,23 @@ export type QueryFindOneArgs = {
 
 
 export type QueryGetCoachArgs = {
-  id: Scalars['Int'];
+  id: Scalars['String'];
 };
 
 
 export type QueryGetTraineeArgs = {
-  id: Scalars['Int'];
+  id: Scalars['String'];
 };
 
-export type RegisterResponse = {
-  __typename?: 'RegisterResponse';
-  token: Scalars['String'];
-  user: User;
+export type RefreshTokenInput = {
+  refreshToken: Scalars['String'];
+};
+
+export type RefreshTokenResponse = {
+  __typename?: 'RefreshTokenResponse';
+  accessToken: Scalars['String'];
+  expiresIn: Scalars['Float'];
+  refreshToken: Scalars['String'];
 };
 
 export type RegisterUserInput = {
@@ -356,7 +401,7 @@ export type Trainee = {
   age: Scalars['Int'];
   feedback: Scalars['String'];
   group: Group;
-  id: Scalars['Int'];
+  id: Scalars['String'];
   parentEmail: Scalars['EmailAddress'];
   parentName: Scalars['String'];
   parentPhone: Scalars['PhoneNumber'];
@@ -367,33 +412,45 @@ export type User = {
   __typename?: 'User';
   email: Scalars['String'];
   firstName: Scalars['String'];
-  id: Scalars['Int'];
+  id: Scalars['String'];
   imgSrc: Scalars['String'];
   lastName: Scalars['String'];
   password: Scalars['String'];
   roles: Array<Role>;
 };
 
-export type ChangeEmailMutationVariables = Exact<{
-  input: ChangeEmailInput;
+export type AutoLogInUserMutationVariables = Exact<{
+  input: AutoLogInUserInput;
 }>;
 
 
-export type ChangeEmailMutation = { __typename?: 'Mutation', changeEmail: { __typename?: 'ChangeEmailResponse', token: string, user: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
+export type AutoLogInUserMutation = { __typename?: 'Mutation', autoLogInUser: { __typename?: 'LogInResponse', expiresIn: number, accessToken: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
 
-export type ChangePasswordMutationVariables = Exact<{
-  input: ChangePasswordInput;
+export type LogInUserMutationVariables = Exact<{
+  input: LogInUserInput;
 }>;
 
 
-export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: { __typename?: 'ChangePasswordResponse', token: string, user: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
+export type LogInUserMutation = { __typename?: 'Mutation', logInUser: { __typename?: 'LogInResponse', expiresIn: number, accessToken: string, refreshToken: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
 
-export type ChangeProfilePicMutationVariables = Exact<{
-  input: ChangeProfilePicInput;
+export type LogOutUserMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LogOutUserMutation = { __typename?: 'Mutation', logOutUser: { __typename?: 'LogOutResponse', msg: string } };
+
+export type RefreshTokenMutationVariables = Exact<{
+  input: RefreshTokenInput;
 }>;
 
 
-export type ChangeProfilePicMutation = { __typename?: 'Mutation', changeProfilePic: { __typename?: 'ChangeProfilePicResponse', token: string, user: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
+export type RefreshTokenMutation = { __typename?: 'Mutation', refreshToken: { __typename?: 'RefreshTokenResponse', expiresIn: number, accessToken: string } };
+
+export type RegisterUserMutationVariables = Exact<{
+  input: RegisterUserInput;
+}>;
+
+
+export type RegisterUserMutation = { __typename?: 'Mutation', registerUser: { __typename?: 'LogInResponse', expiresIn: number, accessToken: string, refreshToken: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
 
 export type CreateExerciseMutationVariables = Exact<{
   input: CreateExerciseInput;
@@ -409,26 +466,26 @@ export type CreateGroupMutationVariables = Exact<{
 
 export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __typename?: 'CreateGroupResponse', msg: string } };
 
-export type CreateTraineeMutationVariables = Exact<{
-  input: CreateTraineeInput;
-}>;
-
-
-export type CreateTraineeMutation = { __typename?: 'Mutation', createTrainee: { __typename?: 'CreateTraineeResponse', token: string, user: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
-
 export type DeleteExerciseMutationVariables = Exact<{
-  id: Scalars['Int'];
+  id: Scalars['String'];
 }>;
 
 
 export type DeleteExerciseMutation = { __typename?: 'Mutation', deleteExercise: { __typename?: 'DeleteExerciseResponse', msg: string } };
 
 export type DeleteGroupMutationVariables = Exact<{
-  id: Scalars['Int'];
+  id: Scalars['String'];
 }>;
 
 
 export type DeleteGroupMutation = { __typename?: 'Mutation', deleteGroup: { __typename?: 'DeleteGroupResponse', msg: string } };
+
+export type DeleteTraineeMutationVariables = Exact<{
+  input: DeleteTraineeInput;
+}>;
+
+
+export type DeleteTraineeMutation = { __typename?: 'Mutation', deleteTrainee: { __typename?: 'DeleteTraineeResponse', msg: string } };
 
 export type EditExerciseMutationVariables = Exact<{
   input: EditExerciseInput;
@@ -444,44 +501,59 @@ export type EditGroupMutationVariables = Exact<{
 
 export type EditGroupMutation = { __typename?: 'Mutation', editGroup: { __typename?: 'EditGroupResponse', msg: string } };
 
-export type GetAllCitiesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetAllCitiesQuery = { __typename?: 'Query', cities: Array<{ __typename?: 'City', id: number, name: string, room: string, citySrc: string, roomSrc: string, coach: { __typename?: 'Coach', user: { __typename?: 'User', id: number, firstName: string, lastName: string, imgSrc: string }, groups?: Array<{ __typename?: 'Group', id: number, name: string }> | null } }> };
-
 export type GetCoachQueryVariables = Exact<{
-  id: Scalars['Int'];
+  id: Scalars['String'];
 }>;
 
 
-export type GetCoachQuery = { __typename?: 'Query', getCoach: { __typename?: 'Coach', id: number, groups?: Array<{ __typename?: 'Group', id: number, name: string, limit: number, exercises?: Array<{ __typename?: 'Exercise', id: number, day: any, start: any, end: any }> | null }> | null } };
+export type GetCoachQuery = { __typename?: 'Query', getCoach: { __typename?: 'Coach', id: string, city: { __typename?: 'City', id: string, name: string }, groups?: Array<{ __typename?: 'Group', id: string, name: string, limit: number, exercises?: Array<{ __typename?: 'Exercise', id: string, day: any, start: any, end: any }> | null, trainees?: Array<{ __typename?: 'Trainee', id: string, age: number, parentName: string, parentPhone: any, parentEmail: any, feedback: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, imgSrc: string } }> | null }> | null } };
+
+export type CreateTraineeMutationVariables = Exact<{
+  input: CreateTraineeInput;
+}>;
+
+
+export type CreateTraineeMutation = { __typename?: 'Mutation', createTrainee: { __typename?: 'CreateTraineeResponse', user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
+
+export type GetAllCoachesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllCoachesQuery = { __typename?: 'Query', coaches: Array<{ __typename?: 'Coach', user: { __typename?: 'User', id: string, firstName: string, lastName: string, imgSrc: string }, city: { __typename?: 'City', id: string, name: string, room: string, citySrc: string, roomSrc: string, mapSrc: string }, groups?: Array<{ __typename?: 'Group', id: string, name: string }> | null }> };
 
 export type GetTraineeQueryVariables = Exact<{
-  id: Scalars['Int'];
+  id: Scalars['String'];
 }>;
 
 
-export type GetTraineeQuery = { __typename?: 'Query', getTrainee: { __typename?: 'Trainee', id: number, group: { __typename?: 'Group', id: number, name: string, exercises?: Array<{ __typename?: 'Exercise', id: number, day: any, start: any, end: any }> | null } } };
+export type GetTraineeQuery = { __typename?: 'Query', getTrainee: { __typename?: 'Trainee', id: string, group: { __typename?: 'Group', id: string, name: string, exercises?: Array<{ __typename?: 'Exercise', id: string, day: any, start: any, end: any }> | null } } };
 
-export type LoginUserMutationVariables = Exact<{
-  input: LoginUserInput;
+export type ChangeEmailMutationVariables = Exact<{
+  input: ChangeEmailInput;
 }>;
 
 
-export type LoginUserMutation = { __typename?: 'Mutation', loginUser: { __typename?: 'LoginResponse', token: string, user: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
+export type ChangeEmailMutation = { __typename?: 'Mutation', changeEmail: { __typename?: 'ChangeEmailResponse', refreshToken: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
 
-export type RegisterUserMutationVariables = Exact<{
-  input: RegisterUserInput;
+export type ChangePasswordMutationVariables = Exact<{
+  input: ChangePasswordInput;
 }>;
 
 
-export type RegisterUserMutation = { __typename?: 'Mutation', registerUser: { __typename?: 'RegisterResponse', token: string, user: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
+export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: { __typename?: 'ChangePasswordResponse', user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
+
+export type ChangeProfilePicMutationVariables = Exact<{
+  input: ChangeProfilePicInput;
+}>;
 
 
-export const ChangeEmailDocument = `
-    mutation ChangeEmail($input: ChangeEmailInput!) {
-  changeEmail(changeEmailInput: $input) {
-    token
+export type ChangeProfilePicMutation = { __typename?: 'Mutation', changeProfilePic: { __typename?: 'ChangeProfilePicResponse', user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
+
+
+export const AutoLogInUserDocument = `
+    mutation AutoLogInUser($input: AutoLogInUserInput!) {
+  autoLogInUser(autoLogInUserInput: $input) {
+    expiresIn
+    accessToken
     user {
       id
       firstName
@@ -493,23 +565,25 @@ export const ChangeEmailDocument = `
   }
 }
     `;
-export const useChangeEmailMutation = <
+export const useAutoLogInUserMutation = <
       TError = unknown,
       TContext = unknown
     >(
       client: GraphQLClient,
-      options?: UseMutationOptions<ChangeEmailMutation, TError, ChangeEmailMutationVariables, TContext>,
+      options?: UseMutationOptions<AutoLogInUserMutation, TError, AutoLogInUserMutationVariables, TContext>,
       headers?: RequestInit['headers']
     ) =>
-    useMutation<ChangeEmailMutation, TError, ChangeEmailMutationVariables, TContext>(
-      ['ChangeEmail'],
-      (variables?: ChangeEmailMutationVariables) => fetcher<ChangeEmailMutation, ChangeEmailMutationVariables>(client, ChangeEmailDocument, variables, headers)(),
+    useMutation<AutoLogInUserMutation, TError, AutoLogInUserMutationVariables, TContext>(
+      ['AutoLogInUser'],
+      (variables?: AutoLogInUserMutationVariables) => fetcher<AutoLogInUserMutation, AutoLogInUserMutationVariables>(client, AutoLogInUserDocument, variables, headers)(),
       options
     );
-export const ChangePasswordDocument = `
-    mutation ChangePassword($input: ChangePasswordInput!) {
-  changePassword(changePasswordInput: $input) {
-    token
+export const LogInUserDocument = `
+    mutation LogInUser($input: LogInUserInput!) {
+  logInUser(logInUserInput: $input) {
+    expiresIn
+    accessToken
+    refreshToken
     user {
       id
       firstName
@@ -521,23 +595,66 @@ export const ChangePasswordDocument = `
   }
 }
     `;
-export const useChangePasswordMutation = <
+export const useLogInUserMutation = <
       TError = unknown,
       TContext = unknown
     >(
       client: GraphQLClient,
-      options?: UseMutationOptions<ChangePasswordMutation, TError, ChangePasswordMutationVariables, TContext>,
+      options?: UseMutationOptions<LogInUserMutation, TError, LogInUserMutationVariables, TContext>,
       headers?: RequestInit['headers']
     ) =>
-    useMutation<ChangePasswordMutation, TError, ChangePasswordMutationVariables, TContext>(
-      ['ChangePassword'],
-      (variables?: ChangePasswordMutationVariables) => fetcher<ChangePasswordMutation, ChangePasswordMutationVariables>(client, ChangePasswordDocument, variables, headers)(),
+    useMutation<LogInUserMutation, TError, LogInUserMutationVariables, TContext>(
+      ['LogInUser'],
+      (variables?: LogInUserMutationVariables) => fetcher<LogInUserMutation, LogInUserMutationVariables>(client, LogInUserDocument, variables, headers)(),
       options
     );
-export const ChangeProfilePicDocument = `
-    mutation ChangeProfilePic($input: ChangeProfilePicInput!) {
-  changeProfilePic(changeProfilePicInput: $input) {
-    token
+export const LogOutUserDocument = `
+    mutation LogOutUser {
+  logOutUser {
+    msg
+  }
+}
+    `;
+export const useLogOutUserMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<LogOutUserMutation, TError, LogOutUserMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<LogOutUserMutation, TError, LogOutUserMutationVariables, TContext>(
+      ['LogOutUser'],
+      (variables?: LogOutUserMutationVariables) => fetcher<LogOutUserMutation, LogOutUserMutationVariables>(client, LogOutUserDocument, variables, headers)(),
+      options
+    );
+export const RefreshTokenDocument = `
+    mutation RefreshToken($input: RefreshTokenInput!) {
+  refreshToken(refreshTokenInput: $input) {
+    expiresIn
+    accessToken
+  }
+}
+    `;
+export const useRefreshTokenMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<RefreshTokenMutation, TError, RefreshTokenMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<RefreshTokenMutation, TError, RefreshTokenMutationVariables, TContext>(
+      ['RefreshToken'],
+      (variables?: RefreshTokenMutationVariables) => fetcher<RefreshTokenMutation, RefreshTokenMutationVariables>(client, RefreshTokenDocument, variables, headers)(),
+      options
+    );
+export const RegisterUserDocument = `
+    mutation RegisterUser($input: RegisterUserInput!) {
+  registerUser(registerUserInput: $input) {
+    expiresIn
+    accessToken
+    refreshToken
     user {
       id
       firstName
@@ -549,17 +666,17 @@ export const ChangeProfilePicDocument = `
   }
 }
     `;
-export const useChangeProfilePicMutation = <
+export const useRegisterUserMutation = <
       TError = unknown,
       TContext = unknown
     >(
       client: GraphQLClient,
-      options?: UseMutationOptions<ChangeProfilePicMutation, TError, ChangeProfilePicMutationVariables, TContext>,
+      options?: UseMutationOptions<RegisterUserMutation, TError, RegisterUserMutationVariables, TContext>,
       headers?: RequestInit['headers']
     ) =>
-    useMutation<ChangeProfilePicMutation, TError, ChangeProfilePicMutationVariables, TContext>(
-      ['ChangeProfilePic'],
-      (variables?: ChangeProfilePicMutationVariables) => fetcher<ChangeProfilePicMutation, ChangeProfilePicMutationVariables>(client, ChangeProfilePicDocument, variables, headers)(),
+    useMutation<RegisterUserMutation, TError, RegisterUserMutationVariables, TContext>(
+      ['RegisterUser'],
+      (variables?: RegisterUserMutationVariables) => fetcher<RegisterUserMutation, RegisterUserMutationVariables>(client, RegisterUserDocument, variables, headers)(),
       options
     );
 export const CreateExerciseDocument = `
@@ -602,36 +719,8 @@ export const useCreateGroupMutation = <
       (variables?: CreateGroupMutationVariables) => fetcher<CreateGroupMutation, CreateGroupMutationVariables>(client, CreateGroupDocument, variables, headers)(),
       options
     );
-export const CreateTraineeDocument = `
-    mutation CreateTrainee($input: CreateTraineeInput!) {
-  createTrainee(createTraineeInput: $input) {
-    token
-    user {
-      id
-      firstName
-      lastName
-      email
-      imgSrc
-      roles
-    }
-  }
-}
-    `;
-export const useCreateTraineeMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<CreateTraineeMutation, TError, CreateTraineeMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<CreateTraineeMutation, TError, CreateTraineeMutationVariables, TContext>(
-      ['CreateTrainee'],
-      (variables?: CreateTraineeMutationVariables) => fetcher<CreateTraineeMutation, CreateTraineeMutationVariables>(client, CreateTraineeDocument, variables, headers)(),
-      options
-    );
 export const DeleteExerciseDocument = `
-    mutation DeleteExercise($id: Int!) {
+    mutation DeleteExercise($id: String!) {
   deleteExercise(id: $id) {
     msg
   }
@@ -651,7 +740,7 @@ export const useDeleteExerciseMutation = <
       options
     );
 export const DeleteGroupDocument = `
-    mutation DeleteGroup($id: Int!) {
+    mutation DeleteGroup($id: String!) {
   deleteGroup(id: $id) {
     msg
   }
@@ -668,6 +757,26 @@ export const useDeleteGroupMutation = <
     useMutation<DeleteGroupMutation, TError, DeleteGroupMutationVariables, TContext>(
       ['DeleteGroup'],
       (variables?: DeleteGroupMutationVariables) => fetcher<DeleteGroupMutation, DeleteGroupMutationVariables>(client, DeleteGroupDocument, variables, headers)(),
+      options
+    );
+export const DeleteTraineeDocument = `
+    mutation DeleteTrainee($input: DeleteTraineeInput!) {
+  deleteTrainee(deleteTraineeInput: $input) {
+    msg
+  }
+}
+    `;
+export const useDeleteTraineeMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<DeleteTraineeMutation, TError, DeleteTraineeMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<DeleteTraineeMutation, TError, DeleteTraineeMutationVariables, TContext>(
+      ['DeleteTrainee'],
+      (variables?: DeleteTraineeMutationVariables) => fetcher<DeleteTraineeMutation, DeleteTraineeMutationVariables>(client, DeleteTraineeDocument, variables, headers)(),
       options
     );
 export const EditExerciseDocument = `
@@ -710,47 +819,14 @@ export const useEditGroupMutation = <
       (variables?: EditGroupMutationVariables) => fetcher<EditGroupMutation, EditGroupMutationVariables>(client, EditGroupDocument, variables, headers)(),
       options
     );
-export const GetAllCitiesDocument = `
-    query GetAllCities {
-  cities {
-    id
-    name
-    room
-    citySrc
-    roomSrc
-    coach {
-      user {
-        id
-        firstName
-        lastName
-        imgSrc
-      }
-      groups {
-        id
-        name
-      }
-    }
-  }
-}
-    `;
-export const useGetAllCitiesQuery = <
-      TData = GetAllCitiesQuery,
-      TError = unknown
-    >(
-      client: GraphQLClient,
-      variables?: GetAllCitiesQueryVariables,
-      options?: UseQueryOptions<GetAllCitiesQuery, TError, TData>,
-      headers?: RequestInit['headers']
-    ) =>
-    useQuery<GetAllCitiesQuery, TError, TData>(
-      variables === undefined ? ['GetAllCities'] : ['GetAllCities', variables],
-      fetcher<GetAllCitiesQuery, GetAllCitiesQueryVariables>(client, GetAllCitiesDocument, variables, headers),
-      options
-    );
 export const GetCoachDocument = `
-    query GetCoach($id: Int!) {
+    query GetCoach($id: String!) {
   getCoach(id: $id) {
     id
+    city {
+      id
+      name
+    }
     groups {
       id
       name
@@ -760,6 +836,20 @@ export const GetCoachDocument = `
         day
         start
         end
+      }
+      trainees {
+        id
+        age
+        parentName
+        parentPhone
+        parentEmail
+        feedback
+        user {
+          id
+          firstName
+          lastName
+          imgSrc
+        }
       }
     }
   }
@@ -779,8 +869,73 @@ export const useGetCoachQuery = <
       fetcher<GetCoachQuery, GetCoachQueryVariables>(client, GetCoachDocument, variables, headers),
       options
     );
+export const CreateTraineeDocument = `
+    mutation CreateTrainee($input: CreateTraineeInput!) {
+  createTrainee(createTraineeInput: $input) {
+    user {
+      id
+      firstName
+      lastName
+      email
+      imgSrc
+      roles
+    }
+  }
+}
+    `;
+export const useCreateTraineeMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<CreateTraineeMutation, TError, CreateTraineeMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<CreateTraineeMutation, TError, CreateTraineeMutationVariables, TContext>(
+      ['CreateTrainee'],
+      (variables?: CreateTraineeMutationVariables) => fetcher<CreateTraineeMutation, CreateTraineeMutationVariables>(client, CreateTraineeDocument, variables, headers)(),
+      options
+    );
+export const GetAllCoachesDocument = `
+    query GetAllCoaches {
+  coaches {
+    user {
+      id
+      firstName
+      lastName
+      imgSrc
+    }
+    city {
+      id
+      name
+      room
+      citySrc
+      roomSrc
+      mapSrc
+    }
+    groups {
+      id
+      name
+    }
+  }
+}
+    `;
+export const useGetAllCoachesQuery = <
+      TData = GetAllCoachesQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: GetAllCoachesQueryVariables,
+      options?: UseQueryOptions<GetAllCoachesQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<GetAllCoachesQuery, TError, TData>(
+      variables === undefined ? ['GetAllCoaches'] : ['GetAllCoaches', variables],
+      fetcher<GetAllCoachesQuery, GetAllCoachesQueryVariables>(client, GetAllCoachesDocument, variables, headers),
+      options
+    );
 export const GetTraineeDocument = `
-    query GetTrainee($id: Int!) {
+    query GetTrainee($id: String!) {
   getTrainee(id: $id) {
     id
     group {
@@ -810,10 +965,10 @@ export const useGetTraineeQuery = <
       fetcher<GetTraineeQuery, GetTraineeQueryVariables>(client, GetTraineeDocument, variables, headers),
       options
     );
-export const LoginUserDocument = `
-    mutation LoginUser($input: LoginUserInput!) {
-  loginUser(loginUserInput: $input) {
-    token
+export const ChangeEmailDocument = `
+    mutation ChangeEmail($input: ChangeEmailInput!) {
+  changeEmail(changeEmailInput: $input) {
+    refreshToken
     user {
       id
       firstName
@@ -825,23 +980,22 @@ export const LoginUserDocument = `
   }
 }
     `;
-export const useLoginUserMutation = <
+export const useChangeEmailMutation = <
       TError = unknown,
       TContext = unknown
     >(
       client: GraphQLClient,
-      options?: UseMutationOptions<LoginUserMutation, TError, LoginUserMutationVariables, TContext>,
+      options?: UseMutationOptions<ChangeEmailMutation, TError, ChangeEmailMutationVariables, TContext>,
       headers?: RequestInit['headers']
     ) =>
-    useMutation<LoginUserMutation, TError, LoginUserMutationVariables, TContext>(
-      ['LoginUser'],
-      (variables?: LoginUserMutationVariables) => fetcher<LoginUserMutation, LoginUserMutationVariables>(client, LoginUserDocument, variables, headers)(),
+    useMutation<ChangeEmailMutation, TError, ChangeEmailMutationVariables, TContext>(
+      ['ChangeEmail'],
+      (variables?: ChangeEmailMutationVariables) => fetcher<ChangeEmailMutation, ChangeEmailMutationVariables>(client, ChangeEmailDocument, variables, headers)(),
       options
     );
-export const RegisterUserDocument = `
-    mutation RegisterUser($input: RegisterUserInput!) {
-  registerUser(registerUserInput: $input) {
-    token
+export const ChangePasswordDocument = `
+    mutation ChangePassword($input: ChangePasswordInput!) {
+  changePassword(changePasswordInput: $input) {
     user {
       id
       firstName
@@ -853,16 +1007,43 @@ export const RegisterUserDocument = `
   }
 }
     `;
-export const useRegisterUserMutation = <
+export const useChangePasswordMutation = <
       TError = unknown,
       TContext = unknown
     >(
       client: GraphQLClient,
-      options?: UseMutationOptions<RegisterUserMutation, TError, RegisterUserMutationVariables, TContext>,
+      options?: UseMutationOptions<ChangePasswordMutation, TError, ChangePasswordMutationVariables, TContext>,
       headers?: RequestInit['headers']
     ) =>
-    useMutation<RegisterUserMutation, TError, RegisterUserMutationVariables, TContext>(
-      ['RegisterUser'],
-      (variables?: RegisterUserMutationVariables) => fetcher<RegisterUserMutation, RegisterUserMutationVariables>(client, RegisterUserDocument, variables, headers)(),
+    useMutation<ChangePasswordMutation, TError, ChangePasswordMutationVariables, TContext>(
+      ['ChangePassword'],
+      (variables?: ChangePasswordMutationVariables) => fetcher<ChangePasswordMutation, ChangePasswordMutationVariables>(client, ChangePasswordDocument, variables, headers)(),
+      options
+    );
+export const ChangeProfilePicDocument = `
+    mutation ChangeProfilePic($input: ChangeProfilePicInput!) {
+  changeProfilePic(changeProfilePicInput: $input) {
+    user {
+      id
+      firstName
+      lastName
+      email
+      imgSrc
+      roles
+    }
+  }
+}
+    `;
+export const useChangeProfilePicMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<ChangeProfilePicMutation, TError, ChangeProfilePicMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<ChangeProfilePicMutation, TError, ChangeProfilePicMutationVariables, TContext>(
+      ['ChangeProfilePic'],
+      (variables?: ChangeProfilePicMutationVariables) => fetcher<ChangeProfilePicMutation, ChangeProfilePicMutationVariables>(client, ChangeProfilePicDocument, variables, headers)(),
       options
     );

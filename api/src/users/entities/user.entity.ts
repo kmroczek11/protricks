@@ -1,8 +1,8 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { IsString } from 'class-validator';
 import { Coach } from 'src/coaches/entities/coach.entity';
-import { Group } from 'src/groups/entities/group.entity';
 import { Trainee } from 'src/trainees/entities/trainee.entity';
+import { Exclude } from 'class-transformer';
 import {
   Column,
   Entity,
@@ -16,9 +16,9 @@ import { Role } from './role.enum';
 @Entity('users')
 @ObjectType()
 export class User {
-  @PrimaryGeneratedColumn()
-  @Field((type) => Int)
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  @Field()
+  id: string;
 
   @Column({ default: '' })
   @Field()
@@ -35,15 +35,20 @@ export class User {
   @Column({ select: false })
   @Field()
   @IsString()
+  @Exclude()
   password: string;
 
   @Column({ default: '' })
   @Field()
   imgSrc: string;
 
-  @Column('text', { default: [Role.USER], array: true })
+  @Column('varchar', { default: [Role.USER], array: true })
   @Field(() => [Role])
   roles: Role[];
+
+  @Column({ nullable: true })
+  @Exclude()
+  refreshToken?: string;
 
   @OneToOne(() => Coach, (coach) => coach.user)
   coach: Coach;

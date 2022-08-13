@@ -1,5 +1,5 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { useAuth } from "../../../context";
+import { useAuth } from "..";
 import { Role } from "../../../generated/graphql";
 
 interface ProtectedProps {
@@ -9,7 +9,7 @@ interface ProtectedProps {
 
 const Protected = (props: ProtectedProps) => {
   const { allowedRoles, children } = props;
-  const [user] = useAuth();
+  const { user } = useAuth();
   const location = useLocation();
 
   return user?.roles.find((role) => allowedRoles?.includes(role)) ? (

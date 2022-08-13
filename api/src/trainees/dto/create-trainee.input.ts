@@ -3,11 +3,11 @@ import { EmailAddressResolver, PhoneNumberResolver } from 'graphql-scalars';
 
 @InputType()
 export class CreateTraineeInput {
-  @Field(() => Int)
-  userId: number;
+  @Field()
+  userId: string;
 
-  @Field(() => Int)
-  groupId: number;
+  @Field()
+  groupId: string;
 
   @Field(() => Int)
   age: number;

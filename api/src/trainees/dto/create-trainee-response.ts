@@ -4,8 +4,5 @@ import { User } from 'src/users/entities/user.entity';
 @ObjectType()
 export class CreateTraineeResponse {
   @Field()
-  token: string;
-
-  @Field()
   user: User;
 }

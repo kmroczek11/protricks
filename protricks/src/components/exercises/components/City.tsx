@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import React, { useState } from "react";
-import { useAuth } from "../../../context";
+import { useAuth } from "../../auth";
 import { Role } from "../../../generated/graphql";
 import { ColorButton, PhotoCard, CustomList } from "../../lib";
 import CustomAvatar from "../../lib/CustomAvatar";
@@ -30,44 +30,45 @@ const txt = [
 
 interface CityProps {
   visible: boolean;
-  selectedGroup: number | undefined;
+  selectedGroup: string | undefined;
   item: {
-    id: number;
-    name: string;
-    room: string;
-    roomSrc: string;
-    coach: {
-      user: {
-        id: number;
-        firstName: string;
-        lastName: string;
-        imgSrc?: string | null;
-      };
-      groups?: Array<{
-        id: number;
-        name: string;
-        exercises?: Array<{
-          id: number;
-          day: any;
-          start: string;
-          end: string;
-        }> | null;
-      }> | null;
+    user: {
+      id: string;
+      firstName: string;
+      lastName: string;
+      imgSrc: string;
     };
+    city: {
+      id: string;
+      name: string;
+      room: string;
+      citySrc: string;
+      roomSrc: string;
+      mapSrc: string;
+    };
+    groups?: Array<{
+      id: string;
+      name: string;
+      exercises?: Array<{
+        id: string;
+        day: any;
+        start: string;
+        end: string;
+      }> | null;
+    }> | null;
   };
   nextStep: () => void;
   prevStep: () => void;
-  selectGroup: (id: number) => void;
+  selectGroup: (id: string) => void;
 }
 
 const City: React.FC<CityProps> = (props) => {
   const { visible, selectedGroup, item, nextStep, prevStep, selectGroup } =
     props;
-  const { name } = item;
-  const { room, roomSrc, coach } = item;
-  const { groups } = coach;
-  const { firstName, lastName, imgSrc } = coach.user;
-  const [user] = useAuth();
+  const { user: coach, city, groups } = item;
+  const { firstName, lastName, imgSrc } = coach;
+  const { name, room, roomSrc, mapSrc } = city;
+  const { user } = useAuth();
   const [selected, setSelected] = useState<boolean>(false);
 
   return visible ? (
@@ -107,7 +108,14 @@ const City: React.FC<CityProps> = (props) => {
           >
             Lokalizacja
           </Typography>
-          <Map />
+          <iframe
+            src={mapSrc}
+            width="100%"
+            height="300"
+            style={{ border: 0 }}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
         </Grid>
         <Grid
           item

@@ -52,7 +52,7 @@ export class GroupsResolver {
   @Mutation(() => DeleteGroupResponse)
   @Roles(Role.COACH)
   deleteGroup(
-    @Args('id', { type: () => Int }) id: number,
+    @Args('id') id: string,
   ): Promise<DeleteGroupResponse> {
     return this.groupsService.deleteGroup(id);
   }

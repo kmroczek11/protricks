@@ -1,0 +1,22 @@
+query GetAllCoaches {
+  coaches {
+    user {
+      id
+      firstName
+      lastName
+      imgSrc
+    }
+    city {
+      id
+      name
+      room
+      citySrc
+      roomSrc
+      mapSrc
+    }
+    groups {
+      id
+      name
+    }
+  }
+}

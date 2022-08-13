@@ -1,0 +1,5 @@
+mutation DeleteTrainee($input: DeleteTraineeInput!) {
+  deleteTrainee(deleteTraineeInput: $input) {
+    msg
+  }
+}

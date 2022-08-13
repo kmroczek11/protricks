@@ -1,21 +1,18 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { Coach } from 'src/coaches/entities/coach.entity';
-import { Group } from 'src/groups/entities/group.entity';
-import { User } from 'src/users/entities/user.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToMany,
   OneToOne,
 } from 'typeorm';
 
 @Entity('cities')
 @ObjectType()
 export class City {
-  @PrimaryGeneratedColumn()
-  @Field(() => Int)
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  @Field()
+  id: string;
 
   @Column({ default: '' })
   @Field()
@@ -33,8 +30,9 @@ export class City {
   @Field()
   roomSrc: string;
 
-  @Column()
-  coachId: number;
+  @Column({ default: '' })
+  @Field()
+  mapSrc: string;
 
   @OneToOne(() => Coach, (coach) => coach.city)
   @Field(() => Coach)

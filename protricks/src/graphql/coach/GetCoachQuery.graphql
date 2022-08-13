@@ -1,0 +1,34 @@
+query GetCoach($id: String!) {
+  getCoach(id: $id) {
+    id
+    city {
+      id
+      name
+    }
+    groups {
+      id
+      name
+      limit
+      exercises {
+        id
+        day
+        start
+        end
+      }
+      trainees {
+        id
+        age
+        parentName
+        parentPhone
+        parentEmail
+        feedback
+        user {
+          id
+          firstName
+          lastName
+          imgSrc
+        }
+      }
+    }
+  }
+}

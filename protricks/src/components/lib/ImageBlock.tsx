@@ -9,9 +9,14 @@ const ImageBlockRoot = styled("section")(({ theme }) => ({
   position: "relative",
   display: "flex",
   alignItems: "center",
-  height: "75vh",
-  minHeight: 500,
-  maxHeight: 1300,
+
+  [theme.breakpoints.up("sm")]: {
+    height: "55vh",
+  },
+
+  [theme.breakpoints.up("md")]: {
+    height: "75vh",
+  },
 }));
 
 const Background = styled("img")({

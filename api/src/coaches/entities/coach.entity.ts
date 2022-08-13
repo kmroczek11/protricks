@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { City } from 'src/cities/entities/city.entity';
 import { Group } from 'src/groups/entities/group.entity';
 import { User } from 'src/users/entities/user.entity';
@@ -13,17 +13,21 @@ import {
 @Entity('coaches')
 @ObjectType()
 export class Coach {
-  @PrimaryGeneratedColumn()
-  @Field((type) => Int)
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  @Field()
+  id: string;
 
   @Column()
-  userId: number;
+  userId: string;
 
   @OneToOne(() => User, (user) => user.coach)
   user: User;
 
+  @Column({nullable:true})
+  cityId?: string;
+
   @OneToOne(() => City, (city) => city.coach)
+  @Field(() => City)
   city: City;
 
   @OneToMany(() => Group, (group) => group.coach, { eager: true })

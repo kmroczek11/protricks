@@ -2,13 +2,12 @@ import { useState } from "react";
 import TextField from "@mui/material/TextField";
 import { ColorButton } from "../../lib";
 import Box from "@mui/material/Box";
-import graphqlRequestClient from "../../../graphql/clients/graphqlRequestClient";
 import {
   useChangeEmailMutation,
   ChangeEmailMutation,
   ChangeEmailMutationVariables,
 } from "../../../generated/graphql";
-import { useAuth } from "../../../context";
+import { useAuth } from "../../auth";
 import LoadingScreen from "../../lib/LoadingScreen";
 import CustomAlert from "../../lib/CustomAlert";
 import { Formik, Form } from "formik";
@@ -19,28 +18,28 @@ const defaultValues = {
 };
 
 const EmailForm: React.FC = () => {
-  const [user, setUser] = useAuth();
-  const [changeEmailStatus, setChangeEmailPicStatus] = useState<string>("");
+  const { user, setUser, accessClient } = useAuth();
+  const [changeEmailStatus, setChangeEmailStatus] = useState<string>("");
 
-  const { isLoading, mutate } = useChangeEmailMutation<Error>(
-    graphqlRequestClient(),
-    {
-      onError: (error: Error) => {
-        let err: any = {};
-        err.data = error;
-        setChangeEmailPicStatus(err?.data?.response.errors[0].message);
-      },
-      onSuccess: (
-        data: ChangeEmailMutation,
-        _variables: ChangeEmailMutationVariables,
-        _context: unknown
-      ) => {
-        // queryClient.invalidateQueries('GetAllAuthors');
-        localStorage.setItem("token", data.changeEmail.token);
-        setUser(data.changeEmail.user);
-      },
-    }
-  );
+  const { isLoading, mutate } = useChangeEmailMutation<Error>(accessClient!, {
+    onError: (error: Error) => {
+      let err: any = {};
+      err.data = error;
+      setChangeEmailStatus(err?.data?.response.errors[0].message);
+    },
+    onSuccess: (
+      data: ChangeEmailMutation,
+      _variables: ChangeEmailMutationVariables,
+      _context: unknown
+    ) => {
+      // queryClient.invalidateQueries('GetAllAuthors');
+      localStorage.setItem(
+        process.env.REACT_APP_REFRESH_TOKEN_SECRET!,
+        data.changeEmail.refreshToken
+      );
+      setUser(data.changeEmail.user);
+    },
+  });
 
   return isLoading ? (
     <LoadingScreen />
@@ -48,7 +47,6 @@ const EmailForm: React.FC = () => {
     <Formik
       initialValues={defaultValues}
       onSubmit={(values, { setSubmitting }) => {
-        console.log("ok");
         setSubmitting(true);
 
         const { newEmail } = values;
@@ -61,7 +59,9 @@ const EmailForm: React.FC = () => {
         });
       }}
       validationSchema={Yup.object().shape({
-        newEmail: Yup.string().email("Nieprawidłowy email").required("Wymagane"),
+        newEmail: Yup.string()
+          .email("Nieprawidłowy email")
+          .required("Wymagane"),
       })}
     >
       {(props) => {
@@ -80,30 +80,41 @@ const EmailForm: React.FC = () => {
           <Form onSubmit={handleSubmit}>
             <Box
               sx={{
-                "& > :not(style)": { m: 1 },
                 display: "flex",
+                flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
               }}
             >
-              <TextField
-                id="new-email-input"
-                name="newEmail"
-                label="Nowy email"
-                type="email"
-                value={values.newEmail}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                helperText={errors.newEmail && touched.newEmail && errors.newEmail}
-                error={errors.newEmail && touched.newEmail ? true : false}
-                required
-              />
+              <Box
+                sx={{
+                  "& > :not(style)": { m: 1 },
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <TextField
+                  id="new-email-input"
+                  name="newEmail"
+                  label="Nowy email"
+                  type="email"
+                  value={values.newEmail}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  helperText={
+                    errors.newEmail && touched.newEmail && errors.newEmail
+                  }
+                  error={errors.newEmail && touched.newEmail ? true : false}
+                  required
+                />
+                <ColorButton type="submit" variant="outlined" color="secondary">
+                  Zmień
+                </ColorButton>
+              </Box>
               {changeEmailStatus && (
                 <CustomAlert severity="error" msg="Nieoczekiwany błąd." />
               )}
-              <ColorButton type="submit" variant="outlined" color="secondary">
-                Zmień
-              </ColorButton>
             </Box>
           </Form>
         );

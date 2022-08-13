@@ -3,10 +3,11 @@ import Home from "./components/home";
 import Exercises from "./components/exercises";
 import type { RouteObject } from "react-router-dom";
 import UserPanel from "./components/user";
-import CoachPanel from "./components/coach";
-import TraineePanel from "./components/trainee";
+import GroupsPanel from "./components/coach/groups_panel";
+import TraineeExercisesPanel from "./components/trainee/trainee_exercises_panel";
 import Protected from "./components/auth/components/Protected";
 import { Role } from "./generated/graphql";
+import CoachExercisesPanel from "./components/coach/coach_exercises";
 
 export interface NavItemsObject {
   id: number;
@@ -55,18 +56,26 @@ export const routes: RouteObject[] = [
         ),
       },
       {
-        path: "/trener",
+        path: "/trener/zarzadzanie_grupami",
         element: (
           <Protected allowedRoles={[Role.Coach]}>
-            <CoachPanel />
+            <GroupsPanel />
           </Protected>
         ),
       },
       {
-        path: "/uczen",
+        path: "/trener/zajecia",
+        element: (
+          <Protected allowedRoles={[Role.Coach]}>
+            <CoachExercisesPanel />
+          </Protected>
+        ),
+      },
+      {
+        path: "/uczen/zajecia",
         element: (
           <Protected allowedRoles={[Role.Trainee]}>
-            <TraineePanel />
+            <TraineeExercisesPanel />
           </Protected>
         ),
       },

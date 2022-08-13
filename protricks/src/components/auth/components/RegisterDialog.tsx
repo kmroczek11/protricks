@@ -8,19 +8,12 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import { useQueryClient } from "react-query";
-import {
-  RegisterUserMutation,
-  RegisterUserMutationVariables,
-  useRegisterUserMutation,
-} from "../../../generated/graphql";
-import graphqlRequestClient from "../../../graphql/clients/graphqlRequestClient";
 import LoadingScreen from "../../lib/LoadingScreen";
 import CustomAlert from "../../lib/CustomAlert";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import YupPassword from "yup-password";
-import { useAuth } from "../../../context";
+import { useAuth } from "..";
 YupPassword(Yup); // extend yup
 
 interface RegisterDialogProps {
@@ -40,32 +33,9 @@ const userExistsMessage = "Użytkownik o podanym adresie e-mail już istnieje.";
 
 const RegisterDialog: React.FC<RegisterDialogProps> = (props) => {
   const { open, handleClose, setActive } = props;
-  const queryClient = useQueryClient();
-  const [user, setUser] = useAuth();
-  const [registrationStatus, setRegistrationStatus] = useState<string>("");
+  const { isRegisterLoading,registerError,register } = useAuth();
 
-  const { isLoading, error, mutate } = useRegisterUserMutation<Error>(
-    graphqlRequestClient(),
-    {
-      onError: (error: Error) => {
-        let err: any = {};
-        err.data = error;
-        setRegistrationStatus(err?.data?.response.errors[0].message);
-      },
-      onSuccess: (
-        data: RegisterUserMutation,
-        _variables: RegisterUserMutationVariables,
-        _context: unknown
-      ) => {
-        // queryClient.invalidateQueries('GetAllAuthors');
-        localStorage.setItem("token", data.registerUser.token);
-        console.log(data.registerUser.user)
-        setUser(data.registerUser.user);
-      },
-    }
-  );
-
-  return isLoading ? (
+  return isRegisterLoading ? (
     <LoadingScreen />
   ) : (
     <Dialog fullWidth maxWidth="sm" open={open} onClose={handleClose}>
@@ -92,7 +62,7 @@ const RegisterDialog: React.FC<RegisterDialogProps> = (props) => {
 
             const { firstName, lastName, email, password } = values;
 
-            mutate({
+            register({
               input: {
                 firstName: firstName,
                 lastName: lastName,
@@ -202,10 +172,10 @@ const RegisterDialog: React.FC<RegisterDialogProps> = (props) => {
                       required
                     />
                   </Grid>
-                  {registrationStatus === "User already exists" ? (
+                  {registerError === "User already exists" ? (
                     <CustomAlert severity="error" msg={userExistsMessage} />
                   ) : (
-                    registrationStatus && (
+                    registerError && (
                       <CustomAlert severity="error" msg="Nieoczekiwany błąd" />
                     )
                   )}

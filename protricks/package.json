@@ -15,12 +15,15 @@
     "@mui/styled-engine-sc": "latest",
     "@react-google-maps/api": "latest",
     "apollo-upload-client": "^17.0.0",
+    "browser-image-compression": "^2.0.0",
     "date-fns": "latest",
     "formik": "^2.2.9",
     "graphql": "latest",
     "jwt-decode": "latest",
     "react": "latest",
+    "react-data-export": "^0.6.0",
     "react-dom": "latest",
+    "react-export-excel": "^0.5.3",
     "react-pdf": "latest",
     "react-phone-input-2": "^2.15.0",
     "react-query": "latest",
@@ -29,6 +32,7 @@
     "styled-components": "latest",
     "typescript": "latest",
     "web-vitals": "latest",
+    "xlsx": "^0.18.5",
     "yup": "^0.32.11",
     "yup-password": "^0.2.2"
   },
@@ -65,5 +69,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
   }
 }

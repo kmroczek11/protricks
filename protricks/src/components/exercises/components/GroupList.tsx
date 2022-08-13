@@ -10,20 +10,20 @@ import GroupIcon from "@mui/icons-material/Group";
 
 interface GroupListProps {
   groups: GroupObject[];
-  selectedGroup: number | undefined;
-  selectGroup: (id: number) => void;
+  selectedGroup: string | undefined;
+  selectGroup: (id: string) => void;
   setSelected: (selected: boolean) => void;
 }
 
 interface GroupObject {
-  id: number;
+  id: string;
   name: string;
 }
 
 const GroupList: React.FC<GroupListProps> = (props) => {
   const { groups, selectedGroup, selectGroup, setSelected } = props;
 
-  const handleToggle = (value: number) => () => {
+  const handleToggle = (value: string) => () => {
     selectGroup(value);
     setSelected(true);
   };
@@ -32,9 +32,11 @@ const GroupList: React.FC<GroupListProps> = (props) => {
     <List
       sx={{
         bgcolor: "background.paper",
-
         "&& .Mui-selected": {
           bgcolor: "success.light",
+          "&:hover": {
+            bgcolor: "success.dark",
+          },
         },
       }}
     >
@@ -47,7 +49,7 @@ const GroupList: React.FC<GroupListProps> = (props) => {
               <Checkbox
                 edge="end"
                 onChange={handleToggle(id)}
-                checked={selectedGroup == id}
+                checked={selectedGroup === id}
                 inputProps={{ "aria-labelledby": labelId }}
                 color="secondary"
               />

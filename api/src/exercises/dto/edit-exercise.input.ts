@@ -8,8 +8,8 @@ import {
 
 @InputType()
 export class EditExerciseInput {
-  @Field(() => Int)
-  exerciseId: number;
+  @Field()
+  exerciseId: string;
 
   @Field(() => LocalDateResolver)
   day: typeof LocalDateTypeDefinition;

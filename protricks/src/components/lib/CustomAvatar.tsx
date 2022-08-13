@@ -59,7 +59,11 @@ const CustomAvatar: React.FC<CustomAvatarProps> = (props) => {
       }
     >
       <Avatar
-        src={imgSrc ? `${process.env.REACT_APP_ENDPOINT}/uploads/${imgSrc}` : undefined}
+        src={
+          imgSrc
+            ? `${process.env.REACT_APP_ENDPOINT}/uploads/${imgSrc}`
+            : undefined
+        }
         sx={{
           bgcolor: stringToColor(name),
           ...(size === "small" && { width: 50, height: 50, fontSize: 20 }),
@@ -71,7 +75,11 @@ const CustomAvatar: React.FC<CustomAvatarProps> = (props) => {
     </Badge>
   ) : (
     <Avatar
-      src={imgSrc ? imgSrc : ""}
+      src={
+        imgSrc
+          ? `${process.env.REACT_APP_ENDPOINT}/uploads/${imgSrc}`
+          : undefined
+      }
       sx={{
         bgcolor: stringToColor(name),
         ...(size === "small" && { width: 50, height: 50, fontSize: 20 }),

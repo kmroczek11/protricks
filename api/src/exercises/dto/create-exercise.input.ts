@@ -12,6 +12,6 @@ export class CreateExerciseInput {
   @Field(() => LocalTimeResolver)
   end: string;
 
-  @Field(() => Int)
-  groupId: number;
+  @Field()
+  groupId: string;
 }

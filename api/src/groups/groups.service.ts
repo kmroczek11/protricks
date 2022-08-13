@@ -27,11 +27,11 @@ export class GroupsService {
     return this.groupsRepository.find();
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.groupsRepository.findOne(id);
   }
 
-  getCoach(coachId: number): Promise<Coach> {
+  getCoach(coachId: string): Promise<Coach> {
     return this.coachesService.findOne(coachId);
   }
 
@@ -51,7 +51,7 @@ export class GroupsService {
     };
   }
 
-  async deleteGroup(id: number) {
+  async deleteGroup(id: string) {
     this.groupsRepository.delete(id);
 
     return {

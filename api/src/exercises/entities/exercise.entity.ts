@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import {
   LocalDateResolver,
   LocalTimeResolver,
@@ -14,9 +14,9 @@ import {
 @Entity('exercises')
 @ObjectType()
 export class Exercise {
-  @PrimaryGeneratedColumn()
-  @Field(() => Int)
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  @Field()
+  id: string;
 
   @Column({ type: 'date' })
   @Field(() => LocalDateResolver)
@@ -31,7 +31,7 @@ export class Exercise {
   end: string;
 
   @Column()
-  groupId: number;
+  groupId: string;
 
   @ManyToOne(() => Group, (group) => group.exercises)
   group: Group;

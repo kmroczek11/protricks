@@ -1,0 +1,6 @@
+mutation RefreshToken($input: RefreshTokenInput!) {
+  refreshToken(refreshTokenInput: $input) {
+    expiresIn
+    accessToken
+  }
+}

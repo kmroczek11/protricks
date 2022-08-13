@@ -1,0 +1,15 @@
+mutation RegisterUser($input: RegisterUserInput!) {
+  registerUser(registerUserInput: $input) {
+    expiresIn
+    accessToken
+    refreshToken
+    user {
+      id
+      firstName
+      lastName
+      email
+      imgSrc
+      roles
+    }
+  }
+}

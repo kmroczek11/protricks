@@ -3,7 +3,7 @@
 # ------------------------------------------------------
 
 type Exercise {
-  id: Int!
+  id: String!
   day: LocalDate!
   start: LocalTime!
   end: LocalTime!
@@ -21,7 +21,7 @@ A local time string (i.e., with no associated timezone) in 24-hr `HH:mm[:ss[.SSS
 scalar LocalTime
 
 type User {
-  id: Int!
+  id: String!
   firstName: String!
   lastName: String!
   email: String!
@@ -39,7 +39,7 @@ enum Role {
 }
 
 type Trainee {
-  id: Int!
+  id: String!
   user: User!
   age: Int!
   parentName: String!
@@ -60,7 +60,7 @@ A field whose value conforms to the standard internet email address format as sp
 scalar EmailAddress @specifiedBy(url: "https://www.w3.org/Protocols/rfc822/")
 
 type Group {
-  id: Int!
+  id: String!
   name: String!
   limit: Int!
   exercises: [Exercise!]
@@ -69,23 +69,20 @@ type Group {
 }
 
 type Coach {
-  id: Int!
+  id: String!
+  city: City!
   groups: [Group!]
   user: User!
 }
 
 type City {
-  id: Int!
+  id: String!
   name: String!
   room: String!
   citySrc: String!
   roomSrc: String!
+  mapSrc: String!
   coach: Coach!
-}
-
-type ChangeProfilePicResponse {
-  token: String!
-  user: User!
 }
 
 type CreateGroupResponse {
@@ -101,23 +98,35 @@ type DeleteGroupResponse {
 }
 
 type ChangeEmailResponse {
-  token: String!
+  refreshToken: String!
   user: User!
 }
 
-type LoginResponse {
-  token: String!
-  user: User!
-}
-
-type RegisterResponse {
-  token: String!
+type LogInResponse {
+  expiresIn: Float!
+  accessToken: String!
+  refreshToken: String!
   user: User!
 }
 
 type ChangePasswordResponse {
-  token: String!
   user: User!
+}
+
+type ChangeProfilePicResponse {
+  expiresIn: String!
+  accessToken: String!
+  user: User!
+}
+
+type LogOutResponse {
+  msg: String!
+}
+
+type RefreshTokenResponse {
+  expiresIn: Float!
+  accessToken: String!
+  refreshToken: String!
 }
 
 type CreateExerciseResponse {
@@ -133,38 +142,45 @@ type EditExerciseResponse {
 }
 
 type CreateTraineeResponse {
-  token: String!
   user: User!
 }
 
+type DeleteTraineeResponse {
+  msg: String!
+}
+
 type Query {
-  cities: [City!]!
-  getCoach(id: Int!): Coach!
+  groups: [Group!]!
+  coaches: [Coach!]!
+  getCoach(id: String!): Coach!
   users: [User!]!
   findOne(email: String!): User!
-  groups: [Group!]!
   exercises: [Exercise!]!
   trainees: [Trainee!]!
-  getTrainee(id: Int!): Trainee!
+  getTrainee(id: String!): Trainee!
 }
 
 type Mutation {
   createCity(createCityInput: CreateCityInput!): City!
-  deleteCity(id: Int!): City!
-  createCoach(createCoachInput: CreateCoachInput!): Coach!
-  createUser(createUserInput: CreateUserInput!): User!
-  changeProfilePic(changeProfilePicInput: ChangeProfilePicInput!): ChangeProfilePicResponse!
+  deleteCity(id: String!): City!
   createGroup(createGroupInput: CreateGroupInput!): CreateGroupResponse!
   editGroup(editGroupInput: EditGroupInput!): EditGroupResponse!
-  deleteGroup(id: Int!): DeleteGroupResponse!
-  registerUser(registerUserInput: RegisterUserInput!): RegisterResponse!
-  loginUser(loginUserInput: LoginUserInput!): LoginResponse!
+  deleteGroup(id: String!): DeleteGroupResponse!
+  createCoach(createCoachInput: CreateCoachInput!): Coach!
+  createUser(createUserInput: CreateUserInput!): User!
+  registerUser(registerUserInput: RegisterUserInput!): LogInResponse!
+  logInUser(logInUserInput: LogInUserInput!): LogInResponse!
+  autoLogInUser(autoLogInUserInput: AutoLogInUserInput!): LogInResponse!
+  logOutUser: LogOutResponse!
   changeEmail(changeEmailInput: ChangeEmailInput!): ChangeEmailResponse!
   changePassword(changePasswordInput: ChangePasswordInput!): ChangePasswordResponse!
+  changeProfilePic(changeProfilePicInput: ChangeProfilePicInput!): ChangeProfilePicResponse!
+  refreshToken(refreshTokenInput: RefreshTokenInput!): RefreshTokenResponse!
   createExercise(createExerciseInput: CreateExerciseInput!): CreateExerciseResponse!
   editExercise(editExerciseInput: EditExerciseInput!): EditExerciseResponse!
-  deleteExercise(id: Int!): DeleteExerciseResponse!
+  deleteExercise(id: String!): DeleteExerciseResponse!
   createTrainee(createTraineeInput: CreateTraineeInput!): CreateTraineeResponse!
+  deleteTrainee(deleteTraineeInput: DeleteTraineeInput!): DeleteTraineeResponse!
 }
 
 input CreateCityInput {
@@ -172,11 +188,23 @@ input CreateCityInput {
   room: String!
   citySrc: String!
   roomSrc: String!
-  coachId: Int!
+  coachId: String!
+}
+
+input CreateGroupInput {
+  name: String!
+  coachId: String!
+  limit: Int!
+}
+
+input EditGroupInput {
+  groupId: String!
+  name: String!
+  limit: Int!
 }
 
 input CreateCoachInput {
-  userId: Int!
+  userId: String!
 }
 
 input CreateUserInput {
@@ -187,26 +215,6 @@ input CreateUserInput {
   roles: [Role!]
 }
 
-input ChangeProfilePicInput {
-  userId: Int!
-  image: Upload!
-}
-
-"""File upload scalar type"""
-scalar Upload
-
-input CreateGroupInput {
-  name: String!
-  coachId: Int!
-  limit: Int!
-}
-
-input EditGroupInput {
-  groupId: Int!
-  name: String!
-  limit: Int!
-}
-
 input RegisterUserInput {
   firstName: String!
   lastName: String!
@@ -215,42 +223,62 @@ input RegisterUserInput {
   roles: [Role!]
 }
 
-input LoginUserInput {
-  email: String!
+input LogInUserInput {
+  email: EmailAddress!
   password: String!
 }
 
+input AutoLogInUserInput {
+  userId: String!
+}
+
 input ChangeEmailInput {
-  id: Int!
+  id: String!
   email: EmailAddress!
 }
 
 input ChangePasswordInput {
-  id: Int!
+  id: String!
   oldPassword: String!
   newPassword: String!
+}
+
+input ChangeProfilePicInput {
+  userId: String!
+  image: Upload!
+}
+
+"""File upload scalar type"""
+scalar Upload
+
+input RefreshTokenInput {
+  refreshToken: String!
 }
 
 input CreateExerciseInput {
   day: LocalDate!
   start: LocalTime!
   end: LocalTime!
-  groupId: Int!
+  groupId: String!
 }
 
 input EditExerciseInput {
-  exerciseId: Int!
+  exerciseId: String!
   day: LocalDate!
   start: LocalTime!
   end: LocalTime!
 }
 
 input CreateTraineeInput {
-  userId: Int!
-  groupId: Int!
+  userId: String!
+  groupId: String!
   age: Int!
   parentName: String!
   parentPhone: PhoneNumber!
   parentEmail: EmailAddress!
   feedback: String!
+}
+
+input DeleteTraineeInput {
+  id: String!
 }

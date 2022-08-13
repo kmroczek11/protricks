@@ -6,13 +6,14 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import { Theme, styled } from "@mui/material/styles";
-import logo from "../../images/logo.jpg";
+import logo from "../../assets/logos/logo.jpg";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { CustomList, Logo } from "../lib";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import CopyrightIcon from "@mui/icons-material/Copyright";
-import { Divider } from "@mui/material";
+import { Divider, SvgIcon } from "@mui/material";
+import { ReactComponent as DiscordIcon } from "../../assets/icons/discord.svg";
 
 const txt1 = [
   { id: 1, name: "O nas" },
@@ -22,9 +23,9 @@ const txt1 = [
 ];
 
 const txt2 = [
-  { id: 1, name: "4746 Tipple Road Michigan 48449" },
-  { id: 2, name: "Mobile : 1.800.000.0000" },
-  { id: 3, name: "Email : info@your-company.com" },
+  { id: 1, name: "Ernest Jędrzejek" },
+  { id: 2, name: "Telefon: +48 123 123 123" },
+  { id: 3, name: "Email: kontakt@protricks.pl" },
 ];
 
 const ButtonBox = styled(Box)(({ theme }) => ({
@@ -50,13 +51,12 @@ const Footer: React.FC = () => {
           </Typography>
           <ButtonBox justifyContent="center" alignItems="center">
             <IconButton>
-              <FacebookIcon />
-            </IconButton>
-            <IconButton>
               <InstagramIcon />
             </IconButton>
             <IconButton>
-              <YouTubeIcon />
+              <SvgIcon>
+                <DiscordIcon />
+              </SvgIcon>
             </IconButton>
           </ButtonBox>
         </Grid>
@@ -66,7 +66,7 @@ const Footer: React.FC = () => {
           md={4}
           sx={{ display: "flex", justifyContent: "center" }}
         >
-          <CustomList
+          {/* <CustomList
             items={txt1}
             variant="secondary"
             title="LINKI"
@@ -75,7 +75,7 @@ const Footer: React.FC = () => {
                 <ArrowRightIcon />
               </ListItemIcon>
             }
-          />
+          /> */}
         </Grid>
         <Grid
           item

@@ -2,9 +2,9 @@ import { InputType, Field, Int } from '@nestjs/graphql';
 
 @InputType()
 export class EditGroupInput {
-  @Field(() => Int)
-  groupId: number;
-  
+  @Field()
+  groupId: string;
+
   @Field()
   name: string;
 

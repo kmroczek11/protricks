@@ -1,6 +1,7 @@
+import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { ChangeProfilePicResponse } from './dto/change-profile-pic-response';
-import { ChangeProfilePicInput } from './dto/change-profile-pic.input';
+import { Public } from 'src/auth/decorators/public.decorator';
+import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
 import { CreateUserInput } from './dto/create-user.input';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
@@ -24,12 +25,5 @@ export class UsersResolver {
   @Query(() => User)
   findOne(@Args('email') email: string): Promise<User> {
     return this.usersService.findOneByEmail(email);
-  }
-
-  @Mutation(() => ChangeProfilePicResponse)
-  changeProfilePic(
-    @Args('changeProfilePicInput') changeProfilePicInput: ChangeProfilePicInput,
-  ) {
-    return this.usersService.changeProfilePic(changeProfilePicInput);
   }
 }

@@ -1,52 +1,85 @@
-import { UseGuards } from '@nestjs/common';
-import { Args, Context, Mutation, Resolver, Query } from '@nestjs/graphql';
-import { User } from '../users/entities/user.entity';
+import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
-import { ChangeEmailResponse } from './dto/change-email-response';
-import { LoginResponse } from './dto/login-response';
-import { LoginUserInput } from './dto/login-user.input';
-import { ChangeEmailInput } from './dto/change-email.input';
-import { RegisterResponse } from './dto/register-response';
-import { RegisterUserInput } from './dto/register-user.input';
-import { LocalAuthGuard } from './guards/local-auth.guard';
-import { ChangePasswordResponse } from './dto/change-password-response';
-import { ChangePasswordInput } from './dto/change-password.input';
-import { Public } from './guards/public.guard';
+import { ChangeEmailResponse } from './responses/change-email-response';
+import { LogInResponse } from './responses/logIn-response';
+import { ChangeEmailInput } from './inputs/change-email.input';
+import { RegisterUserInput } from './inputs/register-user.input';
+import { ChangePasswordResponse } from './responses/change-password-response';
+import { ChangePasswordInput } from './inputs/change-password.input';
+import { Public } from './decorators/public.decorator';
+import { Roles } from './decorators/roles.decorator';
+import { Role } from 'src/users/entities/role.enum';
+import { ChangeProfilePicResponse } from './responses/change-profile-pic-response';
+import { ChangeProfilePicInput } from './inputs/change-profile-pic.input';
+import { LogOutResponse } from './responses/logOut-response';
+import { LogInUserInput } from './inputs/logIn-user.input';
+import { LogInAuthGuard } from './guards/logIn-auth.guard';
+import { UseGuards } from '@nestjs/common';
+import { AutoLogInGuard } from './guards/autoLogIn-auth.guard';
+import { AutoLogInUserInput } from './inputs/autoLogIn-user.input';
+import { CurrentUser } from './decorators/user.decorator';
+import { User } from 'src/users/entities/user.entity';
 
 @Resolver()
 export class AuthResolver {
   constructor(private authService: AuthService) {}
 
-  @Mutation(() => RegisterResponse)
+  @Mutation(() => LogInResponse)
   @Public()
   registerUser(
     @Args('registerUserInput') registerUserInput: RegisterUserInput,
-  ): Promise<RegisterResponse> {
+  ): Promise<LogInResponse> {
     return this.authService.register(registerUserInput);
   }
 
-  @Mutation(() => LoginResponse)
-  @UseGuards(LocalAuthGuard)
+  @Mutation(() => LogInResponse)
+  @UseGuards(LogInAuthGuard)
   @Public()
-  loginUser(
-    @Args('loginUserInput') loginUserInput: LoginUserInput,
+  logInUser(
+    @Args('logInUserInput') logInUserInput: LogInUserInput,
     @Context() context,
   ) {
-    return this.authService.login(context.user);
+    return this.authService.logIn(context.user);
+  }
+
+  @Mutation(() => LogInResponse)
+  @Public()
+  @UseGuards(AutoLogInGuard)
+  autoLogInUser(
+    @Args('autoLogInUserInput') autoLogInUserInput: AutoLogInUserInput,
+    @CurrentUser() user: User,
+  ) {
+    console.log('autoLogin')
+    return this.authService.logIn(user);
+  }
+
+  @Mutation(() => LogOutResponse)
+  @Roles(Role.USER)
+  logOutUser(
+    @CurrentUser() user: User,
+  ): Promise<LogOutResponse> {
+    return this.authService.logOut(user);
   }
 
   @Mutation(() => ChangeEmailResponse)
-  changeEmail(
-    @Args('changeEmailInput') changeEmailInput: ChangeEmailInput,
-  ) {
+  @Roles(Role.USER)
+  changeEmail(@Args('changeEmailInput') changeEmailInput: ChangeEmailInput) {
     return this.authService.changeEmail(changeEmailInput);
   }
 
   @Mutation(() => ChangePasswordResponse)
-  @Public()
+  @Roles(Role.USER)
   changePassword(
     @Args('changePasswordInput') changePasswordInput: ChangePasswordInput,
   ) {
     return this.authService.changePassword(changePasswordInput);
+  }
+
+  @Mutation(() => ChangeProfilePicResponse)
+  @Roles(Role.USER)
+  changeProfilePic(
+    @Args('changeProfilePicInput') changeProfilePicInput: ChangeProfilePicInput,
+  ) {
+    return this.authService.changeProfilePic(changeProfilePicInput);
   }
 }

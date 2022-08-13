@@ -16,9 +16,9 @@ import {
 @Entity('groups')
 @ObjectType()
 export class Group {
-  @PrimaryGeneratedColumn()
-  @Field(() => Int)
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  @Field()
+  id: string;
 
   @Column({ default: '' })
   @Field()
@@ -29,7 +29,7 @@ export class Group {
   limit: number;
 
   @Column()
-  coachId: number;
+  coachId: string;
 
   @ManyToOne(() => Coach, (coach) => coach.groups)
   coach: City;

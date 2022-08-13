@@ -27,7 +27,7 @@ export class ExercisesService {
     return this.exercisesRepository.find();
   }
 
-  getGroup(groupId: number): Promise<Group> {
+  getGroup(groupId: string): Promise<Group> {
     return this.groupsService.findOne(groupId);
   }
 
@@ -41,7 +41,7 @@ export class ExercisesService {
     };
   }
 
-  async deleteExercise(id: number) {
+  async deleteExercise(id: string) {
     this.exercisesRepository.delete(id);
 
     return {

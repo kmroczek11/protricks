@@ -5,8 +5,6 @@ import { OverridableComponent } from "@mui/material/OverridableComponent";
 import { styled } from "@mui/material/styles";
 import { SvgIconTypeMap } from "@mui/material/SvgIcon";
 import IconButton from "@mui/material/IconButton";
-import Input from "@mui/material/Input";
-import graphqlRequestClient from "../../../graphql/clients/graphqlRequestClient";
 import {
   ChangeProfilePicMutation,
   ChangeProfilePicMutationVariables,
@@ -14,7 +12,9 @@ import {
 } from "../../../generated/graphql";
 import CustomAlert from "../../lib/CustomAlert";
 import Box from "@mui/material/Box";
-import { useAuth } from "../../../context";
+import { useAuth } from "../../auth";
+import Tooltip from "@mui/material/Tooltip";
+import imageCompression from "browser-image-compression";
 
 const stringToColor = (string: string) => {
   let hash = 0;
@@ -65,12 +65,12 @@ const invalidMimeType = "Nieprawidłowy typ MIME.";
 
 const UserAvatar: React.FC<UserAvatarProps> = (props) => {
   const { name, size, imgSrc, BadgeIcon } = props;
-  const [user, setUser] = useAuth();
+  const { user, setUser, changeProfilePicClient } = useAuth();
   const [changeProfilePicStatus, setChangeProfilePicStatus] =
     useState<string>("");
 
   const { isLoading, mutate } = useChangeProfilePicMutation<Error>(
-    graphqlRequestClient(false),
+    changeProfilePicClient!,
     {
       onError: (error: Error) => {
         let err: any = {};
@@ -83,19 +83,40 @@ const UserAvatar: React.FC<UserAvatarProps> = (props) => {
         _context: unknown
       ) => {
         // queryClient.invalidateQueries('GetAllAuthors');
-        localStorage.setItem("token", data.changeProfilePic.token);
         setUser(data.changeProfilePic.user);
       },
     }
   );
 
-  const onFileChange = (e) => {
-    mutate({
-      input: {
-        userId: user?.id!,
-        image: e.target.files[0],
-      },
-    });
+  const onFileChange = async (e) => {
+    const image = e.target.files[0];
+
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+    };
+
+    try {
+      const blob = await imageCompression(image, options);
+
+      const compressedFile = new File([blob], blob.name, {
+        lastModified: new Date().getTime(),
+        type: blob.type,
+      });
+
+      mutate({
+        input: {
+          userId: user?.id!,
+          image: compressedFile,
+        },
+      });
+    } catch (error) {
+      let message;
+      if (error instanceof Error) message = error.message;
+      else message = String(error);
+      setChangeProfilePicStatus(message);
+    }
   };
 
   return isLoading ? null : (
@@ -104,14 +125,14 @@ const UserAvatar: React.FC<UserAvatarProps> = (props) => {
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
       }}
     >
       <Badge
         overlap="circular"
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         badgeContent={
-          <React.Fragment>
+          <Tooltip title="Zmień zdjęcie profilowe">
             <SmallIconButton color="secondary" component="label">
               {BadgeIcon && <BadgeIcon />}
               <input
@@ -122,16 +143,28 @@ const UserAvatar: React.FC<UserAvatarProps> = (props) => {
                 hidden
               />
             </SmallIconButton>
-          </React.Fragment>
+          </Tooltip>
         }
       >
         <Avatar
-          src={imgSrc ? `${process.env.REACT_APP_ENDPOINT}/uploads/${imgSrc}` : undefined}
+          src={
+            imgSrc
+              ? `${process.env.REACT_APP_ENDPOINT}/uploads/${imgSrc}`
+              : undefined
+          }
           sx={{
             bgcolor: stringToColor(name),
             ...(size === "small" && { width: 50, height: 50, fontSize: 20 }),
-            ...(size === "medium" && { width: 100, height: 100, fontSize: 40 }),
-            ...(size === "large" && { width: 300, height: 300, fontSize: 60 }),
+            ...(size === "medium" && {
+              width: 100,
+              height: 100,
+              fontSize: 40,
+            }),
+            ...(size === "large" && {
+              width: 300,
+              height: 300,
+              fontSize: 60,
+            }),
           }}
           children={`${name.split(" ")[0][0]}${name.split(" ")[1][0]}`}
         />

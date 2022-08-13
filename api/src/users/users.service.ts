@@ -1,24 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { createWriteStream } from 'fs';
 import { Repository } from 'typeorm';
-import { ChangeProfilePicInput } from './dto/change-profile-pic.input';
 import { CreateUserInput } from './dto/create-user.input';
 import { Role } from './entities/role.enum';
 import { User } from './entities/user.entity';
-import { ChangeProfilePicResponse } from './dto/change-profile-pic-response';
-import { JwtService } from '@nestjs/jwt';
-import { FileUpload } from 'graphql-upload';
-import { HttpException, HttpStatus } from '@nestjs/common';
-import { join } from 'path';
-import { removeFile, saveImage } from './helpers/image-storage';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private readonly usersRepository: Repository<User>,
-    private readonly jwtService: JwtService,
+    private readonly usersRepository: Repository<User>
   ) {}
 
   createUser(createUserInput: CreateUserInput): Promise<User> {
@@ -35,48 +26,26 @@ export class UsersService {
     return this.usersRepository.findOne({ email }, options);
   }
 
-  findOneById(id: number, options?: any): Promise<User> {
+  findOneById(id: string, options?: any): Promise<User> {
     return this.usersRepository.findOne(id, options);
   }
 
-  async addRole(id: number, role: Role) {
+  async addRole(id: string, role: Role) {
     const user = await this.usersRepository.findOne(id);
 
     return this.usersRepository.update(id, { roles: [...user.roles, role] });
   }
 
-  async update(id: number, data: any) {
-    await this.usersRepository.update(id, data);
-    return this.usersRepository.findOne(id);
+  async deleteRole(id: string, role: Role) {
+    const user = await this.usersRepository.findOne(id);
+
+    return this.usersRepository.update(id, {
+      roles: user.roles.filter((r) => r !== role),
+    });
   }
 
-  async changeProfilePic(changeProfilePicInput: ChangeProfilePicInput) {
-    const { userId, image } = changeProfilePicInput;
-
-    const imageData: FileUpload = await image;
-
-    if (!imageData) {
-      throw new HttpException(
-        'No file provided',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    const user = await this.usersRepository.findOne(userId);
-
-    if (user.imgSrc) {
-      await removeFile(user.imgSrc);
-    }
-
-    const filePath = await saveImage(imageData, 'users');
-
-    const updatedUser = await this.update(userId, { imgSrc: filePath });
-
-    const { password, ...payload } = updatedUser;
-
-    return {
-      token: this.jwtService.sign({ user: payload }),
-      user: payload,
-    };
+  async update(property: any, data: any) {
+    await this.usersRepository.update(property, data);
+    return this.usersRepository.findOne(property);
   }
 }

@@ -8,6 +8,8 @@ import {
   Query,
 } from '@nestjs/graphql';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Public } from 'src/auth/decorators/public.decorator';
+import { City } from 'src/cities/entities/city.entity';
 import { Role } from 'src/users/entities/role.enum';
 import { User } from 'src/users/entities/user.entity';
 import { CoachesService } from './coaches.service';
@@ -26,14 +28,25 @@ export class CoachesResolver {
     return this.coachesService.createCoach(createCoachInput);
   }
 
+  @Query(() => [Coach])
+  @Public()
+  coaches(): Promise<Coach[]> {
+    return this.coachesService.findAll();
+  }
+
   @ResolveField(() => User)
   user(@Parent() coach: Coach): Promise<User> {
     return this.coachesService.getUser(coach.userId);
   }
 
+  @ResolveField(() => City)
+  city(@Parent() coach: Coach): Promise<City> {
+    return this.coachesService.getCity(coach.cityId);
+  }
+
   @Query(() => Coach)
   @Roles(Role.COACH)
-  getCoach(@Args('id', { type: () => Int }) id: number): Promise<Coach> {
-    return this.coachesService.findOne(id);
+  getCoach(@Args('id') id: string): Promise<Coach> {
+    return this.coachesService.getCoach(id);
   }
 }

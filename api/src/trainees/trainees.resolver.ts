@@ -13,6 +13,8 @@ import { Role } from 'src/users/entities/role.enum';
 import { User } from 'src/users/entities/user.entity';
 import { CreateTraineeResponse } from './dto/create-trainee-response';
 import { CreateTraineeInput } from './dto/create-trainee.input';
+import { DeleteTraineeResponse } from './dto/delete-trainee-response';
+import { DeleteTraineeInput } from './dto/delete-trainee.input';
 import { Trainee } from './entities/trainee.entity';
 import { TraineesService } from './trainees.service';
 
@@ -26,6 +28,14 @@ export class TraineesResolver {
     @Args('createTraineeInput') createTraineeInput: CreateTraineeInput,
   ): Promise<CreateTraineeResponse> {
     return this.traineesService.createTrainee(createTraineeInput);
+  }
+
+  @Mutation(() => DeleteTraineeResponse)
+  @Roles(Role.COACH)
+  deleteTrainee(
+    @Args('deleteTraineeInput') deleteTraineeInput: DeleteTraineeInput,
+  ): Promise<DeleteTraineeResponse> {
+    return this.traineesService.deleteTrainee(deleteTraineeInput);
   }
 
   @Query(() => [Trainee])
@@ -46,7 +56,7 @@ export class TraineesResolver {
 
   @Query(() => Trainee)
   @Roles(Role.TRAINEE)
-  getTrainee(@Args('id', { type: () => Int }) id: number): Promise<Trainee> {
-    return this.traineesService.findOne(id);
+  getTrainee(@Args('id') id: string): Promise<Trainee> {
+    return this.traineesService.getTrainee(id);
   }
 }

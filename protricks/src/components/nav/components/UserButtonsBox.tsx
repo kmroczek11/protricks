@@ -8,20 +8,74 @@ import UserDialog from "../../auth/components/UserDialog";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
-import { Role } from "../../../generated/graphql";
+import {
+  LogOutUserMutation,
+  LogOutUserMutationVariables,
+  Role,
+  useLogOutUserMutation,
+} from "../../../generated/graphql";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import CustomAvatar from "../../lib/CustomAvatar";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../../context";
+import { useAuth } from "../../auth";
+import CustomDialog from "../../lib/CustomDialog";
+import Paper from "@mui/material/Paper";
+import MenuList from "@mui/material/MenuList";
+import ListItemText from "@mui/material/ListItemText";
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
+import Drawer from "@mui/material/Drawer";
+import { NavItemsObject } from "../../../routes";
+import Toolbar from "@mui/material/Toolbar";
+import Link from "@mui/material/Link";
 
-const UserButtonsBox: React.FC = () => {
+interface UserButtonsBoxProps {
+  items: NavItemsObject[];
+}
+
+const errorMessage =
+  "Wystąpił nieoczekiwany błąd. Skontaktuj się z administratorem strony.";
+
+const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
+  const { items } = props;
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-  const [user, setUser] = useAuth();
+  const { user, accessClient, setUser } = useAuth();
   const navigate = useNavigate();
+  const [logoutStatus, setLogoutStatus] = useState<string>("");
+  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
+
+  const handleDrawerOpen = () => {
+    setDrawerOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setDrawerOpen(false);
+  };
+
+  const { isLoading, mutate: logOut } = useLogOutUserMutation<Error>(
+    accessClient!,
+    {
+      onError: (error: Error) => {
+        let err: any = {};
+        err.data = error;
+        setLogoutStatus(err?.data?.response.errors[0].message);
+      },
+      onSuccess: (
+        data: LogOutUserMutation,
+        _variables: LogOutUserMutationVariables,
+        _context: unknown
+      ) => {
+        // queryClient.invalidateQueries('GetAllAuthors');
+        localStorage.removeItem(process.env.REACT_APP_REFRESH_TOKEN_SECRET!);
+        localStorage.removeItem(process.env.REACT_APP_ACCESS_TOKEN_SECRET!);
+        setUser(null);
+      },
+    }
+  );
 
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -39,16 +93,11 @@ const UserButtonsBox: React.FC = () => {
     setAnchorElUser(null);
   };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    setUser(null);
-  };
-
   return (
     <Box
       sx={{
         flexGrow: 0,
-        flexDirection: { xs: "column", md: "row" },
+        flexDirection: "row",
         justifyContext: "space-between",
         alignItems: "center",
         display: "flex",
@@ -59,6 +108,7 @@ const UserButtonsBox: React.FC = () => {
           color="secondary"
           variant="contained"
           sx={{ display: { xs: "none", md: "block" } }}
+          onClick={() => navigate("/zajecia#zarejestruj")}
         >
           Zapisz się na zajęcia
         </ColorButton>
@@ -77,10 +127,7 @@ const UserButtonsBox: React.FC = () => {
               <CustomAvatar
                 name={`${user.firstName} ${user.lastName}`}
                 size="small"
-                imgSrc={
-                  user.imgSrc &&
-                  `${process.env.REACT_APP_ENDPOINT}/uploads/${user.imgSrc}`
-                }
+                imgSrc={user.imgSrc!}
               />
             </IconButton>
           </Tooltip>
@@ -115,33 +162,86 @@ const UserButtonsBox: React.FC = () => {
                 Ustawienia
               </MenuItem>
             )}
-            {user.roles.includes(Role.Trainee) && (
-              <MenuItem onClick={() => navigate("/uczen")}>
-                <ListItemIcon>
-                  <ListAltIcon fontSize="small" />
-                </ListItemIcon>
-                Moje zajęcia
-              </MenuItem>
-            )}
             {user.roles.includes(Role.Coach) && (
-              <MenuItem onClick={() => navigate("/trener")}>
+              <MenuItem onClick={() => navigate("/trener/zarzadzanie_grupami")}>
                 <ListItemIcon>
                   <AddTaskIcon fontSize="small" />
                 </ListItemIcon>
                 Ustal zajęcia
               </MenuItem>
             )}
-            <MenuItem
-              onClick={handleCloseUserMenu}
-              sx={{ justifyContent: "center" }}
-            >
-              <ColorButton variant="contained" color="error" onClick={logout}>
+            {user.roles.includes(Role.Coach) && (
+              <MenuItem onClick={() => navigate("/trener/zajecia")}>
+                <ListItemIcon>
+                  <ListAltIcon fontSize="small" />
+                </ListItemIcon>
+                Moje zajęcia
+              </MenuItem>
+            )}
+            {user.roles.includes(Role.Trainee) && (
+              <MenuItem onClick={() => navigate("/uczen/zajecia")}>
+                <ListItemIcon>
+                  <ListAltIcon fontSize="small" />
+                </ListItemIcon>
+                Moje zajęcia
+              </MenuItem>
+            )}
+            <MenuItem sx={{ justifyContent: "center" }}>
+              <ColorButton
+                variant="contained"
+                color="error"
+                onClick={() => logOut({})}
+              >
                 Wyloguj
               </ColorButton>
             </MenuItem>
           </Menu>
+          {logoutStatus && (
+            <CustomDialog
+              title="Nieoczekiwany błąd"
+              content={errorMessage}
+              onClose={() => setLogoutStatus("")}
+            />
+          )}
         </React.Fragment>
       )}
+      <IconButton
+        color="inherit"
+        aria-label="open drawer"
+        edge="end"
+        onClick={drawerOpen ? handleDrawerClose : handleDrawerOpen}
+        sx={{ display: { xs: "block", md: "none" } }}
+      >
+        {drawerOpen ? <CloseIcon /> : <MenuIcon />}
+      </IconButton>
+      <Drawer
+        variant="temporary"
+        anchor="top"
+        open={drawerOpen}
+        sx={{
+          [`& .MuiDrawer-paper`]: { boxSizing: "border-box" },
+        }}
+      >
+        <Paper>
+          <Toolbar />
+          <MenuList>
+            {items.map(({ name, path }, i) => (
+              <Link
+                key={i}
+                href={path}
+                underline="none"
+                color="primary.contrastText"
+              >
+                <MenuItem>
+                  <ListItemText sx={{ textAlign: "center" }}>
+                    {name}
+                  </ListItemText>
+                </MenuItem>
+              </Link>
+            ))}
+          </MenuList>
+        </Paper>
+      </Drawer>
     </Box>
   );
 };

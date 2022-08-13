@@ -14,6 +14,6 @@ export class CreateCityInput {
   @Field()
   roomSrc: string;
 
-  @Field(() => Int)
-  coachId: number;
+  @Field()
+  coachId: string;
 }

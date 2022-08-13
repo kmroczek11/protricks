@@ -14,10 +14,10 @@ import EmailForm from "./components/EmailForm";
 import PasswordForm from "./components/PasswordForm";
 import EditIcon from "@mui/icons-material/Edit";
 import UserAvatar from "./components/UserAvatar";
-import { useAuth } from "../../context";
+import { useAuth } from "../auth";
 
 const UserPanel: React.FC = () => {
-  const [user, setUser] = useAuth();
+  const { user } = useAuth();
   const fullName = `${user?.firstName} ${user?.lastName}`;
   const items = [
     { name: "Email", value: user?.email },
