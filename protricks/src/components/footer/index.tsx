@@ -14,6 +14,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import CopyrightIcon from "@mui/icons-material/Copyright";
 import { Divider, SvgIcon } from "@mui/material";
 import { ReactComponent as DiscordIcon } from "../../assets/icons/discord.svg";
+import Tooltip from "@mui/material/Tooltip";
 
 const txt1 = [
   { id: 1, name: "O nas" },
@@ -46,18 +47,31 @@ const Footer: React.FC = () => {
             align="center"
             gutterBottom
           >
-            Protricks jest firmą związana z akrobatyką działającą na terenie
-            Krakowa i okolic
+            Masz pytania? Napisz do nas na
+            <br />
+            <a href="mailto:kontakt@protricks.pl">kontakt@protricks.pl</a>
+            <br />
+            <br />
+            Nasze social media
           </Typography>
           <ButtonBox justifyContent="center" alignItems="center">
+          <Tooltip title="Kliknij, aby otworzyć Facebook"><IconButton>
+              <FacebookIcon />
+            </IconButton></Tooltip>
+            <Tooltip title="Kliknij, aby otworzyć YouTube"><IconButton>
+              <YouTubeIcon />
+            </IconButton></Tooltip>
+          <Tooltip title="Kliknij, aby otworzyć Instagram">
             <IconButton>
               <InstagramIcon />
             </IconButton>
-            <IconButton>
+            </Tooltip>
+            <Tooltip title="Kliknij, aby otworzyć Discord"><IconButton>
               <SvgIcon>
                 <DiscordIcon />
               </SvgIcon>
-            </IconButton>
+            </IconButton></Tooltip>
+            
           </ButtonBox>
         </Grid>
         <Grid

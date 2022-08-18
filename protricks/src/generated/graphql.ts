@@ -377,7 +377,6 @@ export type RefreshTokenResponse = {
   __typename?: 'RefreshTokenResponse';
   accessToken: Scalars['String'];
   expiresIn: Scalars['Float'];
-  refreshToken: Scalars['String'];
 };
 
 export type RegisterUserInput = {

@@ -19,9 +19,13 @@ const txt1 = {
 };
 
 const data1 = [
-  { id: 1, name: "Freerunning", imgSrc: "/static/images/home/cards/1.jpg" },
-  { id: 2, name: "Tumbling", imgSrc: "/static/images/home/cards/1.jpg" },
-  { id: 3, name: "Tricking", imgSrc: "/static/images/home/cards/1.jpg" },
+  {
+    id: 1,
+    name: "Freerunning",
+    imgSrc: "/static/images/home/cards/freerunning.jpg",
+  },
+  { id: 2, name: "Tumbling", imgSrc: "/static/images/home/cards/tumbling.jpg" },
+  { id: 3, name: "Tricking", imgSrc: "/static/images/home/cards/tricking.jpg" },
 ];
 
 const txt2 = {
@@ -72,7 +76,11 @@ const Home: React.FC = () => {
         <Container>
           <PhotoCards
             items={data1}
-            sxRoot={{ position: "relative", top: "-100px" }}
+            sxRoot={{
+              position: "relative",
+              top: "-100px",
+              filter: "grayscale(80%)",
+            }}
           />
         </Container>
         <TextBlock texts={txt2} variant="secondary" />
@@ -80,10 +88,7 @@ const Home: React.FC = () => {
       <Container sx={{ backgroundColor: "primary", py: 15 }}>
         <IconCards data={data2} />
       </Container>
-      <ImageBlock
-        imgSrc={imgUrl}
-        secondImgSrc={secondImgUrl}
-      >
+      <ImageBlock imgSrc={imgUrl} secondImgSrc={secondImgUrl}>
         <TextBlock texts={txt3} variant="secondary" />
       </ImageBlock>
     </React.Fragment>

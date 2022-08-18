@@ -126,7 +126,6 @@ type LogOutResponse {
 type RefreshTokenResponse {
   expiresIn: Float!
   accessToken: String!
-  refreshToken: String!
 }
 
 type CreateExerciseResponse {

@@ -7,8 +7,6 @@ import EditExerciseForm from "./EditExerciseForm";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CustomDialog from "../../../lib/CustomDialog";
 import { useDeleteExerciseMutation } from "../../../../generated/graphql";
-import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
-import * as XLSX from "xlsx";
 import Tooltip from "@mui/material/Tooltip";
 import { useAuth } from "../../../auth";
 
@@ -32,32 +30,16 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
   const [openEditExercise, setOpenEditExercise] = useState(false);
   const [openDeleteExercise, setOpenDeleteExercise] = useState(false);
 
-  const handleExport = () => {
-    const wb = XLSX.utils.book_new(),
-      ws = XLSX.utils.aoa_to_sheet(data);
-
-    XLSX.utils.book_append_sheet(wb, ws, "MySheet1");
-
-    XLSX.writeFile(wb, `Lista obecności ${convertToPlDate(day)}.xlsx`);
-  };
+  const { isLoading, mutate } = useDeleteExerciseMutation<Error>(
+    accessClient!,
+    {}
+  );
 
   const convertToPlDate = (d: any) => new Date(d).toLocaleDateString("pl-pl");
-
-  const { isLoading, mutate } = useDeleteExerciseMutation<Error>(accessClient!, {});
 
   const getTimeWithoutMiliseconds = (t: string) => {
     return t.slice(0, -3);
   };
-
-  const data = [
-    [convertToPlDate(day), "Lp.", "Imię", "Nazwisko", "Obecny"],
-    ...trainees?.map(({ user }, i) => [
-      "",
-      ++i,
-      user.firstName,
-      user.lastName,
-    ])!,
-  ];
 
   return (
     <React.Fragment>
@@ -87,14 +69,6 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
               onClick={() => setOpenDeleteExercise(!openDeleteExercise)}
             >
               <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Eksportuj listę obecności">
-            <IconButton
-              aria-label="export-attendance-list"
-              onClick={handleExport}
-            >
-              <FormatListNumberedIcon />
             </IconButton>
           </Tooltip>
         </StyledTableCell>

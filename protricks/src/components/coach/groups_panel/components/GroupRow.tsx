@@ -22,6 +22,8 @@ import Tooltip from "@mui/material/Tooltip";
 import GroupIcon from "@mui/icons-material/Group";
 import ManageMembersDialog from "./ManageMembersDialog";
 import { useAuth } from "../../../auth";
+import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
+import * as XLSX from "xlsx";
 
 interface RowProps {
   item: {
@@ -63,6 +65,48 @@ const GroupRow: React.FC<RowProps> = (props) => {
 
   const handleDialogClose = () => {
     setOpenManageMembersDialog(false);
+  };
+
+  const convertToPlDate = (d: any) => new Date(d).toLocaleDateString("pl-pl");
+
+  const getTimeWithoutMiliseconds = (t: string) => {
+    return t.slice(0, -3);
+  };
+
+  const data = [
+    ...exercises?.slice(0, 4).map(
+      ({ day, start, end }) =>
+        trainees?.map(({ user }, i) =>
+          i == 0
+            ? {
+                Dzień: convertToPlDate(day),
+                Godzina: `${getTimeWithoutMiliseconds(
+                  start
+                )} - ${getTimeWithoutMiliseconds(end)}`,
+                "Lp.": ++i,
+                Imię: user.firstName,
+                Nazwisko: user.lastName,
+                Obecny: "",
+              }
+            : {
+                Dzień: "",
+                Godzina: "",
+                "Lp.": ++i,
+                Imię: user.firstName,
+                Nazwisko: user.lastName,
+                Obecny: "",
+              }
+        )!
+    )!,
+  ];
+
+  const handleExport = () => {
+    const wb = XLSX.utils.book_new(),
+      ws = XLSX.utils.json_to_sheet(data.flat());
+
+    XLSX.utils.book_append_sheet(wb, ws, "MySheet1");
+
+    XLSX.writeFile(wb, `Lista obecności.xlsx`);
   };
 
   return (
@@ -113,6 +157,14 @@ const GroupRow: React.FC<RowProps> = (props) => {
               onClick={() => setOpenManageMembersDialog(true)}
             >
               <GroupIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Eksportuj listę obecności">
+            <IconButton
+              aria-label="export-attendance-list"
+              onClick={handleExport}
+            >
+              <FormatListNumberedIcon />
             </IconButton>
           </Tooltip>
           <ManageMembersDialog

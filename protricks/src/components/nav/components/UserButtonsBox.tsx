@@ -115,9 +115,11 @@ const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
       )}
       {!user ? (
         <React.Fragment>
-          <IconButton onClick={handleDialogOpen}>
-            <PersonIcon />
-          </IconButton>
+          <Tooltip title="Kliknij, aby się zalogować">
+            <IconButton onClick={handleDialogOpen}>
+              <PersonIcon />
+            </IconButton>
+          </Tooltip>
           <UserDialog open={dialogOpen} handleClose={handleDialogClose} />
         </React.Fragment>
       ) : (

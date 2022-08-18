@@ -8,7 +8,4 @@ export class RefreshTokenResponse {
 
   @Field()
   accessToken: string;
-
-  @Field()
-  refreshToken: string;
 }

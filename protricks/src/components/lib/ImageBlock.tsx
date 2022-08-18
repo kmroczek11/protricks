@@ -15,7 +15,7 @@ const ImageBlockRoot = styled("section")(({ theme }) => ({
   },
 
   [theme.breakpoints.up("md")]: {
-    height: "75vh",
+    height: "80vh",
   },
 }));
 

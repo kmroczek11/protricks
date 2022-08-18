@@ -8,6 +8,8 @@ import TraineeExercisesPanel from "./components/trainee/trainee_exercises_panel"
 import Protected from "./components/auth/components/Protected";
 import { Role } from "./generated/graphql";
 import CoachExercisesPanel from "./components/coach/coach_exercises";
+import Shows from "./components/shows";
+import Meetings from "./components/meetings";
 
 export interface NavItemsObject {
   id: number;
@@ -46,6 +48,14 @@ export const routes: RouteObject[] = [
         //   { index: true, element: <Cities /> },
         //   { path: '/zajecia/:id', element: <City /> },
         // ],
+      },
+      {
+        path: "/zloty",
+        element: <Meetings />,
+      },
+      {
+        path: "/pokazy",
+        element: <Shows />,
       },
       {
         path: "/ustawienia",
