@@ -53,7 +53,7 @@ import { TokensModule } from './tokens/tokens.module';
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DATABASE,
       autoLoadEntities: true,
-      synchronize: true, // shouldn't be used in production - may lose data
+      synchronize: process.env.NODE_ENV === 'development' ? true : false, // shouldn't be used in production - may lose data
     }),
     CitiesModule,
     GroupsModule,
