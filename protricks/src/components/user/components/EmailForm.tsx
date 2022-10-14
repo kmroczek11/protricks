@@ -1,6 +1,6 @@
 import { useState } from "react";
 import TextField from "@mui/material/TextField";
-import { ColorButton } from "../../lib";
+import { ColorButton, CustomAlert, LoadingScreen } from "../../lib";
 import Box from "@mui/material/Box";
 import {
   useChangeEmailMutation,
@@ -8,14 +8,14 @@ import {
   ChangeEmailMutationVariables,
 } from "../../../generated/graphql";
 import { useAuth } from "../../auth";
-import LoadingScreen from "../../lib/LoadingScreen";
-import CustomAlert from "../../lib/CustomAlert";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 
 const defaultValues = {
   newEmail: "",
 };
+
+const successMessage = "E-mail został zmieniony.";
 
 const EmailForm: React.FC = () => {
   const { user, setUser, accessClient } = useAuth();
@@ -38,6 +38,7 @@ const EmailForm: React.FC = () => {
         data.changeEmail.refreshToken
       );
       setUser(data.changeEmail.user);
+      setChangeEmailStatus("Success");
     },
   });
 
@@ -112,8 +113,12 @@ const EmailForm: React.FC = () => {
                   Zmień
                 </ColorButton>
               </Box>
-              {changeEmailStatus && (
-                <CustomAlert severity="error" msg="Nieoczekiwany błąd." />
+              {changeEmailStatus === "Success" ? (
+                <CustomAlert severity="success" msg={successMessage} />
+              ) : (
+                changeEmailStatus && (
+                  <CustomAlert severity="error" msg="Nieoczekiwany błąd." />
+                )
               )}
             </Box>
           </Form>

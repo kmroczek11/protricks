@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Badge from "@mui/material/Badge";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
@@ -10,11 +10,11 @@ import {
   ChangeProfilePicMutationVariables,
   useChangeProfilePicMutation,
 } from "../../../generated/graphql";
-import CustomAlert from "../../lib/CustomAlert";
 import Box from "@mui/material/Box";
 import { useAuth } from "../../auth";
 import Tooltip from "@mui/material/Tooltip";
 import imageCompression from "browser-image-compression";
+import { CustomAlert } from "../../lib";
 
 const stringToColor = (string: string) => {
   let hash = 0;
@@ -147,11 +147,7 @@ const UserAvatar: React.FC<UserAvatarProps> = (props) => {
         }
       >
         <Avatar
-          src={
-            imgSrc
-              ? `${process.env.REACT_APP_ENDPOINT}/uploads/${imgSrc}`
-              : undefined
-          }
+          src={imgSrc}
           sx={{
             bgcolor: stringToColor(name),
             ...(size === "small" && { width: 50, height: 50, fontSize: 20 }),

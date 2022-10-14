@@ -17,11 +17,12 @@ query GetCoach($id: String!) {
       }
       trainees {
         id
-        age
-        parentName
+        birthDate
+        traineeName
         parentPhone
         parentEmail
         feedback
+        status
         user {
           id
           firstName

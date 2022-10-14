@@ -1,6 +1,7 @@
 query GetTrainee($id: String!) {
   getTrainee(id: $id) {
     id
+    status
     group {
       id
       name

@@ -1,7 +1,7 @@
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { IconButton } from "@mui/material";
-import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
 import { Document, Page } from "react-pdf/dist/esm/entry.webpack";
@@ -34,67 +34,85 @@ const Paperwork: React.FC<PaperworkProps> = (props) => {
   };
 
   return visible ? (
-    <Box>
-      <Typography variant="h2" color="primary.main" align="center" gutterBottom>
-        W tym kroku należy pobrać, wydrukować, wypełnić, zeskanować i odesłać
-        wzór umowy zawarty
-        <a href="/static/documents/umowa.pdf" download>
-          pod tym linkiem
-        </a>na adres
-        <a href="mailto:kontakt@protricks.pl">kontakt@protricks.pl</a>.
-        Następnie zaznajomić się z regulaminem:
-      </Typography>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-
-          "&& .react-pdf__Page__canvas": {
-            width: "100% !important",
-          },
-        }}
-      >
-        <Document
-          file={file}
-          onLoadSuccess={onDocumentLoadSuccess}
-          options={options}
+    <Grid container justifyContent="center" alignItems="center">
+      <Grid item xs={12}>
+        <Typography
+          variant="h2"
+          color="primary.main"
+          align="center"
+          gutterBottom
         >
-          <Page pageNumber={pageNumber} />
-        </Document>
-        <ButtonGroup disableElevation>
-          <IconButton
-            color="primary"
-            onClick={() => setPageNumber(pageNumber - 1)}
-            disabled={pageNumber == 1}
+          W tym kroku należy zaakceptować regulamin zajęć. Jeśli po pierwszych
+          darmowym treningu uczestnik uzna, że chce chodzić na zajęcia,
+          podpisujemy krótką umowę, która dostępna jest{" "}
+          <a
+            href="/static/documents/umowa.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            <ArrowBackIosIcon />
-          </IconButton>
-          <ColorButton
-            variant="text"
-            disableElevation
-            disableRipple
-            sx={{
-              "&.MuiButtonBase-root:hover": {
-                bgcolor: "transparent",
-              },
-            }}
+            tutaj
+          </a>
+          .
+        </Typography>
+      </Grid>
+      <Grid
+        container
+        alignItems="center"
+        justifyContent="center"
+        direction="column"
+      >
+        <Grid
+          item
+          sx={{
+            "&& .react-pdf__Page__canvas": {
+              margin: "0 auto",
+              width: "80% !important",
+              height: "100% !important",
+            },
+          }}
+        >
+          <Document
+            file={file}
+            onLoadSuccess={onDocumentLoadSuccess}
+            options={options}
           >
-            Strona {pageNumber} z {numPages}
-          </ColorButton>
-          <IconButton
-            color="primary"
-            onClick={() => setPageNumber(pageNumber + 1)}
-            disabled={pageNumber == numPages}
-          >
-            <ArrowForwardIosIcon />
-          </IconButton>
-        </ButtonGroup>
-      </Box>
+            <Page pageNumber={pageNumber} />
+          </Document>
+        </Grid>
+        <Grid item>
+          <ButtonGroup disableElevation>
+            <IconButton
+              color="primary"
+              onClick={() => setPageNumber(pageNumber - 1)}
+              disabled={pageNumber == 1}
+            >
+              <ArrowBackIosIcon />
+            </IconButton>
+            <ColorButton
+              variant="text"
+              disableElevation
+              disableRipple
+              sx={{
+                "&.MuiButtonBase-root:hover": {
+                  bgcolor: "transparent",
+                },
+              }}
+            >
+              Strona {pageNumber} z {numPages}
+            </ColorButton>
+            <IconButton
+              color="primary"
+              onClick={() => setPageNumber(pageNumber + 1)}
+              disabled={pageNumber == numPages}
+            >
+              <ArrowForwardIosIcon />
+            </IconButton>
+          </ButtonGroup>
+        </Grid>
+      </Grid>
       <FormControlLabel
         label="Potwierdzam, że zapoznałem się z treścią regulaminu i akceptuję jego
-        postanowienia"
+        postanowienia."
         sx={{
           "& .MuiFormControlLabel-label, .MuiSvgIcon-root": {
             color: "primary.main",
@@ -107,12 +125,7 @@ const Paperwork: React.FC<PaperworkProps> = (props) => {
           />
         }
       />
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
+      <Grid container justifyContent="space-between">
         <ColorButton variant="outlined" color="primary" onClick={prevStep}>
           Cofnij
         </ColorButton>
@@ -124,8 +137,8 @@ const Paperwork: React.FC<PaperworkProps> = (props) => {
         >
           Zapisz
         </ColorButton>
-      </Box>
-    </Box>
+      </Grid>
+    </Grid>
   ) : null;
 };
 

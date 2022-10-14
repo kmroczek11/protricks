@@ -29,6 +29,15 @@ export type Scalars = {
   Upload: any;
 };
 
+export type AcceptToGroupInput = {
+  id: Scalars['String'];
+};
+
+export type AcceptToGroupResponse = {
+  __typename?: 'AcceptToGroupResponse';
+  msg: Scalars['String'];
+};
+
 export type AutoLogInUserInput = {
   userId: Scalars['String'];
 };
@@ -74,6 +83,7 @@ export type City = {
   id: Scalars['String'];
   mapSrc: Scalars['String'];
   name: Scalars['String'];
+  priceListSrc: Scalars['String'];
   room: Scalars['String'];
   roomSrc: Scalars['String'];
 };
@@ -81,20 +91,33 @@ export type City = {
 export type Coach = {
   __typename?: 'Coach';
   city: City;
+  facebookUrl: Scalars['String'];
   groups?: Maybe<Array<Group>>;
   id: Scalars['String'];
+  instagramUrl: Scalars['String'];
   user: User;
+};
+
+export type ConfirmContractReceiptInput = {
+  id: Scalars['String'];
+};
+
+export type ConfirmContractReceiptResponse = {
+  __typename?: 'ConfirmContractReceiptResponse';
+  msg: Scalars['String'];
 };
 
 export type CreateCityInput = {
   citySrc: Scalars['String'];
-  coachId: Scalars['String'];
+  mapSrc: Scalars['String'];
   name: Scalars['String'];
+  priceListSrc: Scalars['String'];
   room: Scalars['String'];
   roomSrc: Scalars['String'];
 };
 
 export type CreateCoachInput = {
+  cityId: Scalars['String'];
   userId: Scalars['String'];
 };
 
@@ -122,12 +145,12 @@ export type CreateGroupResponse = {
 };
 
 export type CreateTraineeInput = {
-  age: Scalars['Int'];
+  birthDate: Scalars['LocalDate'];
   feedback: Scalars['String'];
   groupId: Scalars['String'];
   parentEmail: Scalars['EmailAddress'];
-  parentName: Scalars['String'];
   parentPhone: Scalars['PhoneNumber'];
+  traineeName: Scalars['String'];
   userId: Scalars['String'];
 };
 
@@ -155,12 +178,12 @@ export type DeleteGroupResponse = {
 };
 
 export type DeleteTraineeInput = {
-  id: Scalars['String'];
+  userId: Scalars['String'];
 };
 
 export type DeleteTraineeResponse = {
   __typename?: 'DeleteTraineeResponse';
-  msg: Scalars['String'];
+  user?: Maybe<User>;
 };
 
 export type EditExerciseInput = {
@@ -195,6 +218,15 @@ export type Exercise = {
   start: Scalars['LocalTime'];
 };
 
+export type ForgotPasswordInput = {
+  email: Scalars['EmailAddress'];
+};
+
+export type ForgotPasswordResponse = {
+  __typename?: 'ForgotPasswordResponse';
+  msg: Scalars['String'];
+};
+
 export type Group = {
   __typename?: 'Group';
   coach: Coach;
@@ -203,6 +235,15 @@ export type Group = {
   limit: Scalars['Int'];
   name: Scalars['String'];
   trainees?: Maybe<Array<Trainee>>;
+};
+
+export type JoinGroupInput = {
+  id: Scalars['String'];
+};
+
+export type JoinGroupResponse = {
+  __typename?: 'JoinGroupResponse';
+  msg: Scalars['String'];
 };
 
 export type LogInResponse = {
@@ -225,10 +266,12 @@ export type LogOutResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  acceptToGroup: AcceptToGroupResponse;
   autoLogInUser: LogInResponse;
   changeEmail: ChangeEmailResponse;
   changePassword: ChangePasswordResponse;
   changeProfilePic: ChangeProfilePicResponse;
+  confirmContractReceipt: ConfirmContractReceiptResponse;
   createCity: City;
   createCoach: Coach;
   createExercise: CreateExerciseResponse;
@@ -241,10 +284,18 @@ export type Mutation = {
   deleteTrainee: DeleteTraineeResponse;
   editExercise: EditExerciseResponse;
   editGroup: EditGroupResponse;
+  forgotPassword: ForgotPasswordResponse;
+  joinGroup: JoinGroupResponse;
   logInUser: LogInResponse;
   logOutUser: LogOutResponse;
   refreshToken: RefreshTokenResponse;
   registerUser: LogInResponse;
+  sendEmailToGroup: SendEmailToGroupResponse;
+};
+
+
+export type MutationAcceptToGroupArgs = {
+  acceptToGroupInput: AcceptToGroupInput;
 };
 
 
@@ -265,6 +316,11 @@ export type MutationChangePasswordArgs = {
 
 export type MutationChangeProfilePicArgs = {
   changeProfilePicInput: ChangeProfilePicInput;
+};
+
+
+export type MutationConfirmContractReceiptArgs = {
+  confirmContractReceiptInput: ConfirmContractReceiptInput;
 };
 
 
@@ -328,6 +384,16 @@ export type MutationEditGroupArgs = {
 };
 
 
+export type MutationForgotPasswordArgs = {
+  forgotPasswordInput: ForgotPasswordInput;
+};
+
+
+export type MutationJoinGroupArgs = {
+  joinGroupInput: JoinGroupInput;
+};
+
+
 export type MutationLogInUserArgs = {
   logInUserInput: LogInUserInput;
 };
@@ -340,6 +406,11 @@ export type MutationRefreshTokenArgs = {
 
 export type MutationRegisterUserArgs = {
   registerUserInput: RegisterUserInput;
+};
+
+
+export type MutationSendEmailToGroupArgs = {
+  sendEmailToGroupInput: SendEmailToGroupInput;
 };
 
 export type Query = {
@@ -395,15 +466,37 @@ export enum Role {
   User = 'USER'
 }
 
+export type SendEmailToGroupInput = {
+  from: Scalars['EmailAddress'];
+  groupId: Scalars['String'];
+  message: Scalars['String'];
+  sender: Scalars['String'];
+  subject: Scalars['String'];
+};
+
+export type SendEmailToGroupResponse = {
+  __typename?: 'SendEmailToGroupResponse';
+  msg: Scalars['String'];
+};
+
+/** Trainee status */
+export enum Status {
+  Accepted = 'ACCEPTED',
+  AcceptedWithoutContract = 'ACCEPTED_WITHOUT_CONTRACT',
+  Expectation = 'EXPECTATION',
+  FirstTime = 'FIRST_TIME'
+}
+
 export type Trainee = {
   __typename?: 'Trainee';
-  age: Scalars['Int'];
+  birthDate: Scalars['LocalDate'];
   feedback: Scalars['String'];
   group: Group;
   id: Scalars['String'];
   parentEmail: Scalars['EmailAddress'];
-  parentName: Scalars['String'];
   parentPhone: Scalars['PhoneNumber'];
+  status: Status;
+  traineeName: Scalars['String'];
   user: User;
 };
 
@@ -451,6 +544,27 @@ export type RegisterUserMutationVariables = Exact<{
 
 export type RegisterUserMutation = { __typename?: 'Mutation', registerUser: { __typename?: 'LogInResponse', expiresIn: number, accessToken: string, refreshToken: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
 
+export type ForgotPasswordMutationVariables = Exact<{
+  input: ForgotPasswordInput;
+}>;
+
+
+export type ForgotPasswordMutation = { __typename?: 'Mutation', forgotPassword: { __typename?: 'ForgotPasswordResponse', msg: string } };
+
+export type AcceptToGroupMutationVariables = Exact<{
+  input: AcceptToGroupInput;
+}>;
+
+
+export type AcceptToGroupMutation = { __typename?: 'Mutation', acceptToGroup: { __typename?: 'AcceptToGroupResponse', msg: string } };
+
+export type ConfirmContractReceiptMutationVariables = Exact<{
+  input: ConfirmContractReceiptInput;
+}>;
+
+
+export type ConfirmContractReceiptMutation = { __typename?: 'Mutation', confirmContractReceipt: { __typename?: 'ConfirmContractReceiptResponse', msg: string } };
+
 export type CreateExerciseMutationVariables = Exact<{
   input: CreateExerciseInput;
 }>;
@@ -484,7 +598,7 @@ export type DeleteTraineeMutationVariables = Exact<{
 }>;
 
 
-export type DeleteTraineeMutation = { __typename?: 'Mutation', deleteTrainee: { __typename?: 'DeleteTraineeResponse', msg: string } };
+export type DeleteTraineeMutation = { __typename?: 'Mutation', deleteTrainee: { __typename?: 'DeleteTraineeResponse', user?: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } | null } };
 
 export type EditExerciseMutationVariables = Exact<{
   input: EditExerciseInput;
@@ -505,7 +619,14 @@ export type GetCoachQueryVariables = Exact<{
 }>;
 
 
-export type GetCoachQuery = { __typename?: 'Query', getCoach: { __typename?: 'Coach', id: string, city: { __typename?: 'City', id: string, name: string }, groups?: Array<{ __typename?: 'Group', id: string, name: string, limit: number, exercises?: Array<{ __typename?: 'Exercise', id: string, day: any, start: any, end: any }> | null, trainees?: Array<{ __typename?: 'Trainee', id: string, age: number, parentName: string, parentPhone: any, parentEmail: any, feedback: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, imgSrc: string } }> | null }> | null } };
+export type GetCoachQuery = { __typename?: 'Query', getCoach: { __typename?: 'Coach', id: string, city: { __typename?: 'City', id: string, name: string }, groups?: Array<{ __typename?: 'Group', id: string, name: string, limit: number, exercises?: Array<{ __typename?: 'Exercise', id: string, day: any, start: any, end: any }> | null, trainees?: Array<{ __typename?: 'Trainee', id: string, birthDate: any, traineeName: string, parentPhone: any, parentEmail: any, feedback: string, status: Status, user: { __typename?: 'User', id: string, firstName: string, lastName: string, imgSrc: string } }> | null }> | null } };
+
+export type SendEmailToGroupMutationVariables = Exact<{
+  input: SendEmailToGroupInput;
+}>;
+
+
+export type SendEmailToGroupMutation = { __typename?: 'Mutation', sendEmailToGroup: { __typename?: 'SendEmailToGroupResponse', msg: string } };
 
 export type CreateTraineeMutationVariables = Exact<{
   input: CreateTraineeInput;
@@ -517,14 +638,21 @@ export type CreateTraineeMutation = { __typename?: 'Mutation', createTrainee: { 
 export type GetAllCoachesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllCoachesQuery = { __typename?: 'Query', coaches: Array<{ __typename?: 'Coach', user: { __typename?: 'User', id: string, firstName: string, lastName: string, imgSrc: string }, city: { __typename?: 'City', id: string, name: string, room: string, citySrc: string, roomSrc: string, mapSrc: string }, groups?: Array<{ __typename?: 'Group', id: string, name: string }> | null }> };
+export type GetAllCoachesQuery = { __typename?: 'Query', coaches: Array<{ __typename?: 'Coach', facebookUrl: string, instagramUrl: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, imgSrc: string }, city: { __typename?: 'City', id: string, name: string, room: string, citySrc: string, roomSrc: string, mapSrc: string, priceListSrc: string }, groups?: Array<{ __typename?: 'Group', id: string, name: string, limit: number, trainees?: Array<{ __typename?: 'Trainee', id: string }> | null }> | null }> };
 
 export type GetTraineeQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type GetTraineeQuery = { __typename?: 'Query', getTrainee: { __typename?: 'Trainee', id: string, group: { __typename?: 'Group', id: string, name: string, exercises?: Array<{ __typename?: 'Exercise', id: string, day: any, start: any, end: any }> | null } } };
+export type GetTraineeQuery = { __typename?: 'Query', getTrainee: { __typename?: 'Trainee', id: string, status: Status, group: { __typename?: 'Group', id: string, name: string, exercises?: Array<{ __typename?: 'Exercise', id: string, day: any, start: any, end: any }> | null } } };
+
+export type JoinGroupMutationVariables = Exact<{
+  input: JoinGroupInput;
+}>;
+
+
+export type JoinGroupMutation = { __typename?: 'Mutation', joinGroup: { __typename?: 'JoinGroupResponse', msg: string } };
 
 export type ChangeEmailMutationVariables = Exact<{
   input: ChangeEmailInput;
@@ -678,6 +806,66 @@ export const useRegisterUserMutation = <
       (variables?: RegisterUserMutationVariables) => fetcher<RegisterUserMutation, RegisterUserMutationVariables>(client, RegisterUserDocument, variables, headers)(),
       options
     );
+export const ForgotPasswordDocument = `
+    mutation forgotPassword($input: ForgotPasswordInput!) {
+  forgotPassword(forgotPasswordInput: $input) {
+    msg
+  }
+}
+    `;
+export const useForgotPasswordMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<ForgotPasswordMutation, TError, ForgotPasswordMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<ForgotPasswordMutation, TError, ForgotPasswordMutationVariables, TContext>(
+      ['forgotPassword'],
+      (variables?: ForgotPasswordMutationVariables) => fetcher<ForgotPasswordMutation, ForgotPasswordMutationVariables>(client, ForgotPasswordDocument, variables, headers)(),
+      options
+    );
+export const AcceptToGroupDocument = `
+    mutation AcceptToGroup($input: AcceptToGroupInput!) {
+  acceptToGroup(acceptToGroupInput: $input) {
+    msg
+  }
+}
+    `;
+export const useAcceptToGroupMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<AcceptToGroupMutation, TError, AcceptToGroupMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<AcceptToGroupMutation, TError, AcceptToGroupMutationVariables, TContext>(
+      ['AcceptToGroup'],
+      (variables?: AcceptToGroupMutationVariables) => fetcher<AcceptToGroupMutation, AcceptToGroupMutationVariables>(client, AcceptToGroupDocument, variables, headers)(),
+      options
+    );
+export const ConfirmContractReceiptDocument = `
+    mutation ConfirmContractReceipt($input: ConfirmContractReceiptInput!) {
+  confirmContractReceipt(confirmContractReceiptInput: $input) {
+    msg
+  }
+}
+    `;
+export const useConfirmContractReceiptMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<ConfirmContractReceiptMutation, TError, ConfirmContractReceiptMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<ConfirmContractReceiptMutation, TError, ConfirmContractReceiptMutationVariables, TContext>(
+      ['ConfirmContractReceipt'],
+      (variables?: ConfirmContractReceiptMutationVariables) => fetcher<ConfirmContractReceiptMutation, ConfirmContractReceiptMutationVariables>(client, ConfirmContractReceiptDocument, variables, headers)(),
+      options
+    );
 export const CreateExerciseDocument = `
     mutation CreateExercise($input: CreateExerciseInput!) {
   createExercise(createExerciseInput: $input) {
@@ -761,7 +949,14 @@ export const useDeleteGroupMutation = <
 export const DeleteTraineeDocument = `
     mutation DeleteTrainee($input: DeleteTraineeInput!) {
   deleteTrainee(deleteTraineeInput: $input) {
-    msg
+    user {
+      id
+      firstName
+      lastName
+      email
+      imgSrc
+      roles
+    }
   }
 }
     `;
@@ -838,11 +1033,12 @@ export const GetCoachDocument = `
       }
       trainees {
         id
-        age
-        parentName
+        birthDate
+        traineeName
         parentPhone
         parentEmail
         feedback
+        status
         user {
           id
           firstName
@@ -866,6 +1062,26 @@ export const useGetCoachQuery = <
     useQuery<GetCoachQuery, TError, TData>(
       ['GetCoach', variables],
       fetcher<GetCoachQuery, GetCoachQueryVariables>(client, GetCoachDocument, variables, headers),
+      options
+    );
+export const SendEmailToGroupDocument = `
+    mutation SendEmailToGroup($input: SendEmailToGroupInput!) {
+  sendEmailToGroup(sendEmailToGroupInput: $input) {
+    msg
+  }
+}
+    `;
+export const useSendEmailToGroupMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<SendEmailToGroupMutation, TError, SendEmailToGroupMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<SendEmailToGroupMutation, TError, SendEmailToGroupMutationVariables, TContext>(
+      ['SendEmailToGroup'],
+      (variables?: SendEmailToGroupMutationVariables) => fetcher<SendEmailToGroupMutation, SendEmailToGroupMutationVariables>(client, SendEmailToGroupDocument, variables, headers)(),
       options
     );
 export const CreateTraineeDocument = `
@@ -898,6 +1114,8 @@ export const useCreateTraineeMutation = <
 export const GetAllCoachesDocument = `
     query GetAllCoaches {
   coaches {
+    facebookUrl
+    instagramUrl
     user {
       id
       firstName
@@ -911,10 +1129,15 @@ export const GetAllCoachesDocument = `
       citySrc
       roomSrc
       mapSrc
+      priceListSrc
     }
     groups {
       id
       name
+      limit
+      trainees {
+        id
+      }
     }
   }
 }
@@ -937,6 +1160,7 @@ export const GetTraineeDocument = `
     query GetTrainee($id: String!) {
   getTrainee(id: $id) {
     id
+    status
     group {
       id
       name
@@ -962,6 +1186,26 @@ export const useGetTraineeQuery = <
     useQuery<GetTraineeQuery, TError, TData>(
       ['GetTrainee', variables],
       fetcher<GetTraineeQuery, GetTraineeQueryVariables>(client, GetTraineeDocument, variables, headers),
+      options
+    );
+export const JoinGroupDocument = `
+    mutation JoinGroup($input: JoinGroupInput!) {
+  joinGroup(joinGroupInput: $input) {
+    msg
+  }
+}
+    `;
+export const useJoinGroupMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<JoinGroupMutation, TError, JoinGroupMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<JoinGroupMutation, TError, JoinGroupMutationVariables, TContext>(
+      ['JoinGroup'],
+      (variables?: JoinGroupMutationVariables) => fetcher<JoinGroupMutation, JoinGroupMutationVariables>(client, JoinGroupDocument, variables, headers)(),
       options
     );
 export const ChangeEmailDocument = `

@@ -1,31 +1,35 @@
 import Box from "@mui/material/Box";
-import FormControl from "@mui/material/FormControl";
 import Grid from "@mui/material/Grid";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import TextField from "@mui/material/TextField";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { ColorButton, StyledTextField } from "../../lib";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/material.css";
 import { Formik, Form, useFormikContext } from "formik";
 import * as Yup from "yup";
+import Autocomplete from "@mui/material/Autocomplete";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import plLocale from "date-fns/locale/pl";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
 type FormValuesType = {
-  age: string;
-  parentName: string;
+  birthDate: string;
+  traineeName: string;
   parentPhone: string;
   parentEmail: string;
   feedback: string;
+  accepted: boolean;
 };
 
 const defaultValues = {
-  age: "",
-  parentName: "",
+  birthDate: "",
+  traineeName: "",
   parentPhone: "",
   parentEmail: "",
   feedback: "",
+  accepted: false,
 };
 
 interface TraineeFormProps {
@@ -60,178 +64,269 @@ const TraineeForm: React.FC<TraineeFormProps> = (props) => {
   }, [form]);
 
   return visible ? (
-    <Formik
-      initialValues={formValues}
-      onSubmit={(values, { setSubmitting }) => {
-        console.log(values);
-        setSubmitting(true);
-        setExtraData(values);
-        nextStep();
-      }}
-      validationSchema={Yup.object().shape({
-        age: Yup.number().required("Wymagane"),
-        parentName: Yup.string().required("Wymagane"),
-        parentPhone: Yup.string().min(7).required(),
-        parentEmail: Yup.string()
-          .email("Nieprawidłowy email")
-          .required("Wymagane"),
-        feedback: Yup.string().required("Wymagane"),
-      })}
-    >
-      {(props) => {
-        const {
-          values,
-          touched,
-          errors,
-          dirty,
-          isSubmitting,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          handleReset,
-        } = props;
-        return (
-          <Form ref={setForm} onSubmit={handleSubmit}>
-            <FormObserver setFormValues={setFormValues} />
-            <Grid
-              container
-              alignItems="center"
-              justifyContent="center"
-              direction="column"
-              spacing={2}
-            >
-              <Grid item>
-                <StyledTextField
-                  id="age-input"
-                  name="age"
-                  label="Wiek dziecka"
-                  type="number"
-                  value={values.age}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  helperText={errors.age && touched.age && errors.age}
-                  error={errors.age && touched.age ? true : false}
-                  required
-                  InputProps={{
-                    inputProps: { min: 1 },
-                  }}
-                />
-              </Grid>
-              <Grid item>
-                <StyledTextField
-                  id="parentName-input"
-                  name="parentName"
-                  label="Imię i nazwisko rodzica"
-                  type="text"
-                  value={values.parentName}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  helperText={
-                    errors.parentName && touched.parentName && errors.parentName
-                  }
-                  error={errors.parentName && touched.parentName ? true : false}
-                  required
-                />
-              </Grid>
-              <Grid item>
-                <PhoneInput
-                  inputProps={{
-                    variant: "standard",
-                    name: "parentPhone",
-                    required: true
-                  }}
-                  specialLabel="Numer telefonu rodzica"
-                  country={"pl"}
-                  value={values.parentPhone}
-                  onChange={(phone) => (values.parentPhone = phone)}
-                  onBlur={handleBlur}
-                  isValid={(value) => {
-                    if (value.length > 7) {
-                      return true;
-                    } else {
-                      return "Nieprawidłowy numer telefonu";
-                    }
-                  }}
-                  inputStyle={{
-                    width: window.innerWidth < 600 ? 250 : 600,
-                  }}
-                  onlyCountries={["pl", "de", "gb"]}
-                  localization={{
-                    pl: "Polska",
-                    de: "Niemcy",
-                    gb: "Wielka Brytania",
-                  }}
-                />
-              </Grid>
-              <Grid item>
-                <StyledTextField
-                  id="parentEmail-input"
-                  name="parentEmail"
-                  label="E-mail rodzica"
-                  type="email"
-                  value={values.parentEmail}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  helperText={
-                    errors.parentEmail &&
-                    touched.parentEmail &&
-                    errors.parentEmail
-                  }
-                  error={
-                    errors.parentEmail && touched.parentEmail ? true : false
-                  }
-                  required
-                />
-              </Grid>
-              <Grid item>
-                <StyledTextField
-                  select
-                  id="feedback-select"
-                  name="feedback"
-                  label="Skąd dowiedzieli się Państwo o zajęciach?"
-                  type="text"
-                  value={values.feedback}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  helperText={
-                    errors.feedback && touched.feedback && errors.feedback
-                  }
-                  error={errors.feedback && touched.feedback ? true : false}
-                  required
-                >
-                  <MenuItem value="Wyszukiwarka Google">
-                    Wyszukiwarka Google
-                  </MenuItem>
-                  <MenuItem value="Facebook">Facebook</MenuItem>
-                  <MenuItem value="Z polecenia">Z polecenia</MenuItem>
-                  <MenuItem value="Kontynuacja zajęć">
-                    Kontynuacja zajęć
-                  </MenuItem>
-                </StyledTextField>
-              </Grid>
-            </Grid>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                p: 2,
-              }}
-            >
-              <ColorButton
-                variant="outlined"
-                color="primary"
-                onClick={prevStep}
+    <Grid container spacing={5} justifyContent="center" alignItems="center">
+      <Formik
+        initialValues={formValues}
+        onSubmit={(values, { setSubmitting }) => {
+          setSubmitting(true);
+          setExtraData(values);
+          nextStep();
+        }}
+        validationSchema={Yup.object().shape({
+          birthDate: Yup.date()
+            .typeError("Nieprawidłowa data")
+            .required("Wymagane"),
+          traineeName: Yup.string().required("Wymagane"),
+          parentPhone: Yup.string().min(7).required(),
+          parentEmail: Yup.string()
+            .email("Nieprawidłowy email")
+            .required("Wymagane"),
+          feedback: Yup.string(),
+          accepted: Yup.bool()
+            .oneOf([true], "Wymagana zgoda")
+            .required("Wymagana zgoda"),
+        })}
+      >
+        {(props) => {
+          const {
+            values,
+            touched,
+            errors,
+            dirty,
+            isSubmitting,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            setFieldValue,
+          } = props;
+          return (
+            <Grid item xs={12}>
+              <Form
+                ref={setForm}
+                onSubmit={handleSubmit}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
               >
-                Cofnij
-              </ColorButton>
-              <ColorButton type="submit" variant="outlined" color="primary">
-                Dalej
-              </ColorButton>
-            </Box>
-          </Form>
-        );
-      }}
-    </Formik>
+                <FormObserver setFormValues={setFormValues} />
+                <Grid
+                  container
+                  maxWidth="sm"
+                  justifyContent="center"
+                  alignItems="center"
+                  spacing={2}
+                >
+                  <Grid item xs={12}>
+                    <LocalizationProvider
+                      dateAdapter={AdapterDateFns}
+                      locale={plLocale}
+                    >
+                      <DatePicker
+                        mask="__.__.____"
+                        label="Data urodzenia wychowanka"
+                        value={values.birthDate}
+                        onChange={(value) =>
+                          setFieldValue("birthDate", value, true)
+                        }
+                        renderInput={(params) => (
+                          <StyledTextField
+                            {...params}
+                            id="birthDate-input"
+                            name="birthDate"
+                            type="text"
+                            helperText={
+                              errors.birthDate &&
+                              touched.birthDate &&
+                              errors.birthDate
+                            }
+                            error={
+                              errors.birthDate && touched.birthDate
+                                ? true
+                                : false
+                            }
+                            fullWidth
+                            required
+                          />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <StyledTextField
+                      id="traineeName-input"
+                      name="traineeName"
+                      label="Imię i nazwisko wychowanka"
+                      type="text"
+                      value={values.traineeName}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      helperText={
+                        errors.traineeName &&
+                        touched.traineeName &&
+                        errors.traineeName
+                      }
+                      error={
+                        errors.traineeName && touched.traineeName ? true : false
+                      }
+                      fullWidth
+                      required
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <PhoneInput
+                      inputProps={{
+                        variant: "standard",
+                        name: "parentPhone",
+                        required: true,
+                      }}
+                      inputStyle={{
+                        width: "100%",
+                      }}
+                      specialLabel="Numer telefonu rodzica"
+                      country={"pl"}
+                      value={values.parentPhone}
+                      onChange={(phone) => (values.parentPhone = phone)}
+                      onBlur={handleBlur}
+                      isValid={(value) => {
+                        if (value.length > 7) {
+                          return true;
+                        } else {
+                          return "Nieprawidłowy numer telefonu";
+                        }
+                      }}
+                      onlyCountries={["pl", "de", "gb"]}
+                      localization={{
+                        pl: "Polska",
+                        de: "Niemcy",
+                        gb: "Wielka Brytania",
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <StyledTextField
+                      id="parentEmail-input"
+                      name="parentEmail"
+                      label="E-mail rodzica"
+                      type="email"
+                      value={values.parentEmail}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      helperText={
+                        errors.parentEmail &&
+                        touched.parentEmail &&
+                        errors.parentEmail
+                      }
+                      error={
+                        errors.parentEmail && touched.parentEmail ? true : false
+                      }
+                      fullWidth
+                      required
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Autocomplete
+                      id="feedback-free-solo"
+                      freeSolo
+                      selectOnFocus
+                      handleHomeEndKeys
+                      includeInputInList
+                      value={values.feedback}
+                      onChange={(e, value) =>
+                        setFieldValue("feedback", value! || "")
+                      }
+                      onInputChange={(e, value) =>
+                        setFieldValue("feedback", value! || "")
+                      }
+                      onOpen={handleBlur}
+                      onBlur={handleBlur}
+                      clearText="Wyczyść"
+                      options={[
+                        "Kontynuacja zajęć",
+                        "Wyszukiwarka Google",
+                        "Facebook",
+                        "YouTube",
+                        "Instagram",
+                        "TikTok",
+                        "Z pokazu",
+                        "Z polecenia",
+                      ]}
+                      renderInput={(params) => (
+                        <StyledTextField
+                          {...params}
+                          id="feedback-input"
+                          name="feedback"
+                          label="Skąd dowiedzieli się Państwo o zajęciach?"
+                          type="text"
+                          helperText={
+                            errors.feedback &&
+                            touched.feedback &&
+                            errors.feedback
+                          }
+                          error={
+                            errors.feedback && touched.feedback ? true : false
+                          }
+                          fullWidth
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormControlLabel
+                      id="accepted-checkbox"
+                      name="accepted"
+                      label={
+                        <div>
+                          <span>
+                            Wyrażam zgodę na przetwarzanie moich danych
+                            osobowych. Więcej informacji znajdziesz{" "}
+                            <a
+                              href="/static/documents/umowa.pdf"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              tutaj
+                            </a>
+                            .
+                          </span>
+                        </div>
+                      }
+                      onChange={handleChange}
+                      sx={{
+                        "& .MuiFormControlLabel-label, .MuiSvgIcon-root": {
+                          color: "primary.main",
+                        },
+                      }}
+                      control={<Checkbox checked={values.accepted} required />}
+                    />
+                  </Grid>
+                </Grid>
+                <Box
+                  sx={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <ColorButton
+                    variant="outlined"
+                    color="primary"
+                    onClick={prevStep}
+                  >
+                    Cofnij
+                  </ColorButton>
+                  <ColorButton type="submit" variant="outlined" color="primary">
+                    Dalej
+                  </ColorButton>
+                </Box>
+              </Form>
+            </Grid>
+          );
+        }}
+      </Formik>
+    </Grid>
   ) : null;
 };
 

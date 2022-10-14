@@ -1,16 +1,30 @@
 import React, { useState } from "react";
 import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
-import { StyledTableCell, StyledTableRow } from "..";
 import EditIcon from "@mui/icons-material/Edit";
 import EditExerciseForm from "./EditExerciseForm";
 import DeleteIcon from "@mui/icons-material/Delete";
-import CustomDialog from "../../../lib/CustomDialog";
-import { useDeleteExerciseMutation } from "../../../../generated/graphql";
+import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
+import {
+  Status,
+  useDeleteExerciseMutation,
+} from "../../../../generated/graphql";
 import Tooltip from "@mui/material/Tooltip";
 import { useAuth } from "../../../auth";
+import { CustomDialog } from "../../../lib";
+import * as XLSX from "xlsx";
+import { grey } from "@mui/material/colors";
+import { styled } from "@mui/material/styles";
+import { StyledExerciseTableCell, StyledExerciseTableRow } from "..";
+
+const StyledIconButton = styled(IconButton)({
+  "&:hover": {
+    backgroundColor: grey[900],
+  },
+});
 
 interface RowProps {
+  i: number;
   item: {
     id: string;
     day: any;
@@ -19,12 +33,13 @@ interface RowProps {
   };
   trainees?: Array<{
     id: string;
+    status: string;
     user: { id: string; firstName: string; lastName: string };
   }> | null;
 }
 
 const ExerciseRow: React.FC<RowProps> = (props) => {
-  const { item, trainees } = props;
+  const { i, item, trainees } = props;
   const { id, day, start, end } = item;
   const { accessClient } = useAuth();
   const [openEditExercise, setOpenEditExercise] = useState(false);
@@ -35,54 +50,107 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
     {}
   );
 
-  const convertToPlDate = (d: any) => new Date(d).toLocaleDateString("pl-pl");
+  const convertToPlDate = (d: string) =>
+    new Date(d).toLocaleDateString("pl-pl");
 
   const getTimeWithoutMiliseconds = (t: string) => {
     return t.slice(0, -3);
   };
 
+  const data = [
+    trainees?.map((trainee, i) =>
+      i == 0
+        ? {
+            Dzień: convertToPlDate(day),
+            Godzina: `${getTimeWithoutMiliseconds(
+              start
+            )} - ${getTimeWithoutMiliseconds(end)}`,
+            "Lp.": ++i,
+            Imię: trainee.user.firstName,
+            Nazwisko: trainee.user.lastName,
+            Obecny: "",
+            "Pierwszy raz": trainee.status === Status.FirstTime ? "tak" : "nie",
+          }
+        : {
+            Dzień: "",
+            Godzina: "",
+            "Lp.": ++i,
+            Imię: trainee.user.firstName,
+            Nazwisko: trainee.user.lastName,
+            Obecny: "",
+            "Pierwszy raz": trainee.status === Status.FirstTime ? "tak" : "nie",
+          }
+    )!,
+  ].flat();
+
+  const handleExport = () => {
+    const wb = XLSX.utils.book_new(),
+      ws = XLSX.utils.json_to_sheet(data);
+
+    XLSX.utils.book_append_sheet(wb, ws, "MySheet1");
+
+    XLSX.writeFile(wb, `Lista obecności ${convertToPlDate(day)}.xlsx`);
+  };
+
   return (
     <React.Fragment>
-      <StyledTableRow key={id}>
-        <StyledTableCell component="th" scope="row" align="center">
-          {id}
-        </StyledTableCell>
-        <StyledTableCell align="center">{convertToPlDate(day)}</StyledTableCell>
-        <StyledTableCell align="center">
+      <StyledExerciseTableRow key={i}>
+        <StyledExerciseTableCell component="th" scope="row" align="center">
+          {i}
+        </StyledExerciseTableCell>
+        <StyledExerciseTableCell align="center">
+          {convertToPlDate(day)}
+        </StyledExerciseTableCell>
+        <StyledExerciseTableCell align="center">
           {getTimeWithoutMiliseconds(start)}
-        </StyledTableCell>
-        <StyledTableCell align="center">
+        </StyledExerciseTableCell>
+        <StyledExerciseTableCell align="center">
           {getTimeWithoutMiliseconds(end)}
-        </StyledTableCell>
-        <StyledTableCell align="center">
+        </StyledExerciseTableCell>
+        <StyledExerciseTableCell
+          align="center"
+          sx={{
+            "& .MuiSvgIcon-root": {
+              color: (theme) => theme.palette.secondary.contrastText,
+            },
+          }}
+        >
           <Tooltip title="Edytuj zajęcia">
-            <IconButton
+            <StyledIconButton
               aria-label="edit-exercise"
               onClick={() => setOpenEditExercise(!openEditExercise)}
             >
               <EditIcon />
-            </IconButton>
+            </StyledIconButton>
           </Tooltip>
           <Tooltip title="Usuń zajęcia">
-            <IconButton
+            <StyledIconButton
               aria-label="delete-exercise"
               onClick={() => setOpenDeleteExercise(!openDeleteExercise)}
             >
               <DeleteIcon />
-            </IconButton>
+            </StyledIconButton>
           </Tooltip>
-        </StyledTableCell>
-      </StyledTableRow>
-      <StyledTableRow>
-        <StyledTableCell
+          <Tooltip title="Eksportuj listę obecności">
+            <StyledIconButton
+              aria-label="export-attendance-list"
+              onClick={handleExport}
+            >
+              <FormatListNumberedIcon />
+            </StyledIconButton>
+          </Tooltip>
+        </StyledExerciseTableCell>
+      </StyledExerciseTableRow>
+      <StyledExerciseTableRow>
+        <StyledExerciseTableCell
           style={{ paddingBottom: 0, paddingTop: 0 }}
           colSpan={6}
         >
           <Collapse in={openEditExercise} timeout="auto" unmountOnExit>
             <EditExerciseForm item={item} />
           </Collapse>
-        </StyledTableCell>
-      </StyledTableRow>
+        </StyledExerciseTableCell>
+      </StyledExerciseTableRow>
       {openDeleteExercise && (
         <CustomDialog
           title={`Czy na pewno chcesz usunąć zajęcia dnia ${convertToPlDate(

@@ -1,5 +1,7 @@
 query GetAllCoaches {
   coaches {
+    facebookUrl
+    instagramUrl
     user {
       id
       firstName
@@ -13,10 +15,15 @@ query GetAllCoaches {
       citySrc
       roomSrc
       mapSrc
+      priceListSrc
     }
     groups {
       id
       name
+      limit
+      trainees {
+        id
+      }
     }
   }
 }

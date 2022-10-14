@@ -1,6 +1,6 @@
 import { useState } from "react";
 import TextField from "@mui/material/TextField";
-import { ColorButton } from "../../../lib";
+import { ColorButton, LoadingScreen } from "../../../lib";
 import Box from "@mui/material/Box";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -8,8 +8,6 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import plLocale from "date-fns/locale/pl";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { useCreateExerciseMutation } from "../../../../generated/graphql";
-import accessClient from "../../../../graphql/clients/accessClient";
-import LoadingScreen from "../../../lib/LoadingScreen";
 import { useAuth } from "../../../auth";
 
 const defaultExerciseValues = {
@@ -29,7 +27,10 @@ const CreateExerciseForm: React.FC<CreateExerciseFormProps> = (props) => {
     defaultExerciseValues
   );
 
-  const { isLoading, mutate } = useCreateExerciseMutation<Error>(accessClient!, {});
+  const { isLoading, mutate } = useCreateExerciseMutation<Error>(
+    accessClient!,
+    {}
+  );
 
   const handleDayChange = (value: Event | null) => {
     setFormExerciseValues({
@@ -62,6 +63,11 @@ const CreateExerciseForm: React.FC<CreateExerciseFormProps> = (props) => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        backgroundColor: "secondary.main",
+        "& .MuiInputLabel-root, .MuiInputBase-root, .MuiButton-root, .MuiSvgIcon-root": {
+          borderColor:"secondary.contrastText",
+          color: "secondary.contrastText",
+        }
       }}
       noValidate
       autoComplete="off"

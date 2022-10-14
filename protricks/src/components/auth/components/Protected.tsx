@@ -14,8 +14,6 @@ const Protected = (props: ProtectedProps) => {
 
   return user?.roles.find((role) => allowedRoles?.includes(role)) ? (
     children
-  ) : user ? (
-    <Navigate to="/unauthorized" state={{ from: location }} replace />
   ) : (
     <Navigate to="/" state={{ from: location }} replace />
   );

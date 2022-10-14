@@ -3,7 +3,7 @@ import Tooltip from "@mui/material/Tooltip";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import PersonIcon from "@mui/icons-material/Person";
-import { ColorButton } from "../../lib";
+import { ColorButton, CustomDialog } from "../../lib";
 import UserDialog from "../../auth/components/UserDialog";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -21,7 +21,6 @@ import AddTaskIcon from "@mui/icons-material/AddTask";
 import CustomAvatar from "../../lib/CustomAvatar";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth";
-import CustomDialog from "../../lib/CustomDialog";
 import Paper from "@mui/material/Paper";
 import MenuList from "@mui/material/MenuList";
 import ListItemText from "@mui/material/ListItemText";
@@ -47,14 +46,6 @@ const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
   const navigate = useNavigate();
   const [logoutStatus, setLogoutStatus] = useState<string>("");
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
-
-  const handleDrawerOpen = () => {
-    setDrawerOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setDrawerOpen(false);
-  };
 
   const { isLoading, mutate: logOut } = useLogOutUserMutation<Error>(
     accessClient!,
@@ -93,6 +84,14 @@ const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
     setAnchorElUser(null);
   };
 
+  const handleDrawerOpen = () => {
+    setDrawerOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setDrawerOpen(false);
+  };
+
   return (
     <Box
       sx={{
@@ -129,7 +128,10 @@ const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
               <CustomAvatar
                 name={`${user.firstName} ${user.lastName}`}
                 size="small"
-                imgSrc={user.imgSrc!}
+                imgSrc={
+                  user.imgSrc &&
+                  `${process.env.REACT_APP_HOST}/images/${user.imgSrc}`
+                }
               />
             </IconButton>
           </Tooltip>
@@ -220,6 +222,7 @@ const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
         variant="temporary"
         anchor="top"
         open={drawerOpen}
+        onClose={handleDrawerClose}
         sx={{
           [`& .MuiDrawer-paper`]: { boxSizing: "border-box" },
         }}

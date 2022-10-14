@@ -29,8 +29,9 @@ const Cities: React.FC<CitiesProps> = (props) => {
         sx={{ py: 5 }}
         gutterBottom
       >
-        Aby się zapisać, zaloguj się klikając ikonkę w prawym górnym rogu
-        ekranu. Następnie wybierz miasto, klikając jego zdjęcie.
+        Aby zapisać się na pierwsze DARMOWE zajęcia zaloguj się lub zarejestruj,
+        klikając ikonę w prawym górnym rogu ekranu. Następnie wybierz miasto,
+        klikając w jego zdjęcie.
       </Typography>
       <CustomPhotoCards items={items} onClick={onClick} nextStep={nextStep} />
     </React.Fragment>

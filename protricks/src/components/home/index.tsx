@@ -5,11 +5,10 @@ import IconCards from "./components/IconCards";
 import GroupsIcon from "@mui/icons-material/Groups";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import PreviewIcon from "@mui/icons-material/Preview";
+import CheckIcon from "@mui/icons-material/Check";
 import Container from "@mui/material/Container";
-import { ImageBlock, PhotoCards } from "../lib";
+import { CustomList, PhotoCards } from "../lib";
 import Box from "@mui/material/Box";
-const imgUrl = "/static/images/home/team.png";
-const secondImgUrl = "/static/images/home/lg-team.png";
 
 const txt1 = {
   title: "Czym jest akrobatyka?",
@@ -21,11 +20,10 @@ const txt1 = {
 const data1 = [
   {
     id: 1,
-    name: "Freerunning",
-    imgSrc: "/static/images/home/cards/freerunning.jpg",
+    imgSrc: "/static/images/home/cards/1.png",
   },
-  { id: 2, name: "Tumbling", imgSrc: "/static/images/home/cards/tumbling.jpg" },
-  { id: 3, name: "Tricking", imgSrc: "/static/images/home/cards/tricking.jpg" },
+  { id: 2, imgSrc: "/static/images/home/cards/2.png" },
+  { id: 3, imgSrc: "/static/images/home/cards/3.png" },
 ];
 
 const txt2 = {
@@ -58,12 +56,13 @@ const data2 = [
   },
 ];
 
-const txt3 = {
-  title: `Co robimy?`,
-  content: `Prowadzimy zajęcia dla dzieci i młodzieży z akrobatyki
-    Organizujemy ogólnopolskie zloty akrobatyczne
-    Występujemy w pokazach, na scenie i na ulicy.`,
-};
+const txt3 = [
+  {
+    name: "Prowadzimy zajęcia z akrobatyki dla dzieci i młodzieży",
+  },
+  { name: "Organizujemy ogólnopolskie zloty akrobatyczne " },
+  { name: "Występujemy w pokazach, na scenie i na ulicy" },
+];
 
 const Home: React.FC = () => {
   return (
@@ -78,7 +77,7 @@ const Home: React.FC = () => {
             items={data1}
             sxRoot={{
               position: "relative",
-              top: "-100px",
+              top: "-120px",
               filter: "grayscale(80%)",
             }}
           />
@@ -88,9 +87,27 @@ const Home: React.FC = () => {
       <Container sx={{ backgroundColor: "primary", py: 15 }}>
         <IconCards data={data2} />
       </Container>
-      <ImageBlock imgSrc={imgUrl} secondImgSrc={secondImgUrl}>
-        <TextBlock texts={txt3} variant="secondary" />
-      </ImageBlock>
+      <Container
+        maxWidth={false}
+        sx={{
+          backgroundImage: "linear-gradient(#434343 0%, black 100%)",
+          py: 15,
+        }}
+      >
+        <Container>
+          <CustomList
+            title="CO ROBIMY?"
+            items={txt3}
+            variant="secondary"
+            sxBackground={{
+              background: "transparent",
+            }}
+            ListIcon={CheckIcon}
+            size="lg"
+            center
+          />
+        </Container>
+      </Container>
     </React.Fragment>
   );
 };

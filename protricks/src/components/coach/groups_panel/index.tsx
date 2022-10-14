@@ -6,11 +6,10 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { GetCoachQuery, useGetCoachQuery } from "../../../generated/graphql";
-import LoadingScreen from "../../lib/LoadingScreen";
 import TableBody from "@mui/material/TableBody";
 import GroupRow from "./components/GroupRow";
 import { styled } from "@mui/material/styles";
-import { ColorButton } from "../../lib";
+import { ColorButton, LoadingScreen } from "../../lib";
 import AddIcon from "@mui/icons-material/Add";
 import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
@@ -34,6 +33,17 @@ export const StyledTableRow = styled(TableRow)(({ theme }) => ({
   // hide last border
   "&:last-child td, &:last-child th": {
     border: 0,
+  },
+}));
+
+export const StyledExerciseTableCell = styled(StyledTableCell)(({ theme }) => ({
+  color: theme.palette.secondary.contrastText,
+}));
+
+export const StyledExerciseTableRow = styled(StyledTableRow)(({ theme }) => ({
+  backgroundColor: theme.palette.secondary.main,
+  "& th": {
+    color: theme.palette.secondary.contrastText,
   },
 }));
 
@@ -63,13 +73,17 @@ const GroupsPanel: React.FC = () => {
         <TableHead>
           <StyledTableRow>
             <TableCell />
-            <StyledTableCell align="center">Id</StyledTableCell>
+            <StyledTableCell align="center">Lp.</StyledTableCell>
             <StyledTableCell align="center">Nazwa grupy</StyledTableCell>
             <StyledTableCell align="center">Limit uczestników</StyledTableCell>
           </StyledTableRow>
         </TableHead>
         <TableBody>
-          {data?.getCoach?.groups?.map((group) => <GroupRow item={group} />)!}
+          {
+            data?.getCoach?.groups?.map((group, i) => (
+              <GroupRow i={++i} item={group} />
+            ))!
+          }
           <StyledTableRow>
             <StyledTableCell
               style={{ paddingBottom: 0, paddingTop: 0 }}

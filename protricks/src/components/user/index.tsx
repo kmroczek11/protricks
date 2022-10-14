@@ -12,6 +12,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import Collapse from "@mui/material/Collapse";
 import EmailForm from "./components/EmailForm";
 import PasswordForm from "./components/PasswordForm";
+import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import EditIcon from "@mui/icons-material/Edit";
 import UserAvatar from "./components/UserAvatar";
 import { useAuth } from "../auth";
@@ -48,8 +49,11 @@ const UserPanel: React.FC = () => {
         <UserAvatar
           name={fullName}
           size="large"
-          imgSrc={user?.imgSrc!}
-          BadgeIcon={EditIcon}
+          imgSrc={
+            user?.imgSrc &&
+            `${process.env.REACT_APP_HOST}/images/${user?.imgSrc}`
+          }
+          BadgeIcon={AddAPhotoIcon}
         />
         <Typography
           gutterBottom

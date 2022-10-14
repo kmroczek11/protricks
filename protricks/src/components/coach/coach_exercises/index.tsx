@@ -4,7 +4,7 @@ import React from "react";
 import { useAuth } from "../../auth";
 import { GetCoachQuery, useGetCoachQuery } from "../../../generated/graphql";
 import ExerciseCard from "./components/ExerciseCard";
-import LoadingScreen from "../../lib/LoadingScreen";
+import { LoadingScreen } from "../../lib";
 
 const CoachExercisesPanel: React.FC = () => {
   const { user, accessClient } = useAuth();

@@ -1,12 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Checkbox from "@mui/material/Checkbox";
-import Avatar from "@mui/material/Avatar";
-import GroupIcon from "@mui/icons-material/Group";
 
 interface GroupListProps {
   groups: GroupObject[];
@@ -18,6 +15,7 @@ interface GroupListProps {
 interface GroupObject {
   id: string;
   name: string;
+  freePlaces: number;
 }
 
 const GroupList: React.FC<GroupListProps> = (props) => {
@@ -40,7 +38,7 @@ const GroupList: React.FC<GroupListProps> = (props) => {
         },
       }}
     >
-      {groups.map(({ id, name }) => {
+      {groups.map(({ id, name, freePlaces }) => {
         const labelId = `checkbox-list-secondary-label-${id}`;
         return (
           <ListItem
@@ -69,14 +67,17 @@ const GroupList: React.FC<GroupListProps> = (props) => {
             <ListItemButton
               selected={selectedGroup == id}
               onClick={handleToggle(id)}
-              sx={{ p: 2 }}
+              sx={{ p: 8 }}
             >
-              <ListItemAvatar>
-                <Avatar>
-                  <GroupIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText id={labelId} primary={name} />
+              <ListItemText
+                id={labelId}
+                primaryTypographyProps={{ fontWeight: 600 }}
+                primary={name}
+              />
+              <ListItemText
+                id={labelId}
+                primary={`Pozostało miejsc: ${freePlaces}`}
+              />
             </ListItemButton>
           </ListItem>
         );

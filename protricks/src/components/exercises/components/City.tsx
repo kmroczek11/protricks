@@ -4,10 +4,20 @@ import Typography from "@mui/material/Typography";
 import React, { useState } from "react";
 import { useAuth } from "../../auth";
 import { Role } from "../../../generated/graphql";
-import { ColorButton, PhotoCard, CustomList } from "../../lib";
-import CustomAvatar from "../../lib/CustomAvatar";
+import {
+  ColorButton,
+  PhotoCard,
+  CustomList,
+  CustomAvatar,
+  ButtonBox,
+} from "../../lib";
 import GroupList from "./GroupList";
-import Map from "./Map";
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import PriceList from "./PriceList";
+import { useTheme, useMediaQuery } from "@mui/material";
 
 const txt = [
   {
@@ -32,6 +42,8 @@ interface CityProps {
   visible: boolean;
   selectedGroup: string | undefined;
   item: {
+    facebookUrl: string;
+    instagramUrl: string;
     user: {
       id: string;
       firstName: string;
@@ -45,16 +57,13 @@ interface CityProps {
       citySrc: string;
       roomSrc: string;
       mapSrc: string;
+      priceListSrc: string;
     };
     groups?: Array<{
       id: string;
       name: string;
-      exercises?: Array<{
-        id: string;
-        day: any;
-        start: string;
-        end: string;
-      }> | null;
+      limit: number;
+      trainees?: Array<{ id: string }> | null;
     }> | null;
   };
   nextStep: () => void;
@@ -65,24 +74,22 @@ interface CityProps {
 const City: React.FC<CityProps> = (props) => {
   const { visible, selectedGroup, item, nextStep, prevStep, selectGroup } =
     props;
-  const { user: coach, city, groups } = item;
+  const { facebookUrl, instagramUrl, user: coach, city, groups } = item;
   const { firstName, lastName, imgSrc } = coach;
-  const { name, room, roomSrc, mapSrc } = city;
+  const { name, room, roomSrc, mapSrc, priceListSrc } = city;
   const { user } = useAuth();
   const [selected, setSelected] = useState<boolean>(false);
+  const theme = useTheme();
+  const lgScreen = useMediaQuery(theme.breakpoints.up("lg"));
 
   return visible ? (
-    <React.Fragment>
-      <Typography variant="h1" color="primary.main" align="center">
-        {name}
-      </Typography>
-      <Grid
-        container
-        spacing={5}
-        direction="row"
-        justifyContent="center"
-        alignItems="center"
-      >
+    <Grid container spacing={5} justifyContent="center" alignItems="center">
+      <Grid item xs={12}>
+        <Typography variant="h1" color="primary.main" align="center">
+          {name}
+        </Typography>
+      </Grid>
+      <Grid item xs={12} container spacing={5}>
         <Grid item xs={12} md={4}>
           <Typography
             variant="h2"
@@ -95,7 +102,7 @@ const City: React.FC<CityProps> = (props) => {
           <PhotoCard
             item={{
               name: room,
-              imgSrc: `${process.env.REACT_APP_ENDPOINT}/uploads/${roomSrc}`,
+              imgSrc: `${process.env.REACT_APP_HOST}/images/${roomSrc}`,
             }}
           />
         </Grid>
@@ -139,7 +146,7 @@ const City: React.FC<CityProps> = (props) => {
           <CustomAvatar
             name={`${firstName} ${lastName}`}
             size="large"
-            imgSrc={imgSrc!}
+            imgSrc={imgSrc && `${process.env.REACT_APP_HOST}/images/${imgSrc}`}
           />
           <Typography
             variant="subtitle1"
@@ -149,10 +156,49 @@ const City: React.FC<CityProps> = (props) => {
           >
             {`${firstName} ${lastName}`}
           </Typography>
+          <ButtonBox>
+            <Tooltip title="Kliknij, aby otworzyć Facebook">
+              <IconButton onClick={() => window.open(facebookUrl, "_blank")}>
+                <FacebookIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Kliknij, aby otworzyć Instagram">
+              <IconButton onClick={() => window.open(instagramUrl, "_blank")}>
+                <InstagramIcon />
+              </IconButton>
+            </Tooltip>
+          </ButtonBox>
         </Grid>
       </Grid>
+      <Grid
+        item
+        xs={12}
+        sx={{
+          pt: lgScreen ? "0 !important":undefined,
+        }}
+      >
+        <Typography
+          variant="h1"
+          color="primary.main"
+          align="center"
+          gutterBottom
+        >
+          Cennik
+        </Typography>
+        <Typography
+          variant="h2"
+          color="primary.main"
+          align="center"
+          gutterBottom
+        >
+          Tak prezentuje się cennik w wybranym mieście
+        </Typography>
+        <PriceList
+          imgSrc={`${process.env.REACT_APP_HOST}/images/${priceListSrc}`}
+        />
+      </Grid>
       {![Role.Coach, Role.Trainee].some((e) => user?.roles?.includes(e)) ? (
-        <React.Fragment>
+        <Grid item xs={12}>
           <Typography
             variant="h1"
             color="primary.main"
@@ -170,23 +216,32 @@ const City: React.FC<CityProps> = (props) => {
             Aby się zapisać, wybierz grupę
           </Typography>
           <GroupList
-            groups={groups!}
+            groups={
+              groups?.map((group) => ({
+                ...group,
+                freePlaces: group.limit - group.trainees?.length!,
+              }))!
+            }
             selectedGroup={selectedGroup}
             selectGroup={selectGroup}
             setSelected={setSelected}
           />
-          <Typography
-            variant="h1"
-            color="secondary.contrastText"
-            align="center"
-            gutterBottom
-          >
-            Jak wybrać odpowiednią grupę?
-          </Typography>
-          <CustomList items={txt} variant="secondary" />
-        </React.Fragment>
+        </Grid>
       ) : null}
-      <Box sx={{ display: "flex", justifyContent: "space-between", p: 2 }}>
+      <Grid item xs={12}>
+        <CustomList
+          title="Jak wybrać odpowiednią grupę?"
+          items={txt}
+          variant="secondary"
+          size="lg"
+          center
+        />
+      </Grid>
+      <Grid
+        item
+        xs={12}
+        sx={{ display: "flex", justifyContent: "space-between" }}
+      >
         <ColorButton variant="outlined" color="primary" onClick={prevStep}>
           Cofnij
         </ColorButton>
@@ -198,8 +253,8 @@ const City: React.FC<CityProps> = (props) => {
         >
           Dalej
         </ColorButton>
-      </Box>
-    </React.Fragment>
+      </Grid>
+    </Grid>
   ) : null;
 };
 

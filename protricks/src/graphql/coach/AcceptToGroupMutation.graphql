@@ -1,0 +1,5 @@
+mutation AcceptToGroup($input: AcceptToGroupInput!) {
+  acceptToGroup(acceptToGroupInput: $input) {
+    msg
+  }
+}

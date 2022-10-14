@@ -1,0 +1,5 @@
+mutation ConfirmContractReceipt($input: ConfirmContractReceiptInput!) {
+  confirmContractReceipt(confirmContractReceiptInput: $input) {
+    msg
+  }
+}

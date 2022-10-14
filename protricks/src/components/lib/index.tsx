@@ -1,9 +1,7 @@
 import Button from "@mui/material/Button";
-import {
-  styled,
-  experimental_sx as sx,
-} from '@mui/system';
+import { styled, experimental_sx as sx } from "@mui/system";
 import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
 
 export const ColorButton = styled(Button)`
   border-radius: 24px;
@@ -22,15 +20,14 @@ export const Logo = styled("img")`
 `;
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
-  [theme.breakpoints.up("sm")]: {
-    width: "250px",
- },
- [theme.breakpoints.up("md")]: {
-    width: "600px",
- },
-  borderRadius:'5px',
   color: theme.palette.primary.contrastText,
   backgroundColor: theme.palette.primary.main,
+}));
+
+export const ButtonBox = styled(Box)(({ theme }) => ({
+  "& .MuiSvgIcon-root": {
+    color: theme.palette.secondary.contrastText,
+  },
 }));
 
 export { default as VideoBlock } from "./VideoBlock";
@@ -38,4 +35,10 @@ export { default as ImageBlock } from "./ImageBlock";
 export { default as CustomList } from "./CustomList";
 export { default as PhotoCard } from "./PhotoCard";
 export { default as PhotoCards } from "./PhotoCards";
+export { default as PhotoCardsLoader } from "./PhotoCardsLoader";
 export { default as CustomTable } from "./CustomTable";
+export { default as CustomAlert } from "./CustomAlert";
+export { default as CustomAvatar } from "./CustomAvatar";
+export { default as CustomDialog } from "./CustomDialog";
+export { default as LoadingPhotoCard } from "./LoadingPhotoCard";
+export { default as LoadingScreen } from "./LoadingScreen";

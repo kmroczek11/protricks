@@ -1,9 +1,8 @@
 import { useState } from "react";
 import TextField from "@mui/material/TextField";
-import { ColorButton } from "../../../lib";
+import { ColorButton, LoadingScreen } from "../../../lib";
 import Box from "@mui/material/Box";
 import { useEditGroupMutation } from "../../../../generated/graphql";
-import LoadingScreen from "../../../lib/LoadingScreen";
 import { useAuth } from "../../../auth";
 
 interface EditGroupFormProps {

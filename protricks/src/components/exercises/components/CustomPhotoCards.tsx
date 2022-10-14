@@ -31,7 +31,11 @@ const CustomPhotoCards: React.FC<CustomPhotoCardsProps> = (props) => {
     >
       {items.map((item, i) => (
         <Grid item xs={12} md={6} key={i}>
-          <CustomPhotoCard item={item} onClick={onClick} nextStep={nextStep} />
+          <CustomPhotoCard
+            item={item}
+            onClick={onClick}
+            nextStep={nextStep}
+          />
         </Grid>
       ))}
     </Grid>

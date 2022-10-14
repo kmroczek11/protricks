@@ -2,17 +2,16 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import React, { useState } from "react";
-import { ColorButton } from "../../lib";
+import { ColorButton, CustomAlert, LoadingScreen } from "../../lib";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import LoadingScreen from "../../lib/LoadingScreen";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useAuth } from "..";
-import CustomAlert from "../../lib/CustomAlert";
+import ForgotPasswordDialog from "./ForgotPasswordDialog";
 
 interface LogInDialogProps {
   open: boolean;
@@ -30,6 +29,8 @@ const invalidEmailOrPasswordError = "Nieprawidłowy e-mail lub hasło.";
 const LogInDialog: React.FC<LogInDialogProps> = (props) => {
   const { open, handleClose, setActive } = props;
   const { isLogInLoading, logInError, logIn } = useAuth();
+  const [openForgotPasswordDialog, setOpenForgotPasswordDialog] =
+    useState(false);
 
   return isLogInLoading ? (
     <LoadingScreen />
@@ -145,10 +146,24 @@ const LogInDialog: React.FC<LogInDialogProps> = (props) => {
                     variant="text"
                     color="secondary"
                     sx={{ textTransform: "none" }}
+                    onClick={() => setOpenForgotPasswordDialog(true)}
+                  >
+                    Nie pamiętam hasła
+                  </Button>
+                  <Button
+                    variant="text"
+                    color="secondary"
+                    sx={{ textTransform: "none" }}
                     onClick={() => setActive("register")}
                   >
                     Nie masz jeszcze konta? Zarejestruj się
                   </Button>
+                  {openForgotPasswordDialog && (
+                    <ForgotPasswordDialog
+                      open={openForgotPasswordDialog}
+                      handleClose={() => setOpenForgotPasswordDialog(false)}
+                    />
+                  )}
                 </Grid>
               </Form>
             );

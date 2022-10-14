@@ -12,7 +12,6 @@ import createChangeProfilePicClient from "../../graphql/clients/changeProfilePic
 import autoLoginUserClient from "../../graphql/clients/autoLoginUserClient";
 import TokenPayload from "./models/tokenPayload";
 import jwt from "jwt-decode";
-import CustomDialog from "../lib/CustomDialog";
 import { UseMutateFunction } from "react-query";
 import { GraphQLClient } from "graphql-request";
 import useRegisterUser from "./hooks/useRegisterUser";
@@ -20,6 +19,7 @@ import useLogInUser from "./hooks/useLogInUser";
 import useAutoLogInUser from "./hooks/useAutoLogInUser";
 import useRefreshUserToken from "./hooks/useRefreshUserToken";
 import useInterval from "./hooks/useInterval";
+import { CustomDialog } from "../lib";
 
 /**
  * Creates authorization context
@@ -177,8 +177,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       !localStorage.getItem(process.env.REACT_APP_REFRESH_TOKEN_SECRET!)
     )
       return;
-
-    console.log("autoLogin");
 
     autoLogin({
       input: {

@@ -5,33 +5,44 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
-import CustomAvatar from "../../../lib/CustomAvatar";
-import { DialogContent } from "@mui/material";
+import DialogContent from "@mui/material/DialogContent";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import GroupRemoveIcon from "@mui/icons-material/GroupRemove";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
+import GradingIcon from "@mui/icons-material/Grading";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import { useDeleteTraineeMutation } from "../../../../generated/graphql";
-import LoadingScreen from "../../../lib/LoadingScreen";
+import {
+  Status,
+  useAcceptToGroupMutation,
+  useConfirmContractReceiptMutation,
+  useDeleteTraineeMutation,
+} from "../../../../generated/graphql";
 import { useState } from "react";
-import CustomDialog from "../../../lib/CustomDialog";
 import { useAuth } from "../../../auth";
 import InfoIcon from "@mui/icons-material/Info";
 import TraineeInfoDialog from "./TraineeInfoDialog";
+import { CustomAvatar, CustomDialog, LoadingScreen } from "../../../lib";
+import Chip from "@mui/material/Chip";
+import Grid from "@mui/material/Grid";
+import { green, grey, lightGreen } from "@mui/material/colors";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material";
 
 interface ManageMembersDialogProps {
   groupName: string;
-  open: boolean;
   trainees?: Array<{
     id: string;
-    age: number;
-    parentName: string;
+    birthDate: string;
+    traineeName: string;
     parentPhone: any;
     parentEmail: any;
     feedback: string;
+    status: Status;
     user: { id: string; firstName: string; lastName: string; imgSrc?: string };
   }> | null;
+  open: boolean;
   handleClose: () => void;
   onClose?: () => void;
 }
@@ -40,26 +51,36 @@ const ManageMembersDialog: React.FC<ManageMembersDialogProps> = (props) => {
   const { groupName, open, trainees, handleClose, onClose } = props;
   const { accessClient } = useAuth();
   const [openDeleteTrainee, setOpenDeleteTrainee] = useState(false);
-  const [openParentInfo, setOpenParentInfo] = useState(false);
+  const [openDetailedInfo, setOpenDetailedInfo] = useState(false);
+  const theme = useTheme();
+  const smScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const { isLoading, mutate } = useDeleteTraineeMutation<Error>(
-    accessClient!,
-    {}
-  );
+  const { isLoading: isDeleteTraineeLoading, mutate: deleteTrainee } =
+    useDeleteTraineeMutation<Error>(accessClient!, {});
+
+  const { isLoading: isAcceptToGroupLoading, mutate: acceptToGroup } =
+    useAcceptToGroupMutation<Error>(accessClient!, {});
+
+  const {
+    isLoading: isConfirmContractReceiptLoading,
+    mutate: confirmContractReceipt,
+  } = useConfirmContractReceiptMutation<Error>(accessClient!, {});
 
   const handleDialogClose = () => {
-    setOpenParentInfo(false);
+    setOpenDetailedInfo(false);
   };
 
-  return isLoading ? (
+  return isDeleteTraineeLoading ? (
     <LoadingScreen />
   ) : (
     <Dialog
       fullWidth
-      maxWidth="sm"
+      maxWidth="md"
       onClose={handleClose}
       open={open}
       scroll="paper"
+      fullScreen={smScreen}
+      disableScrollLock
     >
       <DialogTitle>{`Członkowie grupy ${groupName}`}</DialogTitle>
       <IconButton
@@ -85,8 +106,8 @@ const ManageMembersDialog: React.FC<ManageMembersDialogProps> = (props) => {
                     <React.Fragment>
                       <Tooltip title="Szczegółowe informacje">
                         <IconButton
-                          aria-label="parent-info"
-                          onClick={() => setOpenParentInfo(true)}
+                          aria-label="detailed-info"
+                          onClick={() => setOpenDetailedInfo(true)}
                         >
                           <InfoIcon />
                         </IconButton>
@@ -99,6 +120,54 @@ const ManageMembersDialog: React.FC<ManageMembersDialogProps> = (props) => {
                           <GroupRemoveIcon />
                         </IconButton>
                       </Tooltip>
+                      {trainee.status === Status.FirstTime && (
+                        <Tooltip
+                          title={
+                            <div style={{ whiteSpace: "pre-line" }}>
+                              {`Przyjmij do grupy\n
+                                Ten uczestnik będzie na zajęciach po raz pierwszy.
+                                 Kliknij ten przycisk, jeśli pojawi się na kolejnych zajęciach.
+                                 Zmieni to jego status na "Oczekiwanie" i da mu możliwość zapisania się do grupy na stałe.`}
+                            </div>
+                          }
+                        >
+                          <IconButton
+                            aria-label="accept-to-group"
+                            onClick={() =>
+                              acceptToGroup({
+                                input: {
+                                  id: trainee.id,
+                                },
+                              })
+                            }
+                          >
+                            <GroupAddIcon />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                      {trainee.status === Status.AcceptedWithoutContract && (
+                        <Tooltip
+                          title={
+                            <div style={{ whiteSpace: "pre-line" }}>
+                              {`Potwierdź otrzymanie umowy\n
+                                Kliknij ten przycisk, aby potwierdzić otrzymanie umowy od tego wychowanka.`}
+                            </div>
+                          }
+                        >
+                          <IconButton
+                            aria-label="confirm-contract-receipt"
+                            onClick={() =>
+                              confirmContractReceipt({
+                                input: {
+                                  id: trainee.id,
+                                },
+                              })
+                            }
+                          >
+                            <GradingIcon />
+                          </IconButton>
+                        </Tooltip>
+                      )}
                     </React.Fragment>
                   }
                 >
@@ -106,11 +175,80 @@ const ManageMembersDialog: React.FC<ManageMembersDialogProps> = (props) => {
                     <CustomAvatar
                       name={`${trainee.user.firstName} ${trainee.user.lastName}`}
                       size="small"
-                      imgSrc={trainee.user.imgSrc!}
+                      imgSrc={
+                        trainee.user?.imgSrc &&
+                        `${process.env.REACT_APP_HOST}/images/${trainee.user?.imgSrc}`
+                      }
                     />
                   </ListItemAvatar>
                   <ListItemText
-                    primary={`${trainee.user.firstName} ${trainee.user.lastName}`}
+                    primary={
+                      <Grid
+                        container
+                        spacing={smScreen ? 0 : 1}
+                        alignItems="baseline"
+                        direction={smScreen ? "column" : "row"}
+                      >
+                        <Grid item>
+                          <Typography variant="body2" gutterBottom>
+                            {trainee.user.firstName} {trainee.user.lastName}
+                          </Typography>
+                        </Grid>
+                        <Grid item>
+                          {trainee.status === Status.FirstTime && (
+                            <Chip
+                              label="Pierwszy raz"
+                              variant="outlined"
+                              sx={{
+                                fontSize: 12,
+                                borderColor: green.A200,
+                                color: green.A200,
+                              }}
+                            />
+                          )}
+                          {trainee.status === Status.Expectation && (
+                            <Chip
+                              label="Oczekiwanie"
+                              variant="filled"
+                              sx={{
+                                fontSize: 12,
+                                border: 1,
+                                backgroundColor: grey[100],
+                                borderColor: grey[900],
+                                color: grey[900],
+                              }}
+                            />
+                          )}
+                          {trainee.status ===
+                            Status.AcceptedWithoutContract && (
+                            <Chip
+                              label="Zaakceptowano (bez umowy)"
+                              variant="filled"
+                              sx={{
+                                fontSize: 12,
+                                border: 1,
+                                backgroundColor: lightGreen[100],
+                                borderColor: lightGreen[900],
+                                color: lightGreen[900],
+                              }}
+                            />
+                          )}
+                          {trainee.status === Status.Accepted && (
+                            <Chip
+                              label="Zaakceptowano"
+                              variant="filled"
+                              sx={{
+                                fontSize: 12,
+                                border: 1,
+                                backgroundColor: green[100],
+                                borderColor: green[900],
+                                color: green[900],
+                              }}
+                            />
+                          )}
+                        </Grid>
+                      </Grid>
+                    }
                   />
                 </ListItem>
                 {openDeleteTrainee && (
@@ -121,18 +259,18 @@ const ManageMembersDialog: React.FC<ManageMembersDialogProps> = (props) => {
                     acceptText="Usuń"
                     onClose={() => setOpenDeleteTrainee(false)}
                     onAccept={() =>
-                      mutate({
+                      deleteTrainee({
                         input: {
-                          id: trainee.id,
+                          userId: trainee.user.id,
                         },
                       })
                     }
                   />
                 )}
-                {openParentInfo && (
+                {openDetailedInfo && (
                   <TraineeInfoDialog
                     trainee={trainee}
-                    open={openParentInfo}
+                    open={openDetailedInfo}
                     handleClose={handleDialogClose}
                   />
                 )}

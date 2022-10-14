@@ -25,28 +25,20 @@ const theme = createTheme({
 });
 
 theme.typography.h1 = {
-  fontSize: "1.8rem",
+  fontSize: 50,
   fontWeight: 600,
 
-  [theme.breakpoints.up("sm")]: {
-    fontSize: "2.1rem",
-  },
-
-  [theme.breakpoints.up("md")]: {
-    fontSize: "3.6rem",
+  [theme.breakpoints.down("sm")]: {
+    fontSize: 30,
   },
 };
 
 theme.typography.h2 = {
-  fontSize: "1.4rem",
+  fontSize: 30,
   fontWeight: 200,
 
-  [theme.breakpoints.up("sm")]: {
-    fontSize: "1.7rem",
-  },
-
-  [theme.breakpoints.up("md")]: {
-    fontSize: "2.8rem",
+  [theme.breakpoints.down("sm")]: {
+    fontSize: 20,
   },
 };
 

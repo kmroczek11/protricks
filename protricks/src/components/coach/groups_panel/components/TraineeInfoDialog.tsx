@@ -10,8 +10,8 @@ import Typography from "@mui/material/Typography";
 interface TraineeInfoDialogProps {
   trainee: {
     id: string;
-    age: number;
-    parentName: string;
+    birthDate: string;
+    traineeName: string;
     parentPhone: any;
     parentEmail: any;
     feedback: string;
@@ -25,13 +25,23 @@ interface TraineeInfoDialogProps {
 const TraineeInfoDialog: React.FC<TraineeInfoDialogProps> = (props) => {
   const { trainee, open, handleClose, onClose } = props;
   const { firstName, lastName } = trainee.user;
-  const { age, parentName, parentPhone, parentEmail, feedback } = trainee;
+  const { birthDate, traineeName, parentPhone, parentEmail, feedback } = trainee;
+
+  const convertToPlDate = (d: string) =>
+    new Date(d).toLocaleDateString("pl-pl");
+
   const info = [
-    { name: "Wiek dziecka", value: age },
-    { name: "Imię i nazwisko rodzica", value: parentName },
+    {
+      name: "Data urodzenia",
+      value: convertToPlDate(birthDate),
+    },
+    { name: "Imię i nazwisko wychowanka", value: traineeName },
     { name: "Numer telefonu rodzica", value: parentPhone },
     { name: "E-mail rodzica", value: parentEmail },
-    { name: "Skąd dowiedzieli się Państwo o zajęciach?", value: feedback },
+    {
+      name: "Skąd dowiedzieli się Państwo o zajęciach?",
+      value: feedback ? feedback : "-",
+    },
   ];
 
   return (

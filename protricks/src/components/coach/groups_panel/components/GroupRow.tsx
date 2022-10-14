@@ -8,24 +8,30 @@ import TableHead from "@mui/material/TableHead";
 import Typography from "@mui/material/Typography";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { StyledTableCell, StyledTableRow } from "..";
-import EditIcon from "@mui/icons-material/Edit";
+import {
+  StyledExerciseTableCell,
+  StyledExerciseTableRow,
+  StyledTableCell,
+  StyledTableRow,
+} from "..";
 import EditGroupForm from "./EditGroupForm";
 import { ColorButton } from "../../../lib";
+import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EmailIcon from "@mui/icons-material/Email";
+import GroupIcon from "@mui/icons-material/Group";
 import CustomDialog from "../../../lib/CustomDialog";
 import CreateExerciseForm from "./CreateExerciseForm";
-import { useDeleteGroupMutation } from "../../../../generated/graphql";
+import { Status, useDeleteGroupMutation } from "../../../../generated/graphql";
 import ExerciseRow from "./ExerciseRow";
 import Tooltip from "@mui/material/Tooltip";
-import GroupIcon from "@mui/icons-material/Group";
 import ManageMembersDialog from "./ManageMembersDialog";
 import { useAuth } from "../../../auth";
-import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
-import * as XLSX from "xlsx";
+import SendEmailToGroupDialog from "./SendEmailToGroupDialog";
 
 interface RowProps {
+  i: number;
   item: {
     id: string;
     name: string;
@@ -38,18 +44,19 @@ interface RowProps {
     }> | null;
     trainees?: Array<{
       id: string;
-      age: number;
-      parentName: string;
+      birthDate: string;
+      traineeName: string;
       parentPhone: any;
       parentEmail: any;
       feedback: string;
+      status: Status;
       user: { id: string; firstName: string; lastName: string };
     }> | null;
   };
 }
 
 const GroupRow: React.FC<RowProps> = (props) => {
-  const { item } = props;
+  const { i, item } = props;
   const { id, name, limit, exercises, trainees } = item;
   const { accessClient } = useAuth();
   const [openExercises, setOpenExercises] = useState(false);
@@ -57,56 +64,20 @@ const GroupRow: React.FC<RowProps> = (props) => {
   const [openCreateExercise, setOpenCreateExercise] = useState(false);
   const [openDeleteGroup, setOpenDeleteGroup] = useState(false);
   const [openManageMembersDialog, setOpenManageMembersDialog] = useState(false);
+  const [openSendEmailToGroupDialog, setOpenSendEmailToGroupDialog] =
+    useState(false);
 
   const { isLoading, mutate } = useDeleteGroupMutation<Error>(
     accessClient!,
     {}
   );
 
-  const handleDialogClose = () => {
+  const handleManageMembersDialogClose = () => {
     setOpenManageMembersDialog(false);
   };
 
-  const convertToPlDate = (d: any) => new Date(d).toLocaleDateString("pl-pl");
-
-  const getTimeWithoutMiliseconds = (t: string) => {
-    return t.slice(0, -3);
-  };
-
-  const data = [
-    ...exercises?.slice(0, 4).map(
-      ({ day, start, end }) =>
-        trainees?.map(({ user }, i) =>
-          i == 0
-            ? {
-                Dzień: convertToPlDate(day),
-                Godzina: `${getTimeWithoutMiliseconds(
-                  start
-                )} - ${getTimeWithoutMiliseconds(end)}`,
-                "Lp.": ++i,
-                Imię: user.firstName,
-                Nazwisko: user.lastName,
-                Obecny: "",
-              }
-            : {
-                Dzień: "",
-                Godzina: "",
-                "Lp.": ++i,
-                Imię: user.firstName,
-                Nazwisko: user.lastName,
-                Obecny: "",
-              }
-        )!
-    )!,
-  ];
-
-  const handleExport = () => {
-    const wb = XLSX.utils.book_new(),
-      ws = XLSX.utils.json_to_sheet(data.flat());
-
-    XLSX.utils.book_append_sheet(wb, ws, "MySheet1");
-
-    XLSX.writeFile(wb, `Lista obecności.xlsx`);
+  const handleSendEmailToGroupDialogClose = () => {
+    setOpenSendEmailToGroupDialog(false);
   };
 
   return (
@@ -130,7 +101,7 @@ const GroupRow: React.FC<RowProps> = (props) => {
           </IconButton>
         </StyledTableCell>
         <StyledTableCell component="th" scope="row" align="center">
-          {id}
+          {i}
         </StyledTableCell>
         <StyledTableCell align="center">{name}</StyledTableCell>
         <StyledTableCell align="center">{limit}</StyledTableCell>
@@ -159,19 +130,26 @@ const GroupRow: React.FC<RowProps> = (props) => {
               <GroupIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Eksportuj listę obecności">
+
+          <Tooltip title="Wyślij e-mail do grupy">
             <IconButton
-              aria-label="export-attendance-list"
-              onClick={handleExport}
+              aria-label="send-email-to-group-list"
+              onClick={() => setOpenSendEmailToGroupDialog(true)}
             >
-              <FormatListNumberedIcon />
+              <EmailIcon />
             </IconButton>
           </Tooltip>
           <ManageMembersDialog
             groupName={name}
-            open={openManageMembersDialog}
-            handleClose={handleDialogClose}
             trainees={trainees}
+            open={openManageMembersDialog}
+            handleClose={handleManageMembersDialogClose}
+          />
+          <SendEmailToGroupDialog
+            groupId={id}
+            groupName={name}
+            open={openSendEmailToGroupDialog}
+            handleClose={handleSendEmailToGroupDialogClose}
           />
         </StyledTableCell>
       </StyledTableRow>
@@ -199,32 +177,41 @@ const GroupRow: React.FC<RowProps> = (props) => {
           }
         />
       )}
-      <StyledTableRow>
-        <StyledTableCell
-          style={{ paddingBottom: 0, paddingTop: 0 }}
+      <StyledExerciseTableRow>
+        <StyledExerciseTableCell
+          sx={{ paddingBottom: 0, paddingTop: 0 }}
           colSpan={6}
         >
           <Collapse in={openExercises} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
-              <Typography variant="h2" gutterBottom component="div">
+              <Typography
+                variant="h2"
+                gutterBottom
+                component="div"
+                color="secondary.contrastText"
+              >
                 Zajęcia
               </Typography>
               <Table size="small" aria-label="exercises">
                 <TableHead>
-                  <StyledTableRow>
-                    <StyledTableCell align="center">Id</StyledTableCell>
-                    <StyledTableCell align="center">Data</StyledTableCell>
-                    <StyledTableCell align="center">
+                  <StyledExerciseTableRow>
+                    <StyledExerciseTableCell align="center">
+                      Lp.
+                    </StyledExerciseTableCell>
+                    <StyledExerciseTableCell align="center">
+                      Data
+                    </StyledExerciseTableCell>
+                    <StyledExerciseTableCell align="center">
                       Godzina rozpoczęcia
-                    </StyledTableCell>
-                    <StyledTableCell align="center">
+                    </StyledExerciseTableCell>
+                    <StyledExerciseTableCell align="center">
                       Godzina zakończenia
-                    </StyledTableCell>
-                  </StyledTableRow>
+                    </StyledExerciseTableCell>
+                  </StyledExerciseTableRow>
                 </TableHead>
                 <TableBody>
-                  {exercises?.map((exercise) => (
-                    <ExerciseRow item={exercise} trainees={trainees} />
+                  {exercises?.map((exercise, i) => (
+                    <ExerciseRow i={++i} item={exercise} trainees={trainees} />
                   ))}
                   <StyledTableRow>
                     <StyledTableCell
@@ -257,8 +244,8 @@ const GroupRow: React.FC<RowProps> = (props) => {
               </Table>
             </Box>
           </Collapse>
-        </StyledTableCell>
-      </StyledTableRow>
+        </StyledExerciseTableCell>
+      </StyledExerciseTableRow>
     </React.Fragment>
   );
 };

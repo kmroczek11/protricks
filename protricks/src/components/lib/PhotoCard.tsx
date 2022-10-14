@@ -5,14 +5,16 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { PhotoCardObject } from "./PhotoCards";
+import { SxProps, Theme } from "@mui/system";
 
 interface PhotoCardProps {
   item: PhotoCardObject;
+  sxBackground?: SxProps<Theme>;
   onClick?: () => void;
 }
 
 const PhotoCard: React.FC<PhotoCardProps> = (props) => {
-  const { item, onClick } = props;
+  const { item, sxBackground,onClick } = props;
   const { name, imgSrc } = item;
 
   return (
@@ -20,23 +22,29 @@ const PhotoCard: React.FC<PhotoCardProps> = (props) => {
       sx={{
         height: 300,
         borderRadius: "4px 4px 40px",
+        ...sxBackground
       }}
     >
-      <CardActionArea
-        onClick={onClick}
-        sx={{ position: "relative" }}
-      >
+      <CardActionArea onClick={onClick} sx={{ position: "relative" }}>
         <CardMedia
           width="100%"
           height={300}
           component="img"
           image={imgSrc}
           alt={name}
+          sx={{backgroundSize:'cover'}}
         />
         <CardContent sx={{ position: "absolute", bottom: 0 }}>
-          <Typography gutterBottom variant="h5" color="primary" component="div">
-            {name}
-          </Typography>
+          {name && (
+            <Typography
+              gutterBottom
+              variant="h5"
+              color="primary"
+              component="div"
+            >
+              {name}
+            </Typography>
+          )}
         </CardContent>
       </CardActionArea>
     </Card>

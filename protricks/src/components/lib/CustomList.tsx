@@ -3,38 +3,59 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
-import ListSubheader from "@mui/material/ListSubheader";
 import Link from "@mui/material/Link";
+import { Theme } from "@mui/material/styles";
+import { SxProps } from "@mui/system";
+import Typography from "@mui/material/Typography";
+import { OverridableComponent } from "@mui/material/OverridableComponent";
+import { SvgIconTypeMap } from "@mui/material/SvgIcon";
 
 interface CustomListObject {
   name: string;
+  ElementIcon?: OverridableComponent<SvgIconTypeMap<{}, "svg">> & {
+    muiName: string;
+  };
 }
 
 interface CustomListProps {
   items: CustomListObject[];
+  sxBackground?: SxProps<Theme>;
   variant: string;
+  size?: "sm" | "lg";
+  center?: boolean;
   title?: string;
-  Icon?: React.ReactElement;
+  ListIcon?: OverridableComponent<SvgIconTypeMap<{}, "svg">> & {
+    muiName: string;
+  };
 }
 
 const CustomList: React.FC<CustomListProps> = (props) => {
-  const { items, variant, title, Icon } = props;
+  const {
+    items,
+    sxBackground,
+    variant,
+    size = "sm",
+    center,
+    title,
+    ListIcon,
+  } = props;
 
   return (
     <List
-      sx={{ color: `${variant}.contrastText` }}
+      sx={sxBackground}
       aria-labelledby="nested-list-subheader"
       subheader={
-        <ListSubheader
-          sx={{ bgcolor: `${variant}.main`, color: `${variant}.contrastText` }}
-          component="div"
-          id="nested-list-subheader"
+        <Typography
+          variant={size === "lg" ? "h1" : "sm" ? "subtitle1" : undefined}
+          align={center ? "center" : undefined}
+          color={`${variant}.contrastText`}
+          gutterBottom
         >
           {title}
-        </ListSubheader>
+        </Typography>
       }
     >
-      {items.map(({ name }, i) => (
+      {items.map(({ name, ElementIcon }, i) => (
         <Link
           key={i}
           // href={path}
@@ -55,8 +76,19 @@ const CustomList: React.FC<CustomListProps> = (props) => {
             disablePadding
           >
             <ListItemButton>
-              {Icon}
-              <ListItemText primary={name} />
+              {ListIcon && <ListIcon sx={{ width: 60, height: 60 }} />}
+              {ElementIcon && <ElementIcon sx={{ width: 60, height: 60 }} />}
+              <ListItemText
+                primary={
+                  <Typography
+                    variant={size === "lg" ? "h2" : "sm" ? "body1" : undefined}
+                    align={center ? "center" : undefined}
+                    gutterBottom
+                  >
+                    {name}
+                  </Typography>
+                }
+              />
             </ListItemButton>
           </ListItem>
         </Link>

@@ -2,18 +2,17 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import React, { useState } from "react";
-import { ColorButton } from "../../lib";
+import { ColorButton, CustomAlert, LoadingScreen } from "../../lib";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import LoadingScreen from "../../lib/LoadingScreen";
-import CustomAlert from "../../lib/CustomAlert";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import YupPassword from "yup-password";
 import { useAuth } from "..";
+import Typography from "@mui/material/Typography";
 YupPassword(Yup); // extend yup
 
 interface RegisterDialogProps {
@@ -33,7 +32,7 @@ const userExistsMessage = "Użytkownik o podanym adresie e-mail już istnieje.";
 
 const RegisterDialog: React.FC<RegisterDialogProps> = (props) => {
   const { open, handleClose, setActive } = props;
-  const { isRegisterLoading,registerError,register } = useAuth();
+  const { isRegisterLoading, registerError, register } = useAuth();
 
   return isRegisterLoading ? (
     <LoadingScreen />
@@ -171,6 +170,17 @@ const RegisterDialog: React.FC<RegisterDialogProps> = (props) => {
                       error={errors.password && touched.password ? true : false}
                       required
                     />
+                  </Grid>
+                  <Grid item>
+                    <Typography
+                      variant="body2"
+                      fontWeight="bold"
+                      align="center"
+                      gutterBottom
+                    >
+                      *W przypadku, gdy konto zakłada rodzic, należy
+                      podać dane rodzica
+                    </Typography>
                   </Grid>
                   {registerError === "User already exists" ? (
                     <CustomAlert severity="error" msg={userExistsMessage} />

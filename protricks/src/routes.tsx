@@ -10,6 +10,7 @@ import { Role } from "./generated/graphql";
 import CoachExercisesPanel from "./components/coach/coach_exercises";
 import Shows from "./components/shows";
 import Meetings from "./components/meetings";
+import Lost from "./components/lost";
 
 export interface NavItemsObject {
   id: number;
@@ -89,7 +90,7 @@ export const routes: RouteObject[] = [
           </Protected>
         ),
       },
-      { path: "*", element: null },
+      { path: "*", element: <Lost /> },
     ],
   },
 ];

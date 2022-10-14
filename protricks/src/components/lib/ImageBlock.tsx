@@ -1,23 +1,26 @@
 import React from "react";
-import { Theme, styled } from "@mui/material/styles";
-import { SxProps } from "@mui/system";
+import { Theme, SxProps, styled } from "@mui/material/styles";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 
-const ImageBlockRoot = styled("section")(({ theme }) => ({
-  color: theme.palette.primary.contrastText,
-  position: "relative",
-  display: "flex",
-  alignItems: "center",
+interface ImageBlockRootProps {
+  desktopHeight?: number;
+  mobileHeight?: number;
+}
 
-  [theme.breakpoints.up("sm")]: {
-    height: "55vh",
-  },
+const ImageBlockRoot = styled("section")<ImageBlockRootProps>(
+  ({ theme, desktopHeight, mobileHeight }) => ({
+    color: theme.palette.primary.contrastText,
+    position: "relative",
+    display: "flex",
+    alignItems: "center",
+    height: desktopHeight || 700,
 
-  [theme.breakpoints.up("md")]: {
-    height: "80vh",
-  },
-}));
+    [theme.breakpoints.down("sm")]: {
+      height: mobileHeight || 360,
+    },
+  })
+);
 
 const Background = styled("img")({
   width: "100%",
@@ -32,17 +35,28 @@ const Background = styled("img")({
 
 interface ImageBlockProps {
   imgSrc: string;
+  desktopHeight?: number;
+  mobileHeight?: number;
+
   secondImgSrc?: string;
-  sxBackground?: SxProps<Theme>;
+
+  sxImgBg?: SxProps<Theme>;
 }
 
 const ImageBlock: React.FC<
   React.HTMLAttributes<HTMLDivElement> & ImageBlockProps
 > = (props) => {
-  const { imgSrc, secondImgSrc, sxBackground, children } = props;
+  const {
+    imgSrc,
+    secondImgSrc,
+    desktopHeight,
+    mobileHeight,
+    sxImgBg,
+    children,
+  } = props;
 
   return (
-    <ImageBlockRoot>
+    <ImageBlockRoot mobileHeight={mobileHeight!}>
       <Container
         sx={{
           display: "flex",
@@ -58,7 +72,6 @@ const ImageBlock: React.FC<
             right: 0,
             top: 0,
             bottom: 0,
-            backgroundColor: "common.black",
             opacity: 0.5,
             zIndex: -1,
           }}
@@ -70,7 +83,7 @@ const ImageBlock: React.FC<
           <Background
             src={imgSrc}
             alt="Nie udało się załadować obrazu"
-            sx={sxBackground}
+            sx={sxImgBg}
           />
         </picture>
       </Container>

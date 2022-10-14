@@ -9,7 +9,6 @@ import {
   useGetAllCoachesQuery,
 } from "../../../generated/graphql";
 import accessClient from "../../../graphql/clients/accessClient";
-import PhotoCardsLoader from "../../lib/PhotoCardsLoader";
 import TraineeForm from "./TraineeForm";
 import Paperwork from "./Paperwork";
 import {
@@ -17,9 +16,9 @@ import {
   CreateTraineeMutationVariables,
   useCreateTraineeMutation,
 } from "../../../generated/graphql";
-import CustomDialog from "../../lib/CustomDialog";
 import { useAuth } from "../../auth";
 import { useLocation } from "react-router-dom";
+import { CustomDialog, PhotoCardsLoader } from "../../lib";
 
 const logInMessage = `Aby móc zapisać się na zajęcia, 
 konieczne jest posiadanie konta na naszej stronie. 
@@ -28,7 +27,7 @@ Jeśli już je założyłeś, zaloguj się, również klikając tę samą ikonk�
 
 const limitReachedMessage = `Niestety, w danej grupie osiągnięto już maksymalną liczbę uczestników. Proszę wybrać inną grupę.`;
 
-const successMessage = `Pomyślnie zapisano do grupy. Aby wyświetlić najbliższe zajęcia, otwórz panel użytkownika, a następnie wybierz zakładkę 'Moje zajęcia'.`;
+const successMessage = `Pomyślnie zapisano do grupy. Na maila wysłaliśmy krótki przewodnik, jak przygotować się do pierwszych zajęć. Aby wyświetlić najbliższe zajęcia, otwórz panel użytkownika, a następnie wybierz zakładkę "Moje zajęcia".`;
 
 const MultistepForm: () => JSX.Element | null = () => {
   const [step, setStep] = useState<number>(0);
@@ -80,18 +79,21 @@ const MultistepForm: () => JSX.Element | null = () => {
 
   const joinGroup = () => {
     if (user) {
-      const { age, parentName, parentPhone, parentEmail, feedback } = extraData;
+      const { birthDate, traineeName, parentPhone, parentEmail, feedback } =
+        extraData;
+
       mutate({
         input: {
           userId: user.id,
           groupId: selectedGroup!,
-          age: age,
-          parentName: parentName,
+          birthDate: birthDate.toISOString().split('T')[0],
+          traineeName,
           parentPhone: `+${parentPhone}`,
-          parentEmail: parentEmail,
-          feedback: feedback,
+          parentEmail,
+          feedback,
         },
       });
+
       setStep(0);
     } else {
       setRegistrationStatus("Not logged in");
@@ -110,7 +112,7 @@ const MultistepForm: () => JSX.Element | null = () => {
               data?.coaches?.map(({ city }) => ({
                 id: city.id,
                 name: city.name,
-                imgSrc: `${process.env.REACT_APP_ENDPOINT}/uploads/${city.citySrc}`,
+                imgSrc: `${process.env.REACT_APP_HOST}/images/${city.citySrc}`,
               }))!
             }
             onClick={setName}

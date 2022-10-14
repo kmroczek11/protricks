@@ -1,6 +1,6 @@
 import { useState } from "react";
 import TextField from "@mui/material/TextField";
-import { ColorButton } from "../../../lib";
+import { ColorButton, LoadingScreen } from "../../../lib";
 import Box from "@mui/material/Box";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -8,8 +8,6 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import plLocale from "date-fns/locale/pl";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { useEditExerciseMutation } from "../../../../generated/graphql";
-import accessClient from "../../../../graphql/clients/accessClient";
-import LoadingScreen from "../../../lib/LoadingScreen";
 import { useAuth } from "../../../auth";
 
 interface EditExerciseFormProps {
@@ -27,7 +25,10 @@ const EditExerciseForm: React.FC<EditExerciseFormProps> = (props) => {
   const { accessClient } = useAuth();
   const [formExerciseValues, setFormExerciseValues] = useState(payload);
 
-  const { isLoading, mutate } = useEditExerciseMutation<Error>(accessClient!, {});
+  const { isLoading, mutate } = useEditExerciseMutation<Error>(
+    accessClient!,
+    {}
+  );
 
   const handleDayChange = (value: Event | null) => {
     setFormExerciseValues({
@@ -37,7 +38,6 @@ const EditExerciseForm: React.FC<EditExerciseFormProps> = (props) => {
   };
 
   const handleStartChange = (value: Event | null) => {
-    console.log(value as unknown as string);
     setFormExerciseValues({
       ...formExerciseValues,
       start: convertDateToTime(value as unknown as Date),
@@ -75,6 +75,12 @@ const EditExerciseForm: React.FC<EditExerciseFormProps> = (props) => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        backgroundColor: "secondary.main",
+        "& .MuiInputLabel-root, .MuiInputBase-root, .MuiButton-root, .MuiSvgIcon-root":
+          {
+            borderColor: "secondary.contrastText",
+            color: "secondary.contrastText",
+          },
       }}
       noValidate
       autoComplete="off"

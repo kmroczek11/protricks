@@ -3,10 +3,12 @@ import Grid from "@mui/material/Grid";
 import { useAuth } from "../../auth";
 import {
   GetTraineeQuery,
+  Status,
   useGetTraineeQuery,
 } from "../../../generated/graphql";
 import ExerciseCard from "./components/ExerciseCard";
-import LoadingScreen from "../../lib/LoadingScreen";
+import { LoadingScreen } from "../../lib";
+import JoinGroupAlert from "./components/JoinGroupAlert";
 
 const TraineeExercisesPanel: React.FC = () => {
   const { user, accessClient } = useAuth();
@@ -53,13 +55,15 @@ const TraineeExercisesPanel: React.FC = () => {
     <Grid
       container
       spacing={5}
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        p: 10,
-      }}
+      direction="column"
+      justifyContent="center"
+      p={{ xs: 6, md: 10 }}
     >
+      <Grid item>
+        {data?.getTrainee.status === Status.Expectation && (
+          <JoinGroupAlert traineeId={data?.getTrainee.id!} />
+        )}
+      </Grid>
       <Grid
         item
         sx={{

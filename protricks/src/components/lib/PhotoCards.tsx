@@ -5,8 +5,8 @@ import { SxProps } from "@mui/system";
 import PhotoCard from "./PhotoCard";
 
 export interface PhotoCardObject {
-  name: string;
-  imgSrc?: string;
+  imgSrc: string;
+  name?: string;
 }
 
 interface PhotoCardsProps {

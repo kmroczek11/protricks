@@ -1,6 +1,6 @@
 import { useState } from "react";
 import TextField from "@mui/material/TextField";
-import { ColorButton } from "../../lib";
+import { ColorButton, CustomAlert, LoadingScreen } from "../../lib";
 import Box from "@mui/material/Box";
 import {
   useChangePasswordMutation,
@@ -8,8 +8,6 @@ import {
   ChangePasswordMutationVariables,
 } from "../../../generated/graphql";
 import { useAuth } from "../../auth";
-import LoadingScreen from "../../lib/LoadingScreen";
-import CustomAlert from "../../lib/CustomAlert";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import YupPassword from "yup-password";
@@ -20,12 +18,13 @@ const defaultValues = {
   newPassword: "",
 };
 
+const successMessage = "Hasło zostało zmienione.";
+
 const invalidPasswordMessage = "Nieprawidłowe hasło.";
 
 const PasswordForm: React.FC = () => {
   const { user, accessClient, setUser } = useAuth();
-  const [changePasswordStatus, setChangePasswordStatus] =
-    useState<string>("");
+  const [changePasswordStatus, setChangePasswordStatus] = useState<string>("");
 
   const { isLoading, mutate } = useChangePasswordMutation<Error>(
     accessClient!,
@@ -42,6 +41,7 @@ const PasswordForm: React.FC = () => {
       ) => {
         // queryClient.invalidateQueries('GetAllAuthors');
         setUser(data.changePassword.user);
+        setChangePasswordStatus("Success");
       },
     }
   );
@@ -144,7 +144,9 @@ const PasswordForm: React.FC = () => {
                   Zmień
                 </ColorButton>
               </Box>
-              {changePasswordStatus === "Invalid password" ? (
+              {changePasswordStatus === "Success" ? (
+                <CustomAlert severity="success" msg={successMessage} />
+              ) : changePasswordStatus === "Invalid password" ? (
                 <CustomAlert severity="error" msg={invalidPasswordMessage} />
               ) : (
                 changePasswordStatus && (
