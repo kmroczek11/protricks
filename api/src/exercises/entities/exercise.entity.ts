@@ -1,22 +1,26 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import {
-  LocalDateResolver,
-  LocalTimeResolver,
-} from 'graphql-scalars';
+import { LocalDateResolver, LocalTimeResolver } from 'graphql-scalars';
 import { Group } from 'src/groups/entities/group.entity';
 import {
   Entity,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   Column,
   ManyToOne,
+  BeforeInsert,
 } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
 
 @Entity('exercises')
 @ObjectType()
 export class Exercise {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn()
   @Field()
   id: string;
+
+  @BeforeInsert()
+  setId() {
+    this.id = uuidv4();
+  }
 
   @Column({ type: 'date' })
   @Field(() => LocalDateResolver)

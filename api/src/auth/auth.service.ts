@@ -5,10 +5,9 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/entities/user.entity';
 import { RegisterUserInput } from './inputs/register-user.input';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { UsersService } from 'src/users/users.service';
 import { ChangeEmailInput } from './inputs/change-email.input';
 import { ChangePasswordInput } from './inputs/change-password.input';
@@ -16,12 +15,16 @@ import { FileUpload } from 'graphql-upload';
 import { ChangeProfilePicInput } from './inputs/change-profile-pic.input';
 import { removeFile, saveImage } from './helpers/image-storage';
 import { TokensService } from 'src/tokens/tokens.service';
+import { ForgotPasswordInput } from './inputs/forgot-password.input';
+import { MailService } from 'src/mail/mail.service';
+import * as generator from 'generate-password';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly tokensService: TokensService,
+    private readonly mailService: MailService,
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
@@ -88,9 +91,12 @@ export class AuthService {
   }
 
   async changeEmail(changeEmailInput: ChangeEmailInput) {
-    const updatedUser = await this.usersService.update(changeEmailInput.id, {
-      email: changeEmailInput.email,
-    });
+    const updatedUser = await this.usersService.updateById(
+      changeEmailInput.id,
+      {
+        email: changeEmailInput.email,
+      },
+    );
 
     return this.logIn(updatedUser);
   }
@@ -114,9 +120,12 @@ export class AuthService {
 
     const newPassword = await bcrypt.hash(changePasswordInput.newPassword, 12);
 
-    const updatedUser = await this.usersService.update(changePasswordInput.id, {
-      password: newPassword,
-    });
+    const updatedUser = await this.usersService.updateById(
+      changePasswordInput.id,
+      {
+        password: newPassword,
+      },
+    );
 
     return {
       user: updatedUser,
@@ -140,12 +149,31 @@ export class AuthService {
 
     const filePath = await saveImage(imageData, 'users');
 
-    const updatedUser = await this.usersService.update(userId, {
+    const updatedUser = await this.usersService.updateById(userId, {
       imgSrc: filePath,
     });
 
     return {
       user: updatedUser,
+    };
+  }
+
+  async forgotPassword(forgotPasswordInput: ForgotPasswordInput) {
+    const { email } = forgotPasswordInput;
+
+    const generatedPassword = generator.generate({
+      length: 10,
+      numbers: true,
+    });
+
+    const password = await bcrypt.hash(generatedPassword, 12);
+
+    await this.usersService.updateByEmail(email, { password });
+
+    await this.mailService.sendForgotPassword(email, generatedPassword);
+
+    return {
+      msg: 'Success',
     };
   }
 }

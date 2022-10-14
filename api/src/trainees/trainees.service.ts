@@ -8,8 +8,9 @@ import { User } from 'src/users/entities/user.entity';
 import { GroupsService } from 'src/groups/groups.service';
 import { Group } from 'src/groups/entities/group.entity';
 import { Role } from 'src/users/entities/role.enum';
-import { JwtService } from '@nestjs/jwt';
 import { DeleteTraineeInput } from './dto/delete-trainee.input';
+import { MailService } from 'src/mail/mail.service';
+import { Status } from './entities/status.enum';
 
 @Injectable()
 export class TraineesService {
@@ -17,13 +18,14 @@ export class TraineesService {
     @InjectRepository(Trainee)
     private readonly traineesRepository: Repository<Trainee>,
     private readonly usersService: UsersService,
-    private readonly groupsService: GroupsService
+    private readonly groupsService: GroupsService,
+    private readonly mailService: MailService,
   ) {}
 
   async createTrainee(createTraineeInput: CreateTraineeInput) {
     const group = await this.groupsService.findOne(createTraineeInput.groupId);
 
-    const total = await this.groupsService.count();
+    const total = group.trainees.length;
 
     if (total + 1 > group.limit) {
       throw new HttpException('Limit reached', HttpStatus.BAD_REQUEST);
@@ -37,6 +39,8 @@ export class TraineesService {
 
     const user = await this.usersService.findOneById(createTraineeInput.userId);
 
+    await this.mailService.sendFirstTimeMessage(user.email);
+
     return {
       user: user,
     };
@@ -47,7 +51,7 @@ export class TraineesService {
   }
 
   findOne(id: string) {
-    return this.traineesRepository.findOne(id);
+    return this.traineesRepository.findOne({ where: { id } });
   }
 
   getUser(userId: string): Promise<User> {
@@ -59,13 +63,21 @@ export class TraineesService {
   }
 
   getTrainee(userId: string) {
-    return this.traineesRepository.findOne({ userId: userId });
+    return this.traineesRepository.findOne({ where: { userId } });
   }
 
   async deleteTrainee(deleteTraineeInput: DeleteTraineeInput) {
-    await this.traineesRepository.delete(deleteTraineeInput.id);
+    const { userId } = deleteTraineeInput;
 
-    await this.usersService.deleteRole(deleteTraineeInput.id, Role.TRAINEE);
+    await this.traineesRepository.delete({ userId });
+
+    await this.usersService.deleteRole(userId, Role.TRAINEE);
+
+    return this.traineesRepository.findOne({ where: { userId } });
+  }
+
+  async changeStatus(id: string, status: Status) {
+    await this.traineesRepository.update(id, { status });
 
     return {
       msg: 'Success',

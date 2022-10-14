@@ -17,6 +17,8 @@ import { EditGroupResponse } from './dto/edit-group-response';
 import { DeleteGroupResponse } from './dto/delete-group-response';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/users/entities/role.enum';
+import { SendEmailToGroupResponse } from './dto/send-email-to-group-response';
+import { SendEmailToGroupInput } from './dto/send-email-to-group.input';
 
 @Resolver(() => Group)
 export class GroupsResolver {
@@ -55,5 +57,13 @@ export class GroupsResolver {
     @Args('id') id: string,
   ): Promise<DeleteGroupResponse> {
     return this.groupsService.deleteGroup(id);
+  }
+
+  @Mutation(() => SendEmailToGroupResponse)
+  @Roles(Role.COACH)
+  sendEmailToGroup(
+    @Args('sendEmailToGroupInput') sendEmailToGroupInput: SendEmailToGroupInput,
+  ): Promise<SendEmailToGroupResponse> {
+    return this.groupsService.sendMessageToGroup(sendEmailToGroupInput);
   }
 }

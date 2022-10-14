@@ -15,5 +15,8 @@ export class CreateCityInput {
   roomSrc: string;
 
   @Field()
-  coachId: string;
+  mapSrc: string;
+
+  @Field()
+  priceListSrc: string;
 }

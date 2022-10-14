@@ -3,22 +3,21 @@ import { IsString } from 'class-validator';
 import { Coach } from 'src/coaches/entities/coach.entity';
 import { Trainee } from 'src/trainees/entities/trainee.entity';
 import { Exclude } from 'class-transformer';
-import {
-  Column,
-  Entity,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-  OneToOne,
-} from 'typeorm';
-
+import { Column, Entity, PrimaryColumn, OneToOne, BeforeInsert } from 'typeorm';
 import { Role } from './role.enum';
+import { v4 as uuidv4 } from 'uuid';
 
 @Entity('users')
 @ObjectType()
 export class User {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn()
   @Field()
   id: string;
+
+  @BeforeInsert()
+  setId() {
+    this.id = uuidv4();
+  }
 
   @Column({ default: '' })
   @Field()

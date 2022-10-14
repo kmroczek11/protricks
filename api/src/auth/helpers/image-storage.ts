@@ -33,7 +33,7 @@ export const saveImage = async (image: FileUpload, folder: string) => {
 
   const filePath = folder + '/' + fileName;
 
-  const imagesFolderPath = join(process.cwd(), `uploads`);
+  const imagesFolderPath = join(process.cwd(), `static/images`);
 
   const fullImagePath = join(imagesFolderPath + '/' + filePath);
 

@@ -19,6 +19,8 @@ import { AutoLogInGuard } from './guards/autoLogIn-auth.guard';
 import { AutoLogInUserInput } from './inputs/autoLogIn-user.input';
 import { CurrentUser } from './decorators/user.decorator';
 import { User } from 'src/users/entities/user.entity';
+import { ForgotPasswordInput } from './inputs/forgot-password.input';
+import { ForgotPasswordResponse } from './responses/forgot-password-response';
 
 @Resolver()
 export class AuthResolver {
@@ -49,15 +51,12 @@ export class AuthResolver {
     @Args('autoLogInUserInput') autoLogInUserInput: AutoLogInUserInput,
     @CurrentUser() user: User,
   ) {
-    console.log('autoLogin')
     return this.authService.logIn(user);
   }
 
   @Mutation(() => LogOutResponse)
   @Roles(Role.USER)
-  logOutUser(
-    @CurrentUser() user: User,
-  ): Promise<LogOutResponse> {
+  logOutUser(@CurrentUser() user: User): Promise<LogOutResponse> {
     return this.authService.logOut(user);
   }
 
@@ -81,5 +80,13 @@ export class AuthResolver {
     @Args('changeProfilePicInput') changeProfilePicInput: ChangeProfilePicInput,
   ) {
     return this.authService.changeProfilePic(changeProfilePicInput);
+  }
+
+  @Mutation(() => ForgotPasswordResponse)
+  @Public()
+  forgotPassword(
+    @Args('forgotPasswordInput') forgotPasswordInput: ForgotPasswordInput,
+  ) {
+    return this.authService.forgotPassword(forgotPasswordInput);
   }
 }

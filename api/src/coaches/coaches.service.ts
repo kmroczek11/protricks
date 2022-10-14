@@ -14,7 +14,7 @@ export class CoachesService {
     @InjectRepository(Coach)
     private readonly coachesRepository: Repository<Coach>,
     private readonly usersService: UsersService,
-    private readonly citiesService: CitiesService,
+    private readonly citiesService: CitiesService
   ) {}
 
   createCoach(createCoachInput: CreateCoachInput) {
@@ -28,11 +28,11 @@ export class CoachesService {
   }
 
   findOne(id: string) {
-    return this.coachesRepository.findOne(id);
+    return this.coachesRepository.findOne({ where: { id } });
   }
 
   getCoach(userId: string) {
-    return this.coachesRepository.findOne({ userId: userId });
+    return this.coachesRepository.findOne({ where: { userId } });
   }
 
   getUser(userId: string): Promise<User> {

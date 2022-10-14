@@ -1,5 +1,6 @@
-import { Field, InputType, Int } from '@nestjs/graphql';
+import { Field, InputType } from '@nestjs/graphql';
 import { EmailAddressResolver, PhoneNumberResolver } from 'graphql-scalars';
+import { LocalDateResolver } from 'graphql-scalars';
 
 @InputType()
 export class CreateTraineeInput {
@@ -9,11 +10,11 @@ export class CreateTraineeInput {
   @Field()
   groupId: string;
 
-  @Field(() => Int)
-  age: number;
+  @Field(() => LocalDateResolver)
+  birthDate: string;
 
   @Field()
-  parentName: string;
+  traineeName: string;
 
   @Field(() => PhoneNumberResolver)
   parentPhone: string;
@@ -22,5 +23,5 @@ export class CreateTraineeInput {
   parentEmail: string;
 
   @Field()
-  feedback: string;
+  feedback?: string;
 }

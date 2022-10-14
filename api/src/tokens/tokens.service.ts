@@ -5,8 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
-import { User } from 'src/users/entities/user.entity';
+import * as bcrypt from 'bcryptjs';
 import { UsersService } from 'src/users/users.service';
 import { RefreshTokenInput } from './dto/refresh-token.input';
 
@@ -106,12 +105,9 @@ export class TokensService {
   async setCurrentRefreshToken(refreshToken: string, email: string) {
     const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 12);
 
-    return await this.usersService.update(
-      { email },
-      {
-        refreshToken: currentHashedRefreshToken,
-      },
-    );
+    return await this.usersService.updateByEmail(email, {
+      refreshToken: currentHashedRefreshToken,
+    });
   }
 
   async refreshToken(refreshTokenInput: RefreshTokenInput) {
@@ -130,11 +126,8 @@ export class TokensService {
       );
     }
 
-    return this.usersService.update(
-      { email },
-      {
-        refreshToken: null,
-      },
-    );
+    return this.usersService.updateByEmail(email, {
+      refreshToken: null,
+    });
   }
 }

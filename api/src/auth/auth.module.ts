@@ -8,15 +8,16 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { LoginStrategy } from './strategies/login.strategy';
 import { AutoLoginStrategy } from './strategies/autoLogin.strategy';
 import { TokensModule } from 'src/tokens/tokens.module';
+import { MailModule } from 'src/mail/mail.module';
 
 @Module({
-  imports: [UsersModule, PassportModule, Upload, TokensModule],
+  imports: [UsersModule, PassportModule, Upload, TokensModule, MailModule],
   providers: [
     AuthService,
     AuthResolver,
     LoginStrategy,
     AutoLoginStrategy,
-    JwtStrategy
+    JwtStrategy,
   ],
 })
 export class AuthModule {}

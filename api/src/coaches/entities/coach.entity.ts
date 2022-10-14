@@ -4,18 +4,33 @@ import { Group } from 'src/groups/entities/group.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
   Entity,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   OneToOne,
   Column,
   OneToMany,
+  BeforeInsert,
 } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
 
 @Entity('coaches')
 @ObjectType()
 export class Coach {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn()
   @Field()
   id: string;
+
+  @BeforeInsert()
+  setId() {
+    this.id = uuidv4();
+  }
+
+  @Column({ default: '' })
+  @Field()
+  facebookUrl: string;
+
+  @Column({ default: '' })
+  @Field()
+  instagramUrl: string;
 
   @Column()
   userId: string;
@@ -23,7 +38,7 @@ export class Coach {
   @OneToOne(() => User, (user) => user.coach)
   user: User;
 
-  @Column({nullable:true})
+  @Column({ nullable: true })
   cityId?: string;
 
   @OneToOne(() => City, (city) => city.coach)

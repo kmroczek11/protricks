@@ -1,21 +1,30 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { EmailAddressResolver, PhoneNumberResolver } from 'graphql-scalars';
 import { Group } from 'src/groups/entities/group.entity';
 import { User } from 'src/users/entities/user.entity';
+import { LocalDateResolver } from 'graphql-scalars';
 import {
   Entity,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   OneToOne,
   Column,
   ManyToOne,
+  BeforeInsert,
 } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
+import { Status } from './status.enum';
 
 @Entity('trainees')
 @ObjectType()
 export class Trainee {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn()
   @Field()
   id: string;
+
+  @BeforeInsert()
+  setId() {
+    this.id = uuidv4();
+  }
 
   @Column()
   userId: string;
@@ -30,13 +39,13 @@ export class Trainee {
   @ManyToOne(() => Group, (group) => group.trainees)
   group: Group;
 
-  @Column()
-  @Field(() => Int)
-  age: number;
+  @Column({ type: 'date' })
+  @Field(() => LocalDateResolver)
+  birthDate: string;
 
   @Column()
   @Field()
-  parentName: string;
+  traineeName: string;
 
   @Column()
   @Field(() => PhoneNumberResolver)
@@ -46,7 +55,11 @@ export class Trainee {
   @Field(() => EmailAddressResolver)
   parentEmail: string;
 
-  @Column()
+  @Column({ default: '' })
   @Field()
-  feedback: string;
+  feedback?: string;
+
+  @Column('varchar', { default: Status.FIRST_TIME })
+  @Field(() => Status)
+  status: Status;
 }

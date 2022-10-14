@@ -1,24 +1,29 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { type } from 'os';
 import { City } from 'src/cities/entities/city.entity';
 import { Coach } from 'src/coaches/entities/coach.entity';
 import { Exercise } from 'src/exercises/entities/exercise.entity';
 import { Trainee } from 'src/trainees/entities/trainee.entity';
-import { User } from 'src/users/entities/user.entity';
 import {
   Entity,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   Column,
   ManyToOne,
   OneToMany,
+  BeforeInsert,
 } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
 
 @Entity('groups')
 @ObjectType()
 export class Group {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn()
   @Field()
   id: string;
+
+  @BeforeInsert()
+  setId() {
+    this.id = uuidv4();
+  }
 
   @Column({ default: '' })
   @Field()

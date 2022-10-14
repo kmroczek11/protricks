@@ -9,7 +9,7 @@ export class CitiesService {
   constructor(
     @InjectRepository(City)
     private readonly citiesRepository: Repository<City>,
-     ) {}
+  ) {}
 
   createCity(createCityInput: CreateCityInput): Promise<City> {
     const newCity = this.citiesRepository.create(createCityInput);
@@ -22,7 +22,7 @@ export class CitiesService {
   }
 
   findOne(id: string) {
-    return this.citiesRepository.findOne(id);
+    return this.citiesRepository.findOne({ where: { id } });
   }
 
   deleteCity(id: string): Promise<City> {

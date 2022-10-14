@@ -4,4 +4,7 @@ import { Field, InputType } from '@nestjs/graphql';
 export class CreateCoachInput {
   @Field()
   userId: string;
+
+  @Field()
+  cityId: string;
 }

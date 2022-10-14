@@ -41,11 +41,12 @@ enum Role {
 type Trainee {
   id: String!
   user: User!
-  age: Int!
-  parentName: String!
+  birthDate: LocalDate!
+  traineeName: String!
   parentPhone: PhoneNumber!
   parentEmail: EmailAddress!
   feedback: String!
+  status: Status!
   group: Group!
 }
 
@@ -59,6 +60,14 @@ A field whose value conforms to the standard internet email address format as sp
 """
 scalar EmailAddress @specifiedBy(url: "https://www.w3.org/Protocols/rfc822/")
 
+"""Trainee status"""
+enum Status {
+  FIRST_TIME
+  WAITING
+  ACCEPTED_WITHOUT_CONTRACT
+  ACCEPTED
+}
+
 type Group {
   id: String!
   name: String!
@@ -70,6 +79,8 @@ type Group {
 
 type Coach {
   id: String!
+  facebookUrl: String!
+  instagramUrl: String!
   city: City!
   groups: [Group!]
   user: User!
@@ -97,6 +108,10 @@ type DeleteGroupResponse {
   msg: String!
 }
 
+type SendEmailToGroupResponse {
+  msg: String!
+}
+
 type ChangeEmailResponse {
   refreshToken: String!
   user: User!
@@ -120,6 +135,10 @@ type ChangeProfilePicResponse {
 }
 
 type LogOutResponse {
+  msg: String!
+}
+
+type ForgotPasswordResponse {
   msg: String!
 }
 
@@ -150,10 +169,10 @@ type DeleteTraineeResponse {
 
 type Query {
   groups: [Group!]!
-  coaches: [Coach!]!
-  getCoach(id: String!): Coach!
   users: [User!]!
   findOne(email: String!): User!
+  coaches: [Coach!]!
+  getCoach(id: String!): Coach!
   exercises: [Exercise!]!
   trainees: [Trainee!]!
   getTrainee(id: String!): Trainee!
@@ -165,8 +184,9 @@ type Mutation {
   createGroup(createGroupInput: CreateGroupInput!): CreateGroupResponse!
   editGroup(editGroupInput: EditGroupInput!): EditGroupResponse!
   deleteGroup(id: String!): DeleteGroupResponse!
-  createCoach(createCoachInput: CreateCoachInput!): Coach!
+  sendEmailToGroup(sendEmailToGroupInput: SendEmailToGroupInput!): SendEmailToGroupResponse!
   createUser(createUserInput: CreateUserInput!): User!
+  createCoach(createCoachInput: CreateCoachInput!): Coach!
   registerUser(registerUserInput: RegisterUserInput!): LogInResponse!
   logInUser(logInUserInput: LogInUserInput!): LogInResponse!
   autoLogInUser(autoLogInUserInput: AutoLogInUserInput!): LogInResponse!
@@ -174,6 +194,7 @@ type Mutation {
   changeEmail(changeEmailInput: ChangeEmailInput!): ChangeEmailResponse!
   changePassword(changePasswordInput: ChangePasswordInput!): ChangePasswordResponse!
   changeProfilePic(changeProfilePicInput: ChangeProfilePicInput!): ChangeProfilePicResponse!
+  forgotPassword(forgotPasswordInput: ForgotPasswordInput!): ForgotPasswordResponse!
   refreshToken(refreshTokenInput: RefreshTokenInput!): RefreshTokenResponse!
   createExercise(createExerciseInput: CreateExerciseInput!): CreateExerciseResponse!
   editExercise(editExerciseInput: EditExerciseInput!): EditExerciseResponse!
@@ -187,7 +208,7 @@ input CreateCityInput {
   room: String!
   citySrc: String!
   roomSrc: String!
-  coachId: String!
+  mapSrc: String!
 }
 
 input CreateGroupInput {
@@ -202,8 +223,12 @@ input EditGroupInput {
   limit: Int!
 }
 
-input CreateCoachInput {
-  userId: String!
+input SendEmailToGroupInput {
+  groupId: String!
+  sender: String!
+  from: EmailAddress!
+  subject: String!
+  message: String!
 }
 
 input CreateUserInput {
@@ -212,6 +237,11 @@ input CreateUserInput {
   email: EmailAddress!
   password: String!
   roles: [Role!]
+}
+
+input CreateCoachInput {
+  userId: String!
+  cityId: String!
 }
 
 input RegisterUserInput {
@@ -250,6 +280,10 @@ input ChangeProfilePicInput {
 """File upload scalar type"""
 scalar Upload
 
+input ForgotPasswordInput {
+  email: EmailAddress!
+}
+
 input RefreshTokenInput {
   refreshToken: String!
 }
@@ -271,7 +305,7 @@ input EditExerciseInput {
 input CreateTraineeInput {
   userId: String!
   groupId: String!
-  age: Int!
+  birthDate: LocalDate!
   parentName: String!
   parentPhone: PhoneNumber!
   parentEmail: EmailAddress!
@@ -279,5 +313,5 @@ input CreateTraineeInput {
 }
 
 input DeleteTraineeInput {
-  id: String!
+  userId: String!
 }
