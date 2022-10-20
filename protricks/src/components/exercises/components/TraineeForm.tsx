@@ -63,6 +63,21 @@ const TraineeForm: React.FC<TraineeFormProps> = (props) => {
     form?.scrollIntoView();
   }, [form]);
 
+  const Calendar = ({ ...rest }) => (
+    <LocalizationProvider dateAdapter={AdapterDateFns} locale={plLocale}>
+      <DatePicker
+        {...rest}
+        InputProps={{
+          className: {
+            input: {
+              color: "#000",
+            },
+          },
+        }}
+      />
+    </LocalizationProvider>
+  );
+
   return visible ? (
     <Grid container spacing={5} justifyContent="center" alignItems="center">
       <Formik
@@ -120,39 +135,32 @@ const TraineeForm: React.FC<TraineeFormProps> = (props) => {
                   spacing={2}
                 >
                   <Grid item xs={12}>
-                    <LocalizationProvider
-                      dateAdapter={AdapterDateFns}
-                      locale={plLocale}
-                    >
-                      <DatePicker
-                        mask="__.__.____"
-                        label="Data urodzenia wychowanka"
-                        value={values.birthDate}
-                        onChange={(value) =>
-                          setFieldValue("birthDate", value, true)
-                        }
-                        renderInput={(params) => (
-                          <StyledTextField
-                            {...params}
-                            id="birthDate-input"
-                            name="birthDate"
-                            type="text"
-                            helperText={
-                              errors.birthDate &&
-                              touched.birthDate &&
-                              errors.birthDate
-                            }
-                            error={
-                              errors.birthDate && touched.birthDate
-                                ? true
-                                : false
-                            }
-                            fullWidth
-                            required
-                          />
-                        )}
-                      />
-                    </LocalizationProvider>
+                    <Calendar
+                      mask="__.__.____"
+                      label="Data urodzenia wychowanka"
+                      value={values.birthDate}
+                      onChange={(value) =>
+                        setFieldValue("birthDate", value, true)
+                      }
+                      renderInput={(params) => (
+                        <StyledTextField
+                          {...params}
+                          id="birthDate-input"
+                          name="birthDate"
+                          type="text"
+                          helperText={
+                            errors.birthDate &&
+                            touched.birthDate &&
+                            errors.birthDate
+                          }
+                          error={
+                            errors.birthDate && touched.birthDate ? true : false
+                          }
+                          fullWidth
+                          required
+                        />
+                      )}
+                    />
                   </Grid>
                   <Grid item xs={12}>
                     <StyledTextField
