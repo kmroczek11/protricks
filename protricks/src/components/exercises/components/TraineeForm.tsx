@@ -1,3 +1,4 @@
+import React from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import { useEffect, useState } from "react";
@@ -13,6 +14,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import plLocale from "date-fns/locale/pl";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import { DatePickerProps } from "@mui/x-date-pickers/DatePicker/DatePicker";
 
 type FormValuesType = {
   birthDate: string;
@@ -63,17 +65,11 @@ const TraineeForm: React.FC<TraineeFormProps> = (props) => {
     form?.scrollIntoView();
   }, [form]);
 
-  const Calendar = ({ ...rest }) => (
+  const Calendar: React.FC<DatePickerProps> = ({ ...props }) => (
     <LocalizationProvider dateAdapter={AdapterDateFns} locale={plLocale}>
       <DatePicker
-        {...rest}
-        InputProps={{
-          className: {
-            input: {
-              color: "#000",
-            },
-          },
-        }}
+        {...props}
+
       />
     </LocalizationProvider>
   );
@@ -142,6 +138,9 @@ const TraineeForm: React.FC<TraineeFormProps> = (props) => {
                       onChange={(value) =>
                         setFieldValue("birthDate", value, true)
                       }
+                      InputProps={{
+                        color: "secondary",
+                      }}
                       renderInput={(params) => (
                         <StyledTextField
                           {...params}

@@ -22,16 +22,7 @@ const theme = createTheme({
     fontFamily: ["Inter", "sans-serif"].join(","),
     // Tell MUI what's the font-size on the html element is.
     htmlFontSize: 12,
-  },
-  components: {
-    MuiDatePicker: {
-      styleOverrides: {
-        root: {
-          color: "#000",
-        },
-      },
-    },
-  },
+  }
 });
 
 theme.typography.h1 = {

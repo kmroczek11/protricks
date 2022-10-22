@@ -13,6 +13,7 @@
     "@mui/lab": "latest",
     "@mui/material": "latest",
     "@mui/styled-engine-sc": "latest",
+    "@mui/styles": "^5.10.10",
     "@react-google-maps/api": "latest",
     "apollo-upload-client": "^17.0.0",
     "browser-image-compression": "^2.0.0",

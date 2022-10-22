@@ -211,7 +211,11 @@ const GroupRow: React.FC<RowProps> = (props) => {
                 </TableHead>
                 <TableBody>
                   {exercises?.map((exercise, i) => (
-                    <ExerciseRow i={++i} item={exercise} trainees={trainees} />
+                    <ExerciseRow i={++i}
+                      item={exercise}
+                      trainees={trainees}
+                      groupName={name}
+                    />
                   ))}
                   <StyledTableRow>
                     <StyledTableCell

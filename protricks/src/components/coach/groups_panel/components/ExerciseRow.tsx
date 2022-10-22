@@ -16,6 +16,8 @@ import * as XLSX from "xlsx";
 import { grey } from "@mui/material/colors";
 import { styled } from "@mui/material/styles";
 import { StyledExerciseTableCell, StyledExerciseTableRow } from "..";
+import DownloadIcon from '@mui/icons-material/Download';
+import AttendanceListDialog from "./AttendanceListDialog";
 
 const StyledIconButton = styled(IconButton)({
   "&:hover": {
@@ -25,6 +27,7 @@ const StyledIconButton = styled(IconButton)({
 
 interface RowProps {
   i: number;
+  groupName: string;
   item: {
     id: string;
     day: any;
@@ -39,11 +42,12 @@ interface RowProps {
 }
 
 const ExerciseRow: React.FC<RowProps> = (props) => {
-  const { i, item, trainees } = props;
+  const { i, item, groupName, trainees } = props;
   const { id, day, start, end } = item;
   const { accessClient } = useAuth();
   const [openEditExercise, setOpenEditExercise] = useState(false);
   const [openDeleteExercise, setOpenDeleteExercise] = useState(false);
+  const [openAttendanceList, setOpenAttendanceList] = useState(false);
 
   const { isLoading, mutate } = useDeleteExerciseMutation<Error>(
     accessClient!,
@@ -61,25 +65,25 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
     trainees?.map((trainee, i) =>
       i == 0
         ? {
-            Dzień: convertToPlDate(day),
-            Godzina: `${getTimeWithoutMiliseconds(
-              start
-            )} - ${getTimeWithoutMiliseconds(end)}`,
-            "Lp.": ++i,
-            Imię: trainee.user.firstName,
-            Nazwisko: trainee.user.lastName,
-            Obecny: "",
-            "Pierwszy raz": trainee.status === Status.FirstTime ? "tak" : "nie",
-          }
+          Dzień: convertToPlDate(day),
+          Godzina: `${getTimeWithoutMiliseconds(
+            start
+          )} - ${getTimeWithoutMiliseconds(end)}`,
+          "Lp.": ++i,
+          Imię: trainee.user.firstName,
+          Nazwisko: trainee.user.lastName,
+          Obecny: "",
+          "Pierwszy raz": trainee.status === Status.FirstTime ? "tak" : "nie",
+        }
         : {
-            Dzień: "",
-            Godzina: "",
-            "Lp.": ++i,
-            Imię: trainee.user.firstName,
-            Nazwisko: trainee.user.lastName,
-            Obecny: "",
-            "Pierwszy raz": trainee.status === Status.FirstTime ? "tak" : "nie",
-          }
+          Dzień: "",
+          Godzina: "",
+          "Lp.": ++i,
+          Imię: trainee.user.firstName,
+          Nazwisko: trainee.user.lastName,
+          Obecny: "",
+          "Pierwszy raz": trainee.status === Status.FirstTime ? "tak" : "nie",
+        }
     )!,
   ].flat();
 
@@ -131,12 +135,20 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
               <DeleteIcon />
             </StyledIconButton>
           </Tooltip>
+          <Tooltip title="Sprawdź listę obecności">
+            <StyledIconButton
+              aria-label="check-attendance-list"
+              onClick={() => setOpenAttendanceList(!openAttendanceList)}
+            >
+              <FormatListNumberedIcon />
+            </StyledIconButton>
+          </Tooltip>
           <Tooltip title="Eksportuj listę obecności">
             <StyledIconButton
               aria-label="export-attendance-list"
               onClick={handleExport}
             >
-              <FormatListNumberedIcon />
+              <DownloadIcon />
             </StyledIconButton>
           </Tooltip>
         </StyledExerciseTableCell>
@@ -165,6 +177,14 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
               id: id,
             })
           }
+        />
+      )}
+      {openAttendanceList && (
+        <AttendanceListDialog
+          groupName={groupName}
+          trainees={trainees}
+          open={openAttendanceList}
+          handleClose={() => setOpenAttendanceList(false)}
         />
       )}
     </React.Fragment>
