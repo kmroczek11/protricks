@@ -19,6 +19,7 @@ import { RolesGuard } from './auth/guards/roles.guard';
 import { GqlAuthGuard } from './auth/guards/gql-auth.guard';
 import { TokensModule } from './tokens/tokens.module';
 import { MailModule } from './mail/mail.module';
+import { GraphQLError, GraphQLFormattedError } from 'graphql/error/GraphQLError';
 
 @Module({
   imports: [
@@ -31,12 +32,12 @@ import { MailModule } from './mail/mail.module';
           : 'dist/schema.gql',
       ),
       uploads: false,
-      // formatError: (error: GraphQLError) => {
-      //   const graphQLFormattedError: GraphQLFormattedError = {
-      //     message: error?.extensions?.exception?.response?.message || error?.message,
-      //   };
-      //   return graphQLFormattedError;
-      // },
+      formatError: (error: GraphQLError) => {
+        const graphQLFormattedError: GraphQLFormattedError = {
+          message: error?.extensions?.exception?.code || error?.message,
+        };
+        return graphQLFormattedError;
+      },
     }),
     ConfigModule.forRoot({
       isGlobal: true,
