@@ -10,4 +10,7 @@ export class CreateGroupInput {
 
   @Field(() => Int)
   limit: number;
+
+  @Field(() => Number)
+  price:number;
 }

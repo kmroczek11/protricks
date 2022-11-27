@@ -34,6 +34,10 @@ export class Group {
   limit: number;
 
   @Column()
+  @Field(() => Number)
+  price:number;
+
+  @Column()
   coachId: string;
 
   @ManyToOne(() => Coach, (coach) => coach.groups)
