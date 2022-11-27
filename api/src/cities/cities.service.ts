@@ -28,6 +28,6 @@ export class CitiesService {
   deleteCity(id: string): Promise<City> {
     this.citiesRepository.delete(id);
 
-    return this.citiesRepository.findOne(id);
+    return this.citiesRepository.findOne({where:{id}});
   }
 }

@@ -20,6 +20,7 @@ import { GqlAuthGuard } from './auth/guards/gql-auth.guard';
 import { TokensModule } from './tokens/tokens.module';
 import { MailModule } from './mail/mail.module';
 import { GraphQLError, GraphQLFormattedError } from 'graphql/error/GraphQLError';
+import { AttendanceListModule } from './attendance-list/attendance-list.module';
 
 @Module({
   imports: [
@@ -84,6 +85,7 @@ import { GraphQLError, GraphQLFormattedError } from 'graphql/error/GraphQLError'
     ConfigModule,
     TokensModule,
     MailModule,
+    AttendanceListModule,
   ],
   controllers: [],
   providers: [

@@ -3,8 +3,13 @@ documents: './src/**/*.graphql'
 generates:
   ./src/generated/graphql.ts:
     plugins:
+      - add # Add this.
       - typescript
       - typescript-operations
       - typescript-react-query
     config:
+      content:
+        - // @ts-nocheck # Add this.
       fetcher: graphql-request
+      exposeQueryKeys: true
+      exposeFetcher: true

@@ -19,7 +19,7 @@ export class GroupsService {
     private readonly usersService: UsersService,
     private readonly coachesService: CoachesService,
     private readonly mailService: MailService,
-  ) {}
+  ) { }
 
   async createGroup(createGroupInput: CreateGroupInput) {
     const newGroup = this.groupsRepository.create(createGroupInput);
@@ -64,7 +64,7 @@ export class GroupsService {
   ): Promise<SendEmailToGroupResponse> {
     const { groupId, sender, from, subject, message } = sendEmailToGroupInput;
 
-    const group = await this.groupsRepository.findOne(groupId);
+    const group = await this.groupsRepository.findOne({ where: { id: groupId } });
 
     group.trainees.forEach(async (trainee) => {
       const user = await this.usersService.findOneById(trainee.userId);

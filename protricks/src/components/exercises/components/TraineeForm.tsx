@@ -65,7 +65,7 @@ const TraineeForm: React.FC<TraineeFormProps> = (props) => {
     form?.scrollIntoView();
   }, [form]);
 
-  const Calendar: React.FC<DatePickerProps> = ({ ...props }) => (
+  const Calendar: React.FC<any> = ({ ...props }) => (
     <LocalizationProvider dateAdapter={AdapterDateFns} locale={plLocale}>
       <DatePicker
         {...props}

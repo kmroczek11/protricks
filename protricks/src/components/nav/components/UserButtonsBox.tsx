@@ -102,15 +102,15 @@ const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
         display: "flex",
       }}
     >
-      {(!user || user?.roles == [Role.User]) && (
-        <ColorButton
-          color="secondary"
-          variant="contained"
-          sx={{ display: { xs: "none", md: "block" } }}
-          onClick={() => navigate("/zajecia#zarejestruj")}
-        >
-          Zapisz się na zajęcia
-        </ColorButton>
+      {(!user || JSON.stringify(user?.roles) == JSON.stringify([Role.User])) && (
+      <ColorButton
+        color="secondary"
+        variant="contained"
+        sx={{ display: { xs: "none", md: "block" } }}
+        onClick={() => navigate("/zajecia#zarejestruj")}
+      >
+        Zapisz się na zajęcia
+      </ColorButton>
       )}
       {!user ? (
         <React.Fragment>
