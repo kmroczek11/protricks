@@ -30,6 +30,7 @@ import Drawer from "@mui/material/Drawer";
 import { NavItemsObject } from "../../../routes";
 import Toolbar from "@mui/material/Toolbar";
 import Link from "@mui/material/Link";
+import createAccessClient from "../../../graphql/clients/accessClient";
 
 interface UserButtonsBoxProps {
   items: NavItemsObject[];
@@ -42,13 +43,13 @@ const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
   const { items } = props;
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-  const { user, accessClient, setUser } = useAuth();
+  const { user, setUser } = useAuth();
   const navigate = useNavigate();
   const [logoutStatus, setLogoutStatus] = useState<string>("");
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
 
   const { isLoading, mutate: logOut } = useLogOutUserMutation<Error>(
-    accessClient!,
+    createAccessClient(),
     {
       onError: (error: Error) => {
         let err: any = {};

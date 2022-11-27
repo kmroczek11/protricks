@@ -15,6 +15,7 @@ import { useAuth } from "../../auth";
 import Tooltip from "@mui/material/Tooltip";
 import imageCompression from "browser-image-compression";
 import { CustomAlert } from "../../lib";
+import createChangeProfilePicClient from "../../../graphql/clients/changeProfilePicClient";
 
 const stringToColor = (string: string) => {
   let hash = 0;
@@ -65,12 +66,12 @@ const invalidMimeType = "Nieprawidłowy typ MIME.";
 
 const UserAvatar: React.FC<UserAvatarProps> = (props) => {
   const { name, size, imgSrc, BadgeIcon } = props;
-  const { user, setUser, changeProfilePicClient } = useAuth();
+  const { user, setUser } = useAuth();
   const [changeProfilePicStatus, setChangeProfilePicStatus] =
     useState<string>("");
 
   const { isLoading, mutate } = useChangeProfilePicMutation<Error>(
-    changeProfilePicClient!,
+    createChangeProfilePicClient(),
     {
       onError: (error: Error) => {
         let err: any = {};

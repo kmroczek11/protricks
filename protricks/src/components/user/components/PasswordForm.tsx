@@ -11,6 +11,7 @@ import { useAuth } from "../../auth";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import YupPassword from "yup-password";
+import createAccessClient from "../../../graphql/clients/accessClient";
 YupPassword(Yup); // extend yup
 
 const defaultValues = {
@@ -23,11 +24,11 @@ const successMessage = "Hasło zostało zmienione.";
 const invalidPasswordMessage = "Nieprawidłowe hasło.";
 
 const PasswordForm: React.FC = () => {
-  const { user, accessClient, setUser } = useAuth();
+  const { user, setUser } = useAuth();
   const [changePasswordStatus, setChangePasswordStatus] = useState<string>("");
 
   const { isLoading, mutate } = useChangePasswordMutation<Error>(
-    accessClient!,
+    createAccessClient(),
     {
       onError: (error: Error) => {
         let err: any = {};

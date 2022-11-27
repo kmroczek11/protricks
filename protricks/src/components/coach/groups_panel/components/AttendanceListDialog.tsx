@@ -26,6 +26,7 @@ import { Theme, useTheme } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 import clsx from 'clsx';
 import Switch from '@mui/material/Switch';
+import createAccessClient from "../../../../graphql/clients/accessClient";
 
 interface AttendanceListDialogProps {
   groupName: string;
@@ -64,22 +65,21 @@ switch_primary: {
 
 const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
   const { groupName, open, trainees, handleClose, onClose } = props;
-  const { accessClient } = useAuth();
   const [openDeleteTrainee, setOpenDeleteTrainee] = useState(false);
   const theme = useTheme();
   const smScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const classes = useStyles();
 
   const { isLoading: isDeleteTraineeLoading, mutate: deleteTrainee } =
-    useDeleteTraineeMutation<Error>(accessClient!, {});
+    useDeleteTraineeMutation<Error>(createAccessClient(), {});
 
   const { isLoading: isAcceptToGroupLoading, mutate: acceptToGroup } =
-    useAcceptToGroupMutation<Error>(accessClient!, {});
+    useAcceptToGroupMutation<Error>(createAccessClient(), {});
 
   const {
     isLoading: isConfirmContractReceiptLoading,
     mutate: confirmContractReceipt,
-  } = useConfirmContractReceiptMutation<Error>(accessClient!, {});
+  } = useConfirmContractReceiptMutation<Error>(createAccessClient(), {});
 
   return isDeleteTraineeLoading ? (
     <LoadingScreen />

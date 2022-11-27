@@ -4,6 +4,7 @@ import { ColorButton, LoadingScreen } from "../../../lib";
 import Box from "@mui/material/Box";
 import { useCreateGroupMutation } from "../../../../generated/graphql";
 import { useAuth } from "../../../auth";
+import createAccessClient from "../../../../graphql/clients/accessClient";
 
 const defaultGroupValues = {
   name: "Nowa grupa",
@@ -17,10 +18,9 @@ interface CreateGroupFormProps {
 const CreateGroupForm: React.FC<CreateGroupFormProps> = (props) => {
   const { coachId } = props;
   const [formGroupValues, setFormGroupValues] = useState(defaultGroupValues);
-  const { accessClient } = useAuth();
 
   const { isLoading, mutate } = useCreateGroupMutation<Error>(
-    accessClient!,
+    createAccessClient(),
     {}
   );
 

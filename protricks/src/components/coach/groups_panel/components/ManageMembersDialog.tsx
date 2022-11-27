@@ -29,6 +29,7 @@ import Grid from "@mui/material/Grid";
 import { green, grey, lightGreen } from "@mui/material/colors";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material";
+import createAccessClient from "../../../../graphql/clients/accessClient";
 
 interface ManageMembersDialogProps {
   groupName: string;
@@ -49,22 +50,21 @@ interface ManageMembersDialogProps {
 
 const ManageMembersDialog: React.FC<ManageMembersDialogProps> = (props) => {
   const { groupName, open, trainees, handleClose, onClose } = props;
-  const { accessClient } = useAuth();
   const [openDeleteTrainee, setOpenDeleteTrainee] = useState(false);
   const [openDetailedInfo, setOpenDetailedInfo] = useState(false);
   const theme = useTheme();
   const smScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const { isLoading: isDeleteTraineeLoading, mutate: deleteTrainee } =
-    useDeleteTraineeMutation<Error>(accessClient!, {});
+    useDeleteTraineeMutation<Error>(createAccessClient(), {});
 
   const { isLoading: isAcceptToGroupLoading, mutate: acceptToGroup } =
-    useAcceptToGroupMutation<Error>(accessClient!, {});
+    useAcceptToGroupMutation<Error>(createAccessClient(), {});
 
   const {
     isLoading: isConfirmContractReceiptLoading,
     mutate: confirmContractReceipt,
-  } = useConfirmContractReceiptMutation<Error>(accessClient!, {});
+  } = useConfirmContractReceiptMutation<Error>(createAccessClient(), {});
 
   const handleDialogClose = () => {
     setOpenDetailedInfo(false);

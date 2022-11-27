@@ -4,6 +4,7 @@ import { ColorButton, LoadingScreen } from "../../../lib";
 import Box from "@mui/material/Box";
 import { useEditGroupMutation } from "../../../../generated/graphql";
 import { useAuth } from "../../../auth";
+import createAccessClient from "../../../../graphql/clients/accessClient";
 
 interface EditGroupFormProps {
   item: {
@@ -16,10 +17,9 @@ interface EditGroupFormProps {
 const EditGroupForm: React.FC<EditGroupFormProps> = (props) => {
   const { item } = props;
   const { id, ...payload } = item;
-  const { accessClient } = useAuth();
   const [formGroupValues, setFormGroupValues] = useState(payload);
 
-  const { isLoading, mutate } = useEditGroupMutation<Error>(accessClient!, {});
+  const { isLoading, mutate } = useEditGroupMutation<Error>(createAccessClient(), {});
 
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;

@@ -13,6 +13,7 @@ import {
   useJoinGroupMutation,
 } from "../../../../generated/graphql";
 import { useAuth } from "../../../auth";
+import createAccessClient from "../../../../graphql/clients/accessClient";
 
 interface JoinGroupAlertProps {
   traineeId: string;
@@ -23,12 +24,12 @@ const successMessage =
 
 const JoinGroupAlert: React.FC<JoinGroupAlertProps> = (props) => {
   const { traineeId } = props;
-  const { user, setUser, accessClient } = useAuth();
+  const { user, setUser } = useAuth();
   const [deleteTraineeStatus, setDeleteTraineeStatus] = useState<string>("");
   const [joinGroupStatus, setJoinGroupStatus] = useState<string>("");
 
   const { isLoading: isDeleteTraineeLoading, mutate: deleteTrainee } =
-    useDeleteTraineeMutation<Error>(accessClient!, {
+    useDeleteTraineeMutation<Error>(createAccessClient(), {
       onError: (error: Error) => {
         let err: any = {};
         err.data = error;
@@ -45,7 +46,7 @@ const JoinGroupAlert: React.FC<JoinGroupAlertProps> = (props) => {
     });
 
   const { isLoading: isJoinGroupLoading, mutate: joinGroup } =
-    useJoinGroupMutation<Error>(accessClient!, {
+    useJoinGroupMutation<Error>(createAccessClient(), {
       onError: (error: Error) => {
         let err: any = {};
         err.data = error;

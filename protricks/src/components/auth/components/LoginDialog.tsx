@@ -12,6 +12,8 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useAuth } from "..";
 import ForgotPasswordDialog from "./ForgotPasswordDialog";
+import createAccessClient from "../../../graphql/clients/accessClient";
+import useLogInUser from "../hooks/useLogInUser";
 
 interface LogInDialogProps {
   open: boolean;
@@ -28,9 +30,26 @@ const invalidEmailOrPasswordError = "Nieprawidłowy e-mail lub hasło.";
 
 const LogInDialog: React.FC<LogInDialogProps> = (props) => {
   const { open, handleClose, setActive } = props;
-  const { isLogInLoading, logInError, logIn } = useAuth();
+  const { setUser } = useAuth();
   const [openForgotPasswordDialog, setOpenForgotPasswordDialog] =
     useState(false);
+  const [logInError, setLogInError] = useState<string>("");
+
+  const { isLogInLoading, logIn } = useLogInUser(
+    createAccessClient(),
+    setLogInError,
+    (data) => {
+      localStorage.setItem(
+        process.env.REACT_APP_REFRESH_TOKEN_SECRET!,
+        data.logInUser.refreshToken
+      );
+      localStorage.setItem(
+        process.env.REACT_APP_ACCESS_TOKEN_SECRET!,
+        data.logInUser.accessToken
+      );
+      setUser(data.logInUser.user);
+    }
+  );
 
   return isLogInLoading ? (
     <LoadingScreen />

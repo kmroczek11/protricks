@@ -9,6 +9,7 @@ import plLocale from "date-fns/locale/pl";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { useCreateExerciseMutation } from "../../../../generated/graphql";
 import { useAuth } from "../../../auth";
+import createAccessClient from "../../../../graphql/clients/accessClient";
 
 const defaultExerciseValues = {
   day: new Date(),
@@ -22,13 +23,12 @@ interface CreateExerciseFormProps {
 
 const CreateExerciseForm: React.FC<CreateExerciseFormProps> = (props) => {
   const { groupId } = props;
-  const { accessClient } = useAuth();
   const [formExerciseValues, setFormExerciseValues] = useState(
     defaultExerciseValues
   );
 
   const { isLoading, mutate } = useCreateExerciseMutation<Error>(
-    accessClient!,
+    createAccessClient(),
     {}
   );
 

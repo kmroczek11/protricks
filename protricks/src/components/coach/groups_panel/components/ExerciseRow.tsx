@@ -18,6 +18,7 @@ import { styled } from "@mui/material/styles";
 import { StyledExerciseTableCell, StyledExerciseTableRow } from "..";
 import DownloadIcon from '@mui/icons-material/Download';
 import AttendanceListDialog from "./AttendanceListDialog";
+import createAccessClient from "../../../../graphql/clients/accessClient";
 
 const StyledIconButton = styled(IconButton)({
   "&:hover": {
@@ -44,13 +45,12 @@ interface RowProps {
 const ExerciseRow: React.FC<RowProps> = (props) => {
   const { i, item, groupName, trainees } = props;
   const { id, day, start, end } = item;
-  const { accessClient } = useAuth();
   const [openEditExercise, setOpenEditExercise] = useState(false);
   const [openDeleteExercise, setOpenDeleteExercise] = useState(false);
   const [openAttendanceList, setOpenAttendanceList] = useState(false);
 
   const { isLoading, mutate } = useDeleteExerciseMutation<Error>(
-    accessClient!,
+    createAccessClient(),
     {}
   );
 

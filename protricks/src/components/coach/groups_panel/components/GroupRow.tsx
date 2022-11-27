@@ -29,6 +29,7 @@ import Tooltip from "@mui/material/Tooltip";
 import ManageMembersDialog from "./ManageMembersDialog";
 import { useAuth } from "../../../auth";
 import SendEmailToGroupDialog from "./SendEmailToGroupDialog";
+import createAccessClient from "../../../../graphql/clients/accessClient";
 
 interface RowProps {
   i: number;
@@ -58,7 +59,6 @@ interface RowProps {
 const GroupRow: React.FC<RowProps> = (props) => {
   const { i, item } = props;
   const { id, name, limit, exercises, trainees } = item;
-  const { accessClient } = useAuth();
   const [openExercises, setOpenExercises] = useState(false);
   const [openEditGroup, setOpenEditGroup] = useState(false);
   const [openCreateExercise, setOpenCreateExercise] = useState(false);
@@ -68,7 +68,7 @@ const GroupRow: React.FC<RowProps> = (props) => {
     useState(false);
 
   const { isLoading, mutate } = useDeleteGroupMutation<Error>(
-    accessClient!,
+    createAccessClient(),
     {}
   );
 

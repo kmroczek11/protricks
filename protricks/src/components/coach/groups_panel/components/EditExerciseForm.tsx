@@ -9,6 +9,7 @@ import plLocale from "date-fns/locale/pl";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { useEditExerciseMutation } from "../../../../generated/graphql";
 import { useAuth } from "../../../auth";
+import createAccessClient from "../../../../graphql/clients/accessClient";
 
 interface EditExerciseFormProps {
   item: {
@@ -22,11 +23,10 @@ interface EditExerciseFormProps {
 const EditExerciseForm: React.FC<EditExerciseFormProps> = (props) => {
   const { item } = props;
   const { id, ...payload } = item;
-  const { accessClient } = useAuth();
   const [formExerciseValues, setFormExerciseValues] = useState(payload);
 
   const { isLoading, mutate } = useEditExerciseMutation<Error>(
-    accessClient!,
+    createAccessClient(),
     {}
   );
 

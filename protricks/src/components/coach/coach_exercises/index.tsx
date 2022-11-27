@@ -5,12 +5,13 @@ import { useAuth } from "../../auth";
 import { GetCoachQuery, useGetCoachQuery } from "../../../generated/graphql";
 import ExerciseCard from "./components/ExerciseCard";
 import { LoadingScreen } from "../../lib";
+import createAccessClient from "../../../graphql/clients/accessClient";
 
 const CoachExercisesPanel: React.FC = () => {
-  const { user, accessClient } = useAuth();
+  const { user } = useAuth();
 
   const { data, isLoading } = useGetCoachQuery<GetCoachQuery, Error>(
-    accessClient!,
+    createAccessClient(),
     {
       id: user?.id!,
     },

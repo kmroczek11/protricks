@@ -17,6 +17,7 @@ import Grid from "@mui/material/Grid";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useAuth } from "../../../auth";
+import createAccessClient from "../../../../graphql/clients/accessClient";
 
 const defaultValues = {
   subject: "",
@@ -37,12 +38,12 @@ const SendEmailToGroupDialog: React.FC<SendEmailToGroupDialogProps> = (
   props
 ) => {
   const { groupId, groupName, open, handleClose, onClose } = props;
-  const { user, accessClient } = useAuth();
   const [sendEmailToGroupStatus, setSendEmailToGroupStatus] =
     useState<string>("");
+  const { user } = useAuth();
 
   const { isLoading, mutate } = useSendEmailToGroupMutation<Error>(
-    accessClient!,
+    createAccessClient(),
     {
       onError: (error: Error) => {
         let err: any = {};

@@ -9,15 +9,16 @@ import {
 import ExerciseCard from "./components/ExerciseCard";
 import { LoadingScreen } from "../../lib";
 import JoinGroupAlert from "./components/JoinGroupAlert";
+import createAccessClient from "../../../graphql/clients/accessClient";
 
 const TraineeExercisesPanel: React.FC = () => {
-  const { user, accessClient } = useAuth();
+  const { user} = useAuth();
 
   const { data, isLoading, error, refetch } = useGetTraineeQuery<
     GetTraineeQuery,
     Error
   >(
-    accessClient!,
+    createAccessClient(),
     {
       id: user?.id!,
     },

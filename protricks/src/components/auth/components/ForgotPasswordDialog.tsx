@@ -16,6 +16,7 @@ import {
   ForgotPasswordMutationVariables,
   useForgotPasswordMutation,
 } from "../../../generated/graphql";
+import createAccessClient from "../../../graphql/clients/accessClient";
 
 interface LogInDialogProps {
   open: boolean;
@@ -31,11 +32,10 @@ const successMessage =
 
 const ForgotPasswordDialog: React.FC<LogInDialogProps> = (props) => {
   const { open, handleClose } = props;
-  const { accessClient } = useAuth();
   const [forgotPasswordStatus, setForgotPasswordStatus] = useState<string>("");
 
   const { isLoading, mutate } = useForgotPasswordMutation<Error>(
-    accessClient!,
+    createAccessClient(),
     {
       onError: (error: Error) => {
         let err: any = {};

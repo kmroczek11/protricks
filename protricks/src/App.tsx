@@ -50,9 +50,11 @@ const App: React.FC = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <QueryClientProvider client={queryClient} contextSharing={true}>
-        <AuthProvider>{element}</AuthProvider>
-      </QueryClientProvider>
+      <AuthProvider>
+        <QueryClientProvider client={queryClient} contextSharing={true}>
+          {element}
+        </QueryClientProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 };

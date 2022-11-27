@@ -10,6 +10,7 @@ import {
 import { useAuth } from "../../auth";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
+import createAccessClient from "../../../graphql/clients/accessClient";
 
 const defaultValues = {
   newEmail: "",
@@ -18,10 +19,10 @@ const defaultValues = {
 const successMessage = "E-mail został zmieniony.";
 
 const EmailForm: React.FC = () => {
-  const { user, setUser, accessClient } = useAuth();
+  const { user, setUser } = useAuth();
   const [changeEmailStatus, setChangeEmailStatus] = useState<string>("");
 
-  const { isLoading, mutate } = useChangeEmailMutation<Error>(accessClient!, {
+  const { isLoading, mutate } = useChangeEmailMutation<Error>(createAccessClient(), {
     onError: (error: Error) => {
       let err: any = {};
       err.data = error;
