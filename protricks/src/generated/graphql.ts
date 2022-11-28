@@ -38,6 +38,12 @@ export type AcceptToGroupResponse = {
   msg: Scalars['String'];
 };
 
+export type Attendance = {
+  __typename?: 'Attendance';
+  id: Scalars['String'];
+  user: User;
+};
+
 export type AutoLogInUserInput = {
   userId: Scalars['String'];
 };
@@ -107,6 +113,12 @@ export type ConfirmContractReceiptResponse = {
   msg: Scalars['String'];
 };
 
+export type CreateAttendanceInput = {
+  payed: Scalars['Boolean'];
+  present: Scalars['Boolean'];
+  userId: Scalars['String'];
+};
+
 export type CreateCityInput = {
   citySrc: Scalars['String'];
   mapSrc: Scalars['String'];
@@ -137,6 +149,7 @@ export type CreateGroupInput = {
   coachId: Scalars['String'];
   limit: Scalars['Int'];
   name: Scalars['String'];
+  price: Scalars['Float'];
 };
 
 export type CreateGroupResponse = {
@@ -234,6 +247,7 @@ export type Group = {
   id: Scalars['String'];
   limit: Scalars['Int'];
   name: Scalars['String'];
+  price: Scalars['Float'];
   trainees?: Maybe<Array<Trainee>>;
 };
 
@@ -272,6 +286,7 @@ export type Mutation = {
   changePassword: ChangePasswordResponse;
   changeProfilePic: ChangeProfilePicResponse;
   confirmContractReceipt: ConfirmContractReceiptResponse;
+  createAttendance: Attendance;
   createCity: City;
   createCoach: Coach;
   createExercise: CreateExerciseResponse;
@@ -321,6 +336,11 @@ export type MutationChangeProfilePicArgs = {
 
 export type MutationConfirmContractReceiptArgs = {
   confirmContractReceiptInput: ConfirmContractReceiptInput;
+};
+
+
+export type MutationCreateAttendanceArgs = {
+  createAttendanceInput: CreateAttendanceInput;
 };
 
 
@@ -419,6 +439,7 @@ export type Query = {
   exercises: Array<Exercise>;
   findOne: User;
   getCoach: Coach;
+  getTotalPrice: Scalars['Float'];
   getTrainee: Trainee;
   groups: Array<Group>;
   trainees: Array<Trainee>;
@@ -433,6 +454,11 @@ export type QueryFindOneArgs = {
 
 export type QueryGetCoachArgs = {
   id: Scalars['String'];
+};
+
+
+export type QueryGetTotalPriceArgs = {
+  userId: Scalars['String'];
 };
 
 

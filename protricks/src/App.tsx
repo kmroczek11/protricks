@@ -2,7 +2,7 @@ import React from "react";
 import { useRoutes } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { routes } from "./routes";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "./components/auth";
 import type {} from "@mui/x-date-pickers/themeAugmentation";
 
@@ -49,13 +49,11 @@ const App: React.FC = () => {
   const element = useRoutes(routes);
 
   return (
-    <ThemeProvider theme={theme}>
-      <AuthProvider>
-        <QueryClientProvider client={queryClient} contextSharing={true}>
-          {element}
-        </QueryClientProvider>
-      </AuthProvider>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider theme={theme}>
+        <AuthProvider>{element}</AuthProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 };
 

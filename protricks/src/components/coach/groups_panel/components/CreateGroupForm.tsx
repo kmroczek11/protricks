@@ -74,6 +74,7 @@ const CreateGroupForm: React.FC<CreateGroupFormProps> = (props) => {
               coachId: coachId,
               name: formGroupValues.name,
               limit: formGroupValues.limit,
+              price: 50,
             },
           })
         }
