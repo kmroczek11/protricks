@@ -4,7 +4,7 @@ import { User } from 'src/users/entities/user.entity';
 import { Entity, PrimaryColumn, Column, OneToOne, BeforeInsert } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
-@Entity('cities')
+@Entity('attendance')
 @ObjectType()
 export class Attendance {
   @PrimaryColumn()
@@ -25,4 +25,7 @@ export class Attendance {
 
   @Column()
   present: boolean;
+
+  @Column()
+  payed: boolean;
 }

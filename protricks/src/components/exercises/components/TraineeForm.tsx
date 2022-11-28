@@ -14,7 +14,6 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import plLocale from "date-fns/locale/pl";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { DatePickerProps } from "@mui/x-date-pickers/DatePicker/DatePicker";
 
 type FormValuesType = {
   birthDate: string;
@@ -290,7 +289,7 @@ const TraineeForm: React.FC<TraineeFormProps> = (props) => {
                             Wyrażam zgodę na przetwarzanie moich danych
                             osobowych. Więcej informacji znajdziesz{" "}
                             <a
-                              href="/static/documents/umowa.pdf"
+                              href="/static/documents/rodo.pdf"
                               target="_blank"
                               rel="noopener noreferrer"
                             >

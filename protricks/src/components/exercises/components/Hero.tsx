@@ -1,7 +1,7 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
 import { ImageBlock } from "../../lib";
-const imgUrl = "/static/images/exercises/hero.jpeg";
+const imgUrl = "/static/images/exercises/hero.jpg";
 
 const Hero: React.FC = () => {
   return (
