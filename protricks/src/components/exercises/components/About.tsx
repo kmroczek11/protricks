@@ -3,55 +3,44 @@ import Container from "@mui/material/Container";
 import LooksOneOutlinedIcon from "@mui/icons-material/LooksOneOutlined";
 import LooksTwoOutlinedIcon from "@mui/icons-material/LooksTwoOutlined";
 import Looks3OutlinedIcon from "@mui/icons-material/Looks3Outlined";
-import Looks4OutlinedIcon from "@mui/icons-material/Looks4Outlined";
-import Looks5OutlinedIcon from "@mui/icons-material/Looks5Outlined";
-import Looks6OutlinedIcon from "@mui/icons-material/Looks6Outlined";
-import { CustomList, ColorButton } from "../../lib";
+import { ColorButton } from "../../lib";
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 import { useNavigate } from "react-router-dom";
+import Typography from "@mui/material/Typography";
+import CustomExercisesList from "./CustomExercisesList";
 
 const txt = [
   {
-    name: "Na zajęciach stawiamy na bezpieczeństwo uczestników.",
+    title: "Rozgrzewka",
+    text: `Podopiecznych od początku uczymy,
+    Jak ważna ona jest do podniesienia efektywności
+    Treningowej i uniknięcia kontuzji.
+    Każda nasza rozgrzewka oparta jest o protokół R.A.M.P.
+    Dlatego jest tak bardzo skuteczna.`,
+    titleColor: "error.main",
     ElementIcon: LooksOneOutlinedIcon,
   },
   {
-    name: `Pierwsza z nich to rozgrzewka.
-        Naszych podopiecznych od samego początku uczymy jak
-        ważna ona jest do podniesienia efektywności treningowej
-        i uniknięcia kontuzji.`,
+    title: "Część akrobatyczna",
+    text: `Czyli to, co wszyscy lubimy najbardziej.
+    Tutaj uczymy się wszystkich salt, przerzutów,
+    Kształtujemy koordynację ruchową,
+    Zwinność oraz walczymy ze strachem, oczywiście w
+    Kontrolowanych warunkach.`,
+    titleColor: "#424242",
     ElementIcon: LooksTwoOutlinedIcon,
   },
   {
-    name: `Każda nasza rozgrzewka oparta jest o protokół R.A.M.P.
-        Dlatego jest tak bardzo skuteczna.`,
+    title: "Rozciąganie/Wzmacnianie/Zabawa",
+    text: `Na samym końcu jednostki treningowej, w
+    Zależności od decyzji trenera oraz poziomu
+    Zaawansowania grupy, robimy krótkie wzmacnianie,
+    Poprawiające siłę i szybkość, rozciąganie, które dba
+    O odpowiednie zakresy ruchu lub zabawę ruchową,
+    Która udoskonala koordynację, poprawia zwinność,
+    A zarazem przynosi mnóstwo frajdy.`,
+    titleColor: "#01579b",
     ElementIcon: Looks3OutlinedIcon,
-  },
-  {
-    name: `Drugi element zajęć to część akrobatyczna, czyli to co
-        wszyscy lubimy najbardziej. Tutaj uczymy się wszystkich
-        salt, przerzutów, kształtujemy koordynację ruchową,
-        zwinność oraz walczymy z strachem, oczywiście w
-        kontrolowanych warunkach.`,
-    ElementIcon: Looks4OutlinedIcon,
-  },
-  {
-    name: `Kolejna część treningu to krótkie wzmacnianie połączone
-        z zabawą. Chcemy, żeby nasi podopieczni byli jak najbardziej
-        sprawni oraz odporni na wszelkie kontuzję, stąd regularnie
-        na każdym treningu dbamy tak o ich bezpieczeństwo.`,
-    ElementIcon: Looks5OutlinedIcon,
-  },
-  {
-    name: `Ostatnią już część ale nie mniej ważną jest rozciąganie.
-        Pomimo, że nie długie, to nie zawsze każdy je lubi ale w ten
-        sposób rozwijamy u podopiecznych samodyscyplinę.
-        Pokazujemy, że czasami trzeba się trochę poświecić, żeby
-        dojść do swojego celu. Ten element treningu jest również
-        bardzo ważny w uniknięciu kontuzji. Odpowiedni zakres
-        ruchu także ułatwia naukę elementów akrobatycznych oraz
-        może poprawić te które już potrafimy.`,
-    ElementIcon: Looks6OutlinedIcon,
   },
 ];
 
@@ -80,13 +69,28 @@ const About: React.FC = () => {
           Zapisz się
         </ColorButton>
       </Container>
-      <CustomList
-        title="JAK WYGLĄDAJĄ NASZE ZAJĘCIA?"
-        items={txt}
-        variant="primary"
-        size="lg"
-        center
-      />
+      <Typography variant="h1" align="center" textTransform="uppercase">
+        Jak wyglądają nasze zajęcia?
+      </Typography>
+      <Typography
+        variant="h2"
+        align="center"
+        px={10}
+        py={3}
+        textTransform="uppercase"
+      >
+        Na zajęciach stawiamy na bezpieczeństwo uczestników, rozwijanie u nich
+        pasji, budowaniu relacji oraz kształtowaniu zdrowych nawyków ruchowych.
+      </Typography>
+      <Container>
+        <CustomExercisesList
+          title="Nasze zajęcia składają się z 3 głównych części"
+          items={txt}
+          variant="primary"
+          size="lg"
+          center
+        />
+      </Container>
     </Container>
   );
 };
