@@ -197,7 +197,18 @@ const RegisterDialog: React.FC<RegisterDialogProps> = (props) => {
                       align="center"
                       gutterBottom
                     >
-                      *W przypadku, gdy konto zakłada podopieczny, należy
+                      * Hasło musi się składać z min. 8 znaków, 
+                      zawierać dużą literę oraz znak specjalny (!@# itp.)
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography
+                      variant="body2"
+                      fontWeight="bold"
+                      align="center"
+                      gutterBottom
+                    >
+                      ** W przypadku, gdy konto zakłada podopieczny, należy
                       podać dane rodzica
                     </Typography>
                   </Grid>

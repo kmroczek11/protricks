@@ -31,6 +31,7 @@ import { NavItemsObject } from "../../../routes";
 import Toolbar from "@mui/material/Toolbar";
 import Link from "@mui/material/Link";
 import createAccessClient from "../../../graphql/clients/accessClient";
+import PaymentIcon from "@mui/icons-material/Payment";
 
 interface UserButtonsBoxProps {
   items: NavItemsObject[];
@@ -103,15 +104,16 @@ const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
         display: "flex",
       }}
     >
-      {(!user || JSON.stringify(user?.roles) == JSON.stringify([Role.User])) && (
-      <ColorButton
-        color="secondary"
-        variant="contained"
-        sx={{ display: { xs: "none", md: "block" } }}
-        onClick={() => navigate("/zajecia#zarejestruj")}
-      >
-        Zapisz się na zajęcia
-      </ColorButton>
+      {(!user ||
+        JSON.stringify(user?.roles) == JSON.stringify([Role.User])) && (
+        <ColorButton
+          color="secondary"
+          variant="contained"
+          sx={{ display: { xs: "none", md: "block" } }}
+          onClick={() => navigate("/zajecia#zarejestruj")}
+        >
+          Zapisz się na zajęcia
+        </ColorButton>
       )}
       {!user ? (
         <React.Fragment>
@@ -189,6 +191,14 @@ const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
                   <ListAltIcon fontSize="small" />
                 </ListItemIcon>
                 Moje zajęcia
+              </MenuItem>
+            )}
+            {user.roles.includes(Role.Trainee) && (
+              <MenuItem onClick={() => navigate("/uczen/platnosci")}>
+                <ListItemIcon>
+                  <PaymentIcon fontSize="small" />
+                </ListItemIcon>
+                Płatności
               </MenuItem>
             )}
             <MenuItem sx={{ justifyContent: "center" }}>

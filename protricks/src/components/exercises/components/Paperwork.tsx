@@ -4,7 +4,7 @@ import { IconButton } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
-import { Document, Page } from "react-pdf/dist/esm/entry.webpack";
+import { Document, Page } from 'react-pdf/dist/esm/entry.webpack5';
 import ButtonGroup from "@mui/material/ButtonGroup";
 import { ColorButton } from "../../lib";
 import Checkbox from "@mui/material/Checkbox";
@@ -16,18 +16,17 @@ interface PaperworkProps {
   prevStep: () => void;
 }
 
-const options = {
-  cMapUrl: "cmaps/",
-  cMapPacked: true,
-  standardFontDataUrl: "standard_fonts/",
-};
-
 const Paperwork: React.FC<PaperworkProps> = (props) => {
   const { visible, nextStep, prevStep } = props;
-  const [file, setFile] = useState("/static/documents/regulamin.pdf");
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [accepted, setAccepted] = useState(false);
+
+  const options = {
+    cMapUrl: "cmaps/",
+    cMapPacked: true,
+    standardFontDataUrl: "standard_fonts/",
+  };
 
   const onDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
@@ -72,7 +71,7 @@ const Paperwork: React.FC<PaperworkProps> = (props) => {
           }}
         >
           <Document
-            file={file}
+            file="/static/documents/regulamin.pdf"
             onLoadSuccess={onDocumentLoadSuccess}
             options={options}
           >

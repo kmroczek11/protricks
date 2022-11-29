@@ -67,6 +67,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     )
       return;
 
+      console.log('autoLogin')
+
     autoLogin({
       input: {
         userId: userId!,

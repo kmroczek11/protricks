@@ -11,6 +11,7 @@ import CoachExercisesPanel from "./components/coach/coach_exercises";
 import Shows from "./components/shows";
 import Meetings from "./components/meetings";
 import Lost from "./components/lost";
+import TraineePaymentsPanel from "./components/trainee/trainee_payments_panel";
 
 export interface NavItemsObject {
   id: number;
@@ -87,6 +88,14 @@ export const routes: RouteObject[] = [
         element: (
           <Protected allowedRoles={[Role.Trainee]}>
             <TraineeExercisesPanel />
+          </Protected>
+        ),
+      },
+      {
+        path: "/uczen/platnosci",
+        element: (
+          <Protected allowedRoles={[Role.Trainee]}>
+            <TraineePaymentsPanel />
           </Protected>
         ),
       },
