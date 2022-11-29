@@ -17,6 +17,7 @@ import {
   useForgotPasswordMutation,
 } from "../../../generated/graphql";
 import createAccessClient from "../../../graphql/clients/accessClient";
+import { resetPasswordSuccessMessage } from "../../../translations/pl/errorMessages";
 
 interface LogInDialogProps {
   open: boolean;
@@ -27,8 +28,7 @@ const defaultValues = {
   email: "",
 };
 
-const successMessage =
-  "Nowe hasło zostało wysłane na podany adres e-mail. Sprawdź swoją skrzynkę mailową lub folder spam.";
+
 
 const ForgotPasswordDialog: React.FC<LogInDialogProps> = (props) => {
   const { open, handleClose } = props;
@@ -131,7 +131,7 @@ const ForgotPasswordDialog: React.FC<LogInDialogProps> = (props) => {
                     />
                   </Grid>
                   {forgotPasswordStatus === "Success" ? (
-                    <CustomAlert severity="success" msg={successMessage} />
+                    <CustomAlert severity="success" msg={resetPasswordSuccessMessage} />
                   ) : (
                     forgotPasswordStatus && (
                       <CustomAlert severity="error" msg="Nieoczekiwany błąd." />

@@ -197,7 +197,7 @@ const RegisterDialog: React.FC<RegisterDialogProps> = (props) => {
                       align="center"
                       gutterBottom
                     >
-                      *W przypadku, gdy konto zakłada rodzic, należy
+                      *W przypadku, gdy konto zakłada podopieczny, należy
                       podać dane rodzica
                     </Typography>
                   </Grid>

@@ -19,15 +19,7 @@ import {
 import { useAuth } from "../../auth";
 import { useLocation } from "react-router-dom";
 import { CustomDialog, PhotoCardsLoader } from "../../lib";
-
-const logInMessage = `Aby móc zapisać się na zajęcia, 
-konieczne jest posiadanie konta na naszej stronie. 
-Jeśli jeszcze go nie posiadasz, utwórz je, klikając ikonkę w prawym górnym rogu.
-Jeśli już je założyłeś, zaloguj się, również klikając tę samą ikonkę.`;
-
-const limitReachedMessage = `Niestety, w danej grupie osiągnięto już maksymalną liczbę uczestników. Proszę wybrać inną grupę.`;
-
-const successMessage = `Pomyślnie zapisano do grupy. Na maila wysłaliśmy krótki przewodnik, jak przygotować się do pierwszych zajęć. Aby wyświetlić najbliższe zajęcia, otwórz panel użytkownika, a następnie wybierz zakładkę "Moje zajęcia".`;
+import { limitReachedMessage, logInMessage, joinGroupSuccessMessage } from "../../../translations/pl/errorMessages";
 
 const MultistepForm: () => JSX.Element | null = () => {
   const [step, setStep] = useState<number>(0);
@@ -162,7 +154,7 @@ const MultistepForm: () => JSX.Element | null = () => {
       ) : registrationStatus === "Success" ? (
         <CustomDialog
           title="Dodano do grupy!"
-          content={successMessage}
+          content={joinGroupSuccessMessage}
           onClose={() => setRegistrationStatus("")}
         />
       ) : (

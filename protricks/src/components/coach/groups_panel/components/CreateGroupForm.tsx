@@ -3,12 +3,12 @@ import TextField from "@mui/material/TextField";
 import { ColorButton, LoadingScreen } from "../../../lib";
 import Box from "@mui/material/Box";
 import { useCreateGroupMutation } from "../../../../generated/graphql";
-import { useAuth } from "../../../auth";
 import createAccessClient from "../../../../graphql/clients/accessClient";
 
 const defaultGroupValues = {
   name: "Nowa grupa",
   limit: 1,
+  price:0,
 };
 
 interface CreateGroupFormProps {
@@ -65,6 +65,17 @@ const CreateGroupForm: React.FC<CreateGroupFormProps> = (props) => {
           inputProps: { min: 1 },
         }}
       />
+      <TextField
+        id="price-input"
+        name="price"
+        label="price"
+        type="number"
+        value={formGroupValues.price}
+        onChange={handleInputChange}
+        InputProps={{
+          inputProps: { min: 0 },
+        }}
+      />
       <ColorButton
         variant="outlined"
         color="secondary"
@@ -74,7 +85,7 @@ const CreateGroupForm: React.FC<CreateGroupFormProps> = (props) => {
               coachId: coachId,
               name: formGroupValues.name,
               limit: formGroupValues.limit,
-              price: 50,
+              price: formGroupValues.price,
             },
           })
         }

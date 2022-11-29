@@ -6,6 +6,11 @@ import { CustomDialog } from "../lib";
 import jwt from "jwt-decode";
 import TokenPayload from "./models/tokenPayload";
 import useRefreshUserToken from "./hooks/useRefreshUserToken";
+import {
+  invalidTokenMessage,
+  unexpectedErrorMessage,
+} from "../../translations/pl/errorMessages";
+import useInterval from "./hooks/useInterval";
 
 const AuthContext = createContext<{
   user: User | null;
@@ -18,12 +23,6 @@ const AuthContext = createContext<{
 interface AuthProviderProps {
   children: React.ReactNode;
 }
-
-const invalidTokenError =
-  "Błąd autoryzacji. Odśwież stronę. Skontaktuj się z administratorem strony.";
-
-const unexpectedError =
-  "Wystąpił nieoczekiwany błąd. Odśwież stronę. Skontaktuj się z administratorem strony.";
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -95,12 +94,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   //TODO:CHECK IF WORKS ON A TAB CHANGE
 
-  useEffect(() => {
-    setInterval(
-      refreshToken,
-      parseInt(process.env.REACT_APP_REFRESH_TOKEN_EXPIRATION!)
-    );
-  }, []);
+  useInterval(
+    () => refreshToken,
+    parseInt(process.env.REACT_APP_REFRESH_TOKEN_EXPIRATION!)
+  );
 
   return (
     <AuthContext.Provider
@@ -113,14 +110,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       {refreshError === "Invalid token" ? (
         <CustomDialog
           title="Błąd"
-          content={invalidTokenError}
+          content={invalidTokenMessage}
           onClose={() => setRefreshError("")}
         />
       ) : (
         refreshError && (
           <CustomDialog
             title="Nieoczekiwany błąd"
-            content={unexpectedError}
+            content={unexpectedErrorMessage}
             onClose={() => setRefreshError("")}
           />
         )
@@ -128,7 +125,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       {autoLoginUserError && (
         <CustomDialog
           title="Nieoczekiwany błąd"
-          content={unexpectedError}
+          content={unexpectedErrorMessage}
           onClose={() => setAutoLoginError("")}
         />
       )}

@@ -14,6 +14,7 @@ import { useAuth } from "..";
 import ForgotPasswordDialog from "./ForgotPasswordDialog";
 import createAccessClient from "../../../graphql/clients/accessClient";
 import useLogInUser from "../hooks/useLogInUser";
+import { invalidEmailOrPasswordMessage } from "../../../translations/pl/errorMessages";
 
 interface LogInDialogProps {
   open: boolean;
@@ -25,8 +26,6 @@ const defaultValues = {
   email: "",
   password: "",
 };
-
-const invalidEmailOrPasswordError = "Nieprawidłowy e-mail lub hasło.";
 
 const LogInDialog: React.FC<LogInDialogProps> = (props) => {
   const { open, handleClose, setActive } = props;
@@ -146,7 +145,7 @@ const LogInDialog: React.FC<LogInDialogProps> = (props) => {
                   {logInError === "Invalid email or password" ? (
                     <CustomAlert
                       severity="error"
-                      msg={invalidEmailOrPasswordError}
+                      msg={invalidEmailOrPasswordMessage}
                     />
                   ) : (
                     logInError && (

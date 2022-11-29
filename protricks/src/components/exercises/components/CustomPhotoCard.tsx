@@ -40,7 +40,7 @@ const CustomPhotoCard: React.FC<CustomPhotoCardProps> = (props) => {
           image={imgSrc}
           alt={name}
           sx={{
-            position: "absolute",
+            position: "relative",
             objectFit: "fill",
           }}
         />

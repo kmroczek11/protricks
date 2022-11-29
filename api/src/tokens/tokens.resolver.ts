@@ -1,4 +1,5 @@
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { Public } from 'src/auth/decorators/public.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { LogInResponse } from 'src/auth/responses/logIn-response';
 import { Role } from 'src/users/entities/role.enum';
@@ -11,7 +12,7 @@ export class TokensResolver {
   constructor(private tokensService: TokensService) {}
 
   @Mutation(() => RefreshTokenResponse)
-  @Roles(Role.USER)
+  @Public()
   refreshToken(
     @Args('refreshTokenInput') refreshTokenInput: RefreshTokenInput,
   ): Promise<RefreshTokenResponse> {
