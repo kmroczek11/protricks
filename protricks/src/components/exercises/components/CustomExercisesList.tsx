@@ -4,16 +4,17 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import Link from "@mui/material/Link";
-import { Theme } from "@mui/material/styles";
+import { Theme, useTheme } from "@mui/material/styles";
 import { SxProps } from "@mui/system";
 import Typography from "@mui/material/Typography";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
 import { SvgIconTypeMap } from "@mui/material/SvgIcon";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 interface CustomExercisesListObject {
   title: string;
   text: string;
-  titleColor?:string;
+  titleColor?: string;
   ElementIcon?: OverridableComponent<SvgIconTypeMap<{}, "svg">> & {
     muiName: string;
   };
@@ -41,6 +42,8 @@ const CustomExercisesList: React.FC<CustomExercisesListProps> = (props) => {
     title,
     ListIcon,
   } = props;
+  const theme = useTheme();
+  const smScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
     <List
@@ -58,7 +61,7 @@ const CustomExercisesList: React.FC<CustomExercisesListProps> = (props) => {
         </Typography>
       }
     >
-      {items.map(({ title, text, titleColor,ElementIcon }, i) => (
+      {items.map(({ title, text, titleColor, ElementIcon }, i) => (
         <Link
           key={i}
           // href={path}
@@ -79,7 +82,12 @@ const CustomExercisesList: React.FC<CustomExercisesListProps> = (props) => {
             }}
             disablePadding
           >
-            <ListItemButton>
+            <ListItemButton
+              sx={{
+                display: "flex",
+                flexDirection: smScreen ? "column" : "row",
+              }}
+            >
               {ListIcon && <ListIcon sx={{ width: 60, height: 60 }} />}
               {ElementIcon && <ElementIcon sx={{ width: 60, height: 60 }} />}
               <ListItemText
@@ -88,7 +96,7 @@ const CustomExercisesList: React.FC<CustomExercisesListProps> = (props) => {
                     variant={size === "lg" ? "h2" : "sm" ? "body1" : undefined}
                     align={center ? "center" : undefined}
                     color={titleColor}
-                    py={3}
+                    py={smScreen ? undefined : 3}
                     gutterBottom
                   >
                     {title}
@@ -98,7 +106,7 @@ const CustomExercisesList: React.FC<CustomExercisesListProps> = (props) => {
                   <Typography
                     variant={size === "lg" ? "h2" : "sm" ? "body1" : undefined}
                     align={center ? "center" : undefined}
-                    px={5}
+                    px={smScreen ? undefined : 5}
                     gutterBottom
                   >
                     {text}

@@ -8,6 +8,8 @@ import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrow
 import { useNavigate } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import CustomExercisesList from "./CustomExercisesList";
+import { useTheme} from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const txt = [
   {
@@ -46,6 +48,8 @@ const txt = [
 
 const About: React.FC = () => {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const smScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
     <Container maxWidth={false} sx={{ py: 15 }}>
@@ -75,7 +79,7 @@ const About: React.FC = () => {
       <Typography
         variant="h2"
         align="center"
-        px={10}
+        px={smScreen ? undefined : 10}
         py={3}
         textTransform="uppercase"
       >
