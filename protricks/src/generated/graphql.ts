@@ -38,12 +38,6 @@ export type AcceptToGroupResponse = {
   msg: Scalars['String'];
 };
 
-export type Attendance = {
-  __typename?: 'Attendance';
-  id: Scalars['String'];
-  user: User;
-};
-
 export type AutoLogInUserInput = {
   userId: Scalars['String'];
 };
@@ -117,6 +111,11 @@ export type CreateAttendanceInput = {
   payed: Scalars['Boolean'];
   present: Scalars['Boolean'];
   userId: Scalars['String'];
+};
+
+export type CreateAttendanceResponse = {
+  __typename?: 'CreateAttendanceResponse';
+  msg: Scalars['String'];
 };
 
 export type CreateCityInput = {
@@ -286,7 +285,7 @@ export type Mutation = {
   changePassword: ChangePasswordResponse;
   changeProfilePic: ChangeProfilePicResponse;
   confirmContractReceipt: ConfirmContractReceiptResponse;
-  createAttendance: Attendance;
+  createAttendance: CreateAttendanceResponse;
   createCity: City;
   createCoach: Coach;
   createExercise: CreateExerciseResponse;
@@ -590,6 +589,13 @@ export type ConfirmContractReceiptMutationVariables = Exact<{
 
 
 export type ConfirmContractReceiptMutation = { __typename?: 'Mutation', confirmContractReceipt: { __typename?: 'ConfirmContractReceiptResponse', msg: string } };
+
+export type CreateAttendanceMutationVariables = Exact<{
+  input: CreateAttendanceInput;
+}>;
+
+
+export type CreateAttendanceMutation = { __typename?: 'Mutation', createAttendance: { __typename?: 'CreateAttendanceResponse', msg: string } };
 
 export type CreateExerciseMutationVariables = Exact<{
   input: CreateExerciseInput;
@@ -900,6 +906,27 @@ export const useConfirmContractReceiptMutation = <
       options
     );
 useConfirmContractReceiptMutation.fetcher = (client: GraphQLClient, variables: ConfirmContractReceiptMutationVariables, headers?: RequestInit['headers']) => fetcher<ConfirmContractReceiptMutation, ConfirmContractReceiptMutationVariables>(client, ConfirmContractReceiptDocument, variables, headers);
+export const CreateAttendanceDocument = `
+    mutation CreateAttendance($input: CreateAttendanceInput!) {
+  createAttendance(createAttendanceInput: $input) {
+    msg
+  }
+}
+    `;
+export const useCreateAttendanceMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<CreateAttendanceMutation, TError, CreateAttendanceMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<CreateAttendanceMutation, TError, CreateAttendanceMutationVariables, TContext>(
+      ['CreateAttendance'],
+      (variables?: CreateAttendanceMutationVariables) => fetcher<CreateAttendanceMutation, CreateAttendanceMutationVariables>(client, CreateAttendanceDocument, variables, headers)(),
+      options
+    );
+useCreateAttendanceMutation.fetcher = (client: GraphQLClient, variables: CreateAttendanceMutationVariables, headers?: RequestInit['headers']) => fetcher<CreateAttendanceMutation, CreateAttendanceMutationVariables>(client, CreateAttendanceDocument, variables, headers);
 export const CreateExerciseDocument = `
     mutation CreateExercise($input: CreateExerciseInput!) {
   createExercise(createExerciseInput: $input) {

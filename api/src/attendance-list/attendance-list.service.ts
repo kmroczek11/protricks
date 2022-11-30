@@ -13,10 +13,14 @@ export class AttendanceListService {
         private groupsService: GroupsService,
       ) {}
     
-      createAttendance(createAttendanceInput: CreateAttendanceInput) {
+      async createAttendance(createAttendanceInput: CreateAttendanceInput) {
         const newAttendance = this.attendanceListRepository.create(createAttendanceInput);
     
-        return this.attendanceListRepository.save(newAttendance);
+        await this.attendanceListRepository.save(newAttendance);
+
+        return {
+          msg:'Success'
+        }
       }
 
       async getTotalPrice(userId:string){
