@@ -42,6 +42,10 @@ const CustomPhotoCard: React.FC<CustomPhotoCardProps> = (props) => {
           sx={{
             position: "relative",
             objectFit: "fill",
+
+            '&:hover': {
+              filter: 'grayscale(80%)'
+           },
           }}
         />
         <CardContent sx={{ position: "absolute", bottom: 0 }}>

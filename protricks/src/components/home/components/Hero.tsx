@@ -18,7 +18,7 @@ const Hero: React.FC = () => {
         variant="outlined"
         sx={{ width: 300, height: 50, borderWidth: 2, fontSize: 20 }}
         endIcon={<ArrowRightIcon />}
-        onClick={() => navigate("/zajecia#zarejestruj")}
+        onClick={() => navigate("/zajecia/zarejestruj")}
       >
         Dołącz do nas
       </ColorButton>

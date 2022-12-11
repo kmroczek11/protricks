@@ -20,6 +20,8 @@ import { useAuth } from "../../auth";
 import { useLocation } from "react-router-dom";
 import { CustomDialog, PhotoCardsLoader } from "../../lib";
 import { limitReachedMessage, logInMessage, joinGroupSuccessMessage } from "../../../translations/pl/errorMessages";
+import LinearProgress from "@mui/material/LinearProgress";
+import Typography from "@mui/material/Typography";
 
 const MultistepForm: () => JSX.Element | null = () => {
   const [step, setStep] = useState<number>(0);
@@ -28,14 +30,12 @@ const MultistepForm: () => JSX.Element | null = () => {
   const [selectedGroup, setSelectedGroup] = useState<string>();
   const [registrationStatus, setRegistrationStatus] = useState<string>("");
   const [extraData, setExtraData] = useState<any>();
-  const { hash } = useLocation();
-  const form = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (hash === "#zarejestruj") {
-      form?.current?.scrollIntoView();
-    }
-  }, [hash]);
+    window.scrollTo({
+      top: 0
+    })
+  }, [])
 
   const {
     data,
@@ -137,8 +137,27 @@ const MultistepForm: () => JSX.Element | null = () => {
   };
 
   return (
-    <Box sx={{ backgroundColor: "secondary.main", py: 10 }} ref={form}>
-      <Container>{renderStep()}</Container>
+    <Box sx={{ backgroundColor: "secondary.main", py: 10 }}>
+      <Container>
+        <Box sx={{ display: 'flex', flexDirection: "column", alignItems: 'center', pb: 5 }}>
+          <Typography variant="h1" color="primary" gutterBottom>
+            {step + 1} / 4
+          </Typography>
+          <Box sx={{ width: '100%' }}>
+            <LinearProgress variant="determinate"
+              value={step * 25}
+              sx={{
+                "& .MuiLinearProgress-colorPrimary": {
+                  backgroundColor: "primary",
+                },
+                "& .MuiLinearProgress-barColorPrimary": {
+                  backgroundColor: "green",
+                },
+              }} />
+          </Box>
+        </Box>
+        {renderStep()}
+      </Container>
       {registrationStatus === "Not logged in" ? (
         <CustomDialog
           title="Nie zalogowano"
