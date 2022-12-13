@@ -1,11 +1,13 @@
 import {PaymentElement} from '@stripe/react-stripe-js';
+import { Form } from 'formik';
+import { ColorButton } from '../../../lib';
 
 const CheckoutForm = () => {
   return (
-    <form>
+    <Form>
       <PaymentElement />
-      <button>Submit</button>
-    </form>
+      <ColorButton>Submit</ColorButton>
+    </Form>
   );
 };
 
