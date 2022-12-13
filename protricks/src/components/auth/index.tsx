@@ -98,7 +98,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useInterval(
     () => refreshToken,
-    parseInt(process.env.REACT_APP_REFRESH_TOKEN_EXPIRATION!)
+    parseInt(process.env.REACT_APP_REFRESH_TOKEN_EXPIRATION!) - 1000
   );
 
   return (
