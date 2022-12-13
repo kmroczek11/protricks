@@ -21,6 +21,7 @@ import { TokensModule } from './tokens/tokens.module';
 import { MailModule } from './mail/mail.module';
 import { GraphQLError, GraphQLFormattedError } from 'graphql/error/GraphQLError';
 import { AttendanceListModule } from './attendance-list/attendance-list.module';
+import { StripeModule } from './stripe/stripe.module';
 
 @Module({
   imports: [
@@ -86,6 +87,7 @@ import { AttendanceListModule } from './attendance-list/attendance-list.module';
     TokensModule,
     MailModule,
     AttendanceListModule,
+    StripeModule,
   ],
   controllers: [],
   providers: [
