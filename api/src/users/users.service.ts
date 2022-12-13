@@ -1,22 +1,32 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { CreateUserInput } from './dto/create-user.input';
 import { Role } from './entities/role.enum';
-import { User } from './entities/user.entity';
+import  { User }  from './entities/user.entity';
+import StripeService from '../stripe/stripe.service';
+import { string } from 'joi';
+import { Repository } from 'typeorm';
+
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private readonly usersRepository: Repository<User>,
+    private usersRepository: Repository<User>,
+    private stripeService: StripeService
   ) {}
 
-  createUser(createUserInput: CreateUserInput): Promise<User> {
-    const newUser = this.usersRepository.create(createUserInput);
+  async createUser(createUserInput: CreateUserInput): Promise<User> {
+    const stripeCustomer = await this.stripeService.createCustomer(createUserInput.firstName, createUserInput.email)
 
-    return this.usersRepository.save(newUser);
-  }
+    const newUser = await this.usersRepository.create({
+      ...createUserInput,
+      stripeCustomerId: stripeCustomer.id
+    });
+    await this.usersRepository.save(newUser);
+    return newUser;
+  } 
+
 
   findAll(): Promise<User[]> {
     return this.usersRepository.find();
@@ -54,3 +64,5 @@ export class UsersService {
     return this.usersRepository.findOne({ where: { email } });
   }
 }
+
+export default UsersService;

@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Entity('users')
 @ObjectType()
-export class User {
+export class User { 
   @PrimaryColumn()
   @Field()
   id: string;
@@ -36,6 +36,10 @@ export class User {
   @IsString()
   @Exclude()
   password: string;
+
+  @Column()
+  @Field()
+  stripeCustomerId: string;
 
   @Column({ default: '' })
   @Field()
