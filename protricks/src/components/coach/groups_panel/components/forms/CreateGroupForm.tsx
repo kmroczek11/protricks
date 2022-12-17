@@ -1,9 +1,9 @@
 import { useState } from "react";
 import TextField from "@mui/material/TextField";
-import { ColorButton, LoadingScreen } from "../../../lib";
+import { ColorButton, LoadingScreen } from "../../../../lib";
 import Box from "@mui/material/Box";
-import { useCreateGroupMutation } from "../../../../generated/graphql";
-import createAccessClient from "../../../../graphql/clients/accessClient";
+import { useCreateGroupMutation } from "../../../../../generated/graphql";
+import createAccessClient from "../../../../../graphql/clients/accessClient";
 
 const defaultGroupValues = {
   name: "Nowa grupa",

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
-import EditExerciseForm from "./EditExerciseForm";
+import EditExerciseForm from "./forms/EditExerciseForm";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
 import {
@@ -17,7 +17,7 @@ import { grey } from "@mui/material/colors";
 import { styled } from "@mui/material/styles";
 import { StyledExerciseTableCell, StyledExerciseTableRow } from "..";
 import DownloadIcon from '@mui/icons-material/Download';
-import AttendanceListDialog from "./AttendanceListDialog";
+import AttendanceListDialog from "./dialogs/AttendanceListDialog";
 import createAccessClient from "../../../../graphql/clients/accessClient";
 
 const StyledIconButton = styled(IconButton)({
@@ -48,6 +48,8 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
   const [openEditExercise, setOpenEditExercise] = useState(false);
   const [openDeleteExercise, setOpenDeleteExercise] = useState(false);
   const [openAttendanceList, setOpenAttendanceList] = useState(false);
+  const [attendanceChecked, setAttendanceChecked] = useState(false)
+  const [openAttendanceWarning, setOpenAttendanceWarning] = useState(false)
 
   const { isLoading, mutate } = useDeleteExerciseMutation<Error>(
     createAccessClient(),
@@ -184,9 +186,20 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
           groupName={groupName}
           trainees={trainees}
           open={openAttendanceList}
-          handleClose={() => setOpenAttendanceList(false)}
+          handleClose={() => {
+            if (!attendanceChecked) setOpenAttendanceWarning(true)
+          }}
         />
       )}
+      {
+        openAttendanceWarning && (
+          <CustomDialog
+            title="Czy na pewno chcesz wyjść?"
+            content="Wprowadzone zmiany nie zostały zapisane"
+            onAccept={() => setOpenAttendanceList(false)}
+          />
+        )
+      }
     </React.Fragment>
   );
 };

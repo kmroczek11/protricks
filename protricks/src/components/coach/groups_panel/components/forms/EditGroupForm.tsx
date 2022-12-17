@@ -1,10 +1,10 @@
 import { useState } from "react";
 import TextField from "@mui/material/TextField";
-import { ColorButton, LoadingScreen } from "../../../lib";
+import { ColorButton, LoadingScreen } from "../../../../lib";
 import Box from "@mui/material/Box";
-import { useEditGroupMutation } from "../../../../generated/graphql";
-import { useAuth } from "../../../auth";
-import createAccessClient from "../../../../graphql/clients/accessClient";
+import { useEditGroupMutation } from "../../../../../generated/graphql";
+import { useAuth } from "../../../../auth";
+import createAccessClient from "../../../../../graphql/clients/accessClient";
 
 interface EditGroupFormProps {
   item: {

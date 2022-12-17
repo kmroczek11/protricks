@@ -25,7 +25,4 @@ export class Attendance {
 
   @Column()
   present: boolean;
-
-  @Column()
-  payed: boolean;
 }

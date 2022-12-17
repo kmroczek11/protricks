@@ -7,7 +7,4 @@ export class CreateAttendanceInput {
 
   @Field()
   present: boolean;
-
-  @Field()
-  payed: false;
 }

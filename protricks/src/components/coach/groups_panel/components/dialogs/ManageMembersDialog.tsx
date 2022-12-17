@@ -8,37 +8,39 @@ import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import GroupRemoveIcon from "@mui/icons-material/GroupRemove";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
+import GradingIcon from "@mui/icons-material/Grading";
+import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import {
   Status,
   useAcceptToGroupMutation,
   useConfirmContractReceiptMutation,
-  useCreateAttendanceMutation,
   useDeleteTraineeMutation,
-} from "../../../../generated/graphql";
-import { useEffect, useState } from "react";
-import { useAuth } from "../../../auth";
-import {
-  ColorButton,
-  CustomAvatar,
-  CustomDialog,
-  LoadingScreen,
-} from "../../../lib";
+} from "../../../../../generated/graphql";
+import { useState } from "react";
+import { useAuth } from "../../../../auth";
+import InfoIcon from "@mui/icons-material/Info";
+import TraineeInfoDialog from "./TraineeInfoDialog";
+import { CustomAvatar, CustomDialog, LoadingScreen } from "../../../../lib";
 import Chip from "@mui/material/Chip";
 import Grid from "@mui/material/Grid";
 import { green, grey, lightGreen } from "@mui/material/colors";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { Box, Theme, useTheme } from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import clsx from "clsx";
-import Switch from "@mui/material/Switch";
-import createAccessClient from "../../../../graphql/clients/accessClient";
+import { useTheme } from "@mui/material";
+import createAccessClient from "../../../../../graphql/clients/accessClient";
 
-interface AttendanceListDialogProps {
+interface ManageMembersDialogProps {
   groupName: string;
   trainees?: Array<{
     id: string;
-    status: string;
+    birthDate: string;
+    traineeName: string;
+    parentPhone: any;
+    parentEmail: any;
+    feedback: string;
+    status: Status;
     user: { id: string; firstName: string; lastName: string; imgSrc?: string };
   }> | null;
   open: boolean;
@@ -46,84 +48,29 @@ interface AttendanceListDialogProps {
   onClose?: () => void;
 }
 
-const useStyles = makeStyles((theme: Theme) => ({
-  switch_track: {
-    backgroundColor: theme.palette.error.main,
-  },
-  switch_base: {
-    "&.Mui-disabled": {},
-    "&.Mui-checked": {},
-    "&.Mui-checked + .MuiSwitch-track": {
-      backgroundColor: theme.palette.success.main,
-    },
-  },
-  switch_primary: {
-    "&.Mui-checked": {
-      color: "#4CAF50",
-    },
-    "&.Mui-checked + .MuiSwitch-track": {
-      backgroundColor: "#4CAF50",
-    },
-  },
-}));
-
-const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
+const ManageMembersDialog: React.FC<ManageMembersDialogProps> = (props) => {
   const { groupName, open, trainees, handleClose, onClose } = props;
+  const [openDeleteTrainee, setOpenDeleteTrainee] = useState(false);
+  const [openDetailedInfo, setOpenDetailedInfo] = useState(false);
   const theme = useTheme();
   const smScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const classes = useStyles();
-  const [traineesPresence, setTraineesPresence] = useState<
-    {
-      id: string;
-      status: string;
-      user: {
-        id: string;
-        firstName: string;
-        lastName: string;
-        imgSrc?: string;
-      };
-      present: boolean;
-    }[]
-  >([]);
 
-  const { isLoading, mutate } = useCreateAttendanceMutation<Error>(
-    createAccessClient(),
-    {}
-  );
+  const { isLoading: isDeleteTraineeLoading, mutate: deleteTrainee } =
+    useDeleteTraineeMutation<Error>(createAccessClient(), {});
 
-  useEffect(() => {
-    setTraineesPresence(
-      trainees?.map((t) => ({
-        ...t,
-        present: false,
-      }))!
-    );
-  }, []);
+  const { isLoading: isAcceptToGroupLoading, mutate: acceptToGroup } =
+    useAcceptToGroupMutation<Error>(createAccessClient(), {});
 
-  const setPresence = (id: string) => {
-    const presence = traineesPresence?.map((t) =>
-      t.id === id
-        ? {
-            ...t,
-            present: !t.present,
-          }
-        : t
-    );
+  const {
+    isLoading: isConfirmContractReceiptLoading,
+    mutate: confirmContractReceipt,
+  } = useConfirmContractReceiptMutation<Error>(createAccessClient(), {});
 
-    setTraineesPresence(presence);
+  const handleDialogClose = () => {
+    setOpenDetailedInfo(false);
   };
 
-  // const setAttendanceList = () => {
-  //   traineesPresence.forEach((t) => {
-  //     mutate({
-  //         userId: t.id,
-  //         present: t.present,
-  //       },
-  //     });
-  //   });
-  // };
-
-  return isLoading ? (
+  return isDeleteTraineeLoading ? (
     <LoadingScreen />
   ) : (
     <Dialog
@@ -135,7 +82,7 @@ const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
       fullScreen={smScreen}
       disableScrollLock
     >
-      <DialogTitle>{`Lista obecności grupy ${groupName}`}</DialogTitle>
+      <DialogTitle>{`Członkowie grupy ${groupName}`}</DialogTitle>
       <IconButton
         aria-label="close"
         onClick={handleClose}
@@ -149,26 +96,78 @@ const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
         <CloseIcon />
       </IconButton>
       <DialogContent dividers>
-        {traineesPresence?.length != 0 ? (
+        {trainees?.length != 0 ? (
           <List sx={{ pt: 0 }}>
-            {traineesPresence?.map((trainee) => (
+            {trainees?.map((trainee) => (
               <React.Fragment>
                 <ListItem
                   key={trainee.id}
                   secondaryAction={
                     <React.Fragment>
-                      <Switch
-                        type="checkbox"
-                        // icon={icon}
-                        // checkedIcon={icon}
-                        classes={{
-                          track: classes.switch_track,
-                          switchBase: classes.switch_base,
-                          colorPrimary: classes.switch_primary,
-                        }}
-                        onClick={() => setPresence(trainee.id)}
-                        checked={trainee.present}
-                      />
+                      <Tooltip title="Szczegółowe informacje">
+                        <IconButton
+                          aria-label="detailed-info"
+                          onClick={() => setOpenDetailedInfo(true)}
+                        >
+                          <InfoIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Usuń z grupy">
+                        <IconButton
+                          aria-label="remove-from-group"
+                          onClick={() => setOpenDeleteTrainee(true)}
+                        >
+                          <GroupRemoveIcon />
+                        </IconButton>
+                      </Tooltip>
+                      {trainee.status === Status.FirstTime && (
+                        <Tooltip
+                          title={
+                            <div style={{ whiteSpace: "pre-line" }}>
+                              {`Przyjmij do grupy\n
+                                Ten uczestnik będzie na zajęciach po raz pierwszy.
+                                 Kliknij ten przycisk, jeśli pojawi się na kolejnych zajęciach.
+                                 Zmieni to jego status na "Oczekiwanie" i da mu możliwość zapisania się do grupy na stałe.`}
+                            </div>
+                          }
+                        >
+                          <IconButton
+                            aria-label="accept-to-group"
+                            onClick={() =>
+                              acceptToGroup({
+                                input: {
+                                  id: trainee.id,
+                                },
+                              })
+                            }
+                          >
+                            <GroupAddIcon />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                      {trainee.status === Status.AcceptedWithoutContract && (
+                        <Tooltip
+                          title={
+                            <div style={{ whiteSpace: "pre-line" }}>
+                              {`Potwierdź otrzymanie umowy\n
+                                Kliknij ten przycisk, aby potwierdzić otrzymanie umowy od tego wychowanka.`}
+                            </div>
+                          }
+                        >
+                          <IconButton
+                            aria-label="confirm-contract-receipt"
+                            onClick={() =>
+                              confirmContractReceipt({
+                                input: {
+                                  id: trainee.id,
+                                },
+                              })
+                            }
+                          >
+                            <GradingIcon />
+                          </IconButton>
+                        </Tooltip>
+                      )}
                     </React.Fragment>
                   }
                 >
@@ -252,19 +251,31 @@ const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
                     }
                   />
                 </ListItem>
+                {openDeleteTrainee && (
+                  <CustomDialog
+                    title={`Czy na pewno chcesz usunąć użytkownika ${trainee.user.firstName} ${trainee.user.lastName} z grupy ${groupName}?`}
+                    content="Tej operacji nie można cofnąć."
+                    closeText="Nie usuwaj"
+                    acceptText="Usuń"
+                    onClose={() => setOpenDeleteTrainee(false)}
+                    onAccept={() =>
+                      deleteTrainee({
+                        input: {
+                          userId: trainee.user.id,
+                        },
+                      })
+                    }
+                  />
+                )}
+                {openDetailedInfo && (
+                  <TraineeInfoDialog
+                    trainee={trainee}
+                    open={openDetailedInfo}
+                    handleClose={handleDialogClose}
+                  />
+                )}
               </React.Fragment>
             ))}
-            <Box sx={{ display: "flex", justifyContent: "center" }}>
-              <ColorButton
-                variant="contained"
-                color="success"
-                type="submit"
-                sx={{ my: 2 }}
-                // onClick={() => saveAttendanceList()}
-              >
-                Zapisz obecności
-              </ColorButton>
-            </Box>
           </List>
         ) : (
           <Typography
@@ -286,4 +297,4 @@ const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
   );
 };
 
-export default AttendanceListDialog;
+export default ManageMembersDialog;

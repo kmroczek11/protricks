@@ -14,7 +14,7 @@ import {
   StyledTableCell,
   StyledTableRow,
 } from "..";
-import EditGroupForm from "./EditGroupForm";
+import EditGroupForm from "./forms/EditGroupForm";
 import { ColorButton } from "../../../lib";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
@@ -22,13 +22,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EmailIcon from "@mui/icons-material/Email";
 import GroupIcon from "@mui/icons-material/Group";
 import CustomDialog from "../../../lib/CustomDialog";
-import CreateExerciseForm from "./CreateExerciseForm";
+import CreateExerciseForm from "./forms/CreateExerciseForm";
 import { Status, useDeleteGroupMutation } from "../../../../generated/graphql";
 import ExerciseRow from "./ExerciseRow";
 import Tooltip from "@mui/material/Tooltip";
-import ManageMembersDialog from "./ManageMembersDialog";
+import ManageMembersDialog from "./dialogs/ManageMembersDialog";
 import { useAuth } from "../../../auth";
-import SendEmailToGroupDialog from "./SendEmailToGroupDialog";
+import SendEmailToGroupDialog from "./dialogs/SendEmailToGroupDialog";
 import createAccessClient from "../../../../graphql/clients/accessClient";
 
 interface RowProps {

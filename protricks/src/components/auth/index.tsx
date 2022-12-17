@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import User from "./models/user";
-import autoLoginUserClient from "../../graphql/clients/autoLoginUserClient";
 import useAutoLogInUser from "./hooks/useAutoLogInUser";
 import { CustomDialog } from "../lib";
 import jwt from "jwt-decode";
@@ -11,6 +10,8 @@ import {
   unexpectedErrorMessage,
 } from "../../translations/pl/errorMessages";
 import useInterval from "./hooks/useInterval";
+import createAccessClient from "../../graphql/clients/accessClient";
+import createAutoLoginUserClient from "../../graphql/clients/autoLoginUserClient";
 
 const AuthContext = createContext<{
   user: User | null;
@@ -30,7 +31,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [refreshError, setRefreshError] = useState<string>("");
 
   const { isAutoLogInUserLoading, autoLogin } = useAutoLogInUser(
-    autoLoginUserClient(),
+    createAutoLoginUserClient(),
     setAutoLoginError,
     (data) => {
       localStorage.setItem(
@@ -42,7 +43,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   );
 
   const { isRefreshTokenLoading, refresh } = useRefreshUserToken(
-    autoLoginUserClient(),
+    createAccessClient(),
     setRefreshError,
     (data) => {
       localStorage.setItem(
@@ -98,7 +99,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useInterval(
     () => refreshToken,
-    parseInt(process.env.REACT_APP_REFRESH_TOKEN_EXPIRATION!)
+    parseInt(process.env.REACT_APP_REFRESH_TOKEN_EXPIRATION!) - 1000
   );
 
   return (

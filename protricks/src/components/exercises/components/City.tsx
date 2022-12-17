@@ -1,6 +1,6 @@
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../../auth";
 import { Role } from "../../../generated/graphql";
 import {
@@ -60,6 +60,10 @@ const City: React.FC<CityProps> = (props) => {
   const [selected, setSelected] = useState<boolean>(false);
   const theme = useTheme();
   const lgScreen = useMediaQuery(theme.breakpoints.up("lg"));
+
+  useEffect(() => {
+    window.scrollTo({ top: 0 })
+  }, [])
 
   return visible ? (
     <Grid container spacing={5} justifyContent="center" alignItems="center">
@@ -153,7 +157,7 @@ const City: React.FC<CityProps> = (props) => {
         item
         xs={12}
         sx={{
-          pt: lgScreen ? "0 !important":undefined,
+          pt: lgScreen ? "0 !important" : undefined,
         }}
       >
         <Typography

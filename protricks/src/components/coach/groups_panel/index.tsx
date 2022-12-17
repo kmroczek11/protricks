@@ -13,7 +13,7 @@ import { ColorButton, LoadingScreen } from "../../lib";
 import AddIcon from "@mui/icons-material/Add";
 import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
-import CreateGroupForm from "./components/CreateGroupForm";
+import CreateGroupForm from "./components/forms/CreateGroupForm";
 import { useAuth } from "../../auth";
 import createAccessClient from "../../../graphql/clients/accessClient";
 
