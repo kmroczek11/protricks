@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
@@ -6,8 +6,10 @@ import EditExerciseForm from "./forms/EditExerciseForm";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
 import {
+  GetAllAttendanceQuery,
   Status,
   useDeleteExerciseMutation,
+  useGetAllAttendanceQuery,
 } from "../../../../generated/graphql";
 import Tooltip from "@mui/material/Tooltip";
 import { useAuth } from "../../../auth";
@@ -16,9 +18,10 @@ import * as XLSX from "xlsx";
 import { grey } from "@mui/material/colors";
 import { styled } from "@mui/material/styles";
 import { StyledExerciseTableCell, StyledExerciseTableRow } from "..";
-import DownloadIcon from '@mui/icons-material/Download';
+import DownloadIcon from "@mui/icons-material/Download";
 import AttendanceListDialog from "./dialogs/AttendanceListDialog";
 import createAccessClient from "../../../../graphql/clients/accessClient";
+import accessClient from "../../../../graphql/clients/accessClient";
 
 const StyledIconButton = styled(IconButton)({
   "&:hover": {
@@ -48,13 +51,35 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
   const [openEditExercise, setOpenEditExercise] = useState(false);
   const [openDeleteExercise, setOpenDeleteExercise] = useState(false);
   const [openAttendanceList, setOpenAttendanceList] = useState(false);
-  const [attendanceChecked, setAttendanceChecked] = useState(false)
-  const [openAttendanceWarning, setOpenAttendanceWarning] = useState(false)
+  const [attendanceChecked, setAttendanceChecked] = useState(false);
+  const [openAttendanceWarning, setOpenAttendanceWarning] = useState(false);
+  const [attendanceData, setAttendanceData] = useState([]);
+
+  const {
+    data,
+    isLoading: attendanceLoading,
+    error,
+    refetch,
+  } = useGetAllAttendanceQuery<GetAllAttendanceQuery, Error>(
+    accessClient(),
+    {}
+  );
 
   const { isLoading, mutate } = useDeleteExerciseMutation<Error>(
     createAccessClient(),
     {}
   );
+
+  useEffect(() => {
+    if (!data) return;
+
+    data.attendances.filter((attendance) => {
+      const d1 = new Date(day);
+      const d2 = new Date(attendance.day);
+
+      return +d1 === +d2;
+    });
+  }, [data]);
 
   const convertToPlDate = (d: string) =>
     new Date(d).toLocaleDateString("pl-pl");
@@ -63,35 +88,37 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
     return t.slice(0, -3);
   };
 
-  const data = [
-    trainees?.map((trainee, i) =>
+  const sheetData = [
+    data?.attendances?.map((attendance, i) =>
       i == 0
         ? {
-          Dzień: convertToPlDate(day),
-          Godzina: `${getTimeWithoutMiliseconds(
-            start
-          )} - ${getTimeWithoutMiliseconds(end)}`,
-          "Lp.": ++i,
-          Imię: trainee.user.firstName,
-          Nazwisko: trainee.user.lastName,
-          Obecny: "",
-          "Pierwszy raz": trainee.status === Status.FirstTime ? "tak" : "nie",
-        }
+            Dzień: convertToPlDate(day),
+            Godzina: `${getTimeWithoutMiliseconds(
+              start
+            )} - ${getTimeWithoutMiliseconds(end)}`,
+            "Lp.": ++i,
+            Imię: attendance.trainee.user.firstName,
+            Nazwisko: attendance.trainee.user.lastName,
+            Obecny: attendance.present ? "tak" : "nie",
+            "Pierwszy raz":
+              attendance.trainee.status === Status.FirstTime ? "tak" : "nie",
+          }
         : {
-          Dzień: "",
-          Godzina: "",
-          "Lp.": ++i,
-          Imię: trainee.user.firstName,
-          Nazwisko: trainee.user.lastName,
-          Obecny: "",
-          "Pierwszy raz": trainee.status === Status.FirstTime ? "tak" : "nie",
-        }
+            Dzień: "",
+            Godzina: "",
+            "Lp.": ++i,
+            Imię: attendance.trainee.user.firstName,
+            Nazwisko: attendance.trainee.user.lastName,
+            Obecny: attendance.present ? "tak" : "nie",
+            "Pierwszy raz":
+              attendance.trainee.status === Status.FirstTime ? "tak" : "nie",
+          }
     )!,
   ].flat();
 
   const handleExport = () => {
     const wb = XLSX.utils.book_new(),
-      ws = XLSX.utils.json_to_sheet(data);
+      ws = XLSX.utils.json_to_sheet(sheetData);
 
     XLSX.utils.book_append_sheet(wb, ws, "MySheet1");
 
@@ -137,22 +164,25 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
               <DeleteIcon />
             </StyledIconButton>
           </Tooltip>
-          <Tooltip title="Sprawdź listę obecności">
-            <StyledIconButton
-              aria-label="check-attendance-list"
-              onClick={() => setOpenAttendanceList(!openAttendanceList)}
-            >
-              <FormatListNumberedIcon />
-            </StyledIconButton>
-          </Tooltip>
-          <Tooltip title="Eksportuj listę obecności">
-            <StyledIconButton
-              aria-label="export-attendance-list"
-              onClick={handleExport}
-            >
-              <DownloadIcon />
-            </StyledIconButton>
-          </Tooltip>
+          {data ? (
+            <Tooltip title="Eksportuj listę obecności">
+              <StyledIconButton
+                aria-label="export-attendance-list"
+                onClick={handleExport}
+              >
+                <DownloadIcon />
+              </StyledIconButton>
+            </Tooltip>
+          ) : (
+            <Tooltip title="Sprawdź listę obecności">
+              <StyledIconButton
+                aria-label="check-attendance-list"
+                onClick={() => setOpenAttendanceList(!openAttendanceList)}
+              >
+                <FormatListNumberedIcon />
+              </StyledIconButton>
+            </Tooltip>
+          )}
         </StyledExerciseTableCell>
       </StyledExerciseTableRow>
       <StyledExerciseTableRow>
@@ -187,19 +217,23 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
           trainees={trainees}
           open={openAttendanceList}
           handleClose={() => {
-            if (!attendanceChecked) setOpenAttendanceWarning(true)
+            if (!attendanceChecked) setOpenAttendanceWarning(true);
           }}
         />
       )}
-      {
-        openAttendanceWarning && (
-          <CustomDialog
-            title="Czy na pewno chcesz wyjść?"
-            content="Wprowadzone zmiany nie zostały zapisane"
-            onAccept={() => setOpenAttendanceList(false)}
-          />
-        )
-      }
+      {openAttendanceWarning && (
+        <CustomDialog
+          title="Czy na pewno chcesz wyjść?"
+          content="Wprowadzone zmiany nie zostały zapisane"
+          closeText="Wróć"
+          acceptText="Wyjdź"
+          onClose={() => setOpenAttendanceWarning(false)}
+          onAccept={() => {
+            setOpenAttendanceWarning(false);
+            setOpenAttendanceList(false);
+          }}
+        />
+      )}
     </React.Fragment>
   );
 };

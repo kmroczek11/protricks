@@ -31,12 +31,6 @@ const MultistepForm: () => JSX.Element | null = () => {
   const [registrationStatus, setRegistrationStatus] = useState<string>("");
   const [extraData, setExtraData] = useState<any>();
 
-  useEffect(() => {
-    window.scrollTo({
-      top: 0
-    })
-  }, [])
-
   const {
     data,
     isLoading: coachesLoading,

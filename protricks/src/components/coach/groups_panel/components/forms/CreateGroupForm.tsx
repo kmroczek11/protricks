@@ -68,7 +68,7 @@ const CreateGroupForm: React.FC<CreateGroupFormProps> = (props) => {
       <TextField
         id="price-input"
         name="price"
-        label="price"
+        label="Cena"
         type="number"
         value={formGroupValues.price}
         onChange={handleInputChange}

@@ -1,5 +1,7 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Public } from 'src/auth/decorators/public.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Trainee } from 'src/trainees/entities/trainee.entity';
 import { Role } from 'src/users/entities/role.enum';
 import { AttendanceListService } from './attendance-list.service';
 import { CreateAttendanceResponse } from './dto/create-attendance-response.ts';
@@ -18,9 +20,15 @@ export class AttendanceListResolver {
     return this.attendanceListService.createAttendance(createAttendanceInput);
   }
 
-  @Query(() => Number)
-  @Roles(Role.TRAINEE)
-  getTotalPrice(@Args('userId') userId: string): Promise<Number> {
-    return this.attendanceListService.getTotalPrice(userId);
+  @Query(() => [Attendance])
+  @Roles(Role.COACH)
+  // @Public()
+  attendances(): Promise<Attendance[]> {
+    return this.attendanceListService.findAll();
+  }
+
+  @ResolveField(() => Attendance)
+  trainee(@Parent() attendance: Attendance): Promise<Trainee> {
+    return this.attendanceListService.getTrainee(attendance.traineeId);
   }
 }

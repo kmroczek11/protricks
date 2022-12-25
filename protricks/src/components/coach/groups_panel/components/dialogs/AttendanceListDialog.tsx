@@ -33,6 +33,7 @@ import { makeStyles } from "@mui/styles";
 import clsx from "clsx";
 import Switch from "@mui/material/Switch";
 import createAccessClient from "../../../../../graphql/clients/accessClient";
+import StatusBox from "./StatusBox";
 
 interface AttendanceListDialogProps {
   groupName: string;
@@ -86,6 +87,8 @@ const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
     }[]
   >([]);
 
+  const getTodaysDate = () => new Date().toISOString().slice(0, 10);
+
   const { isLoading, mutate } = useCreateAttendanceMutation<Error>(
     createAccessClient(),
     {}
@@ -116,10 +119,12 @@ const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
   const saveAttendanceList = () => {
     traineesPresence.forEach((t) => {
       mutate({
-        input:{
-          userId: t.id,
+        input: {
+          traineeId: t.id,
+          day: getTodaysDate(),
           present: t.present,
-        }});
+        },
+      });
     });
   };
 
@@ -196,57 +201,7 @@ const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
                           </Typography>
                         </Grid>
                         <Grid item>
-                          {trainee.status === Status.FirstTime && (
-                            <Chip
-                              label="Pierwszy raz"
-                              variant="outlined"
-                              sx={{
-                                fontSize: 12,
-                                borderColor: green.A200,
-                                color: green.A200,
-                              }}
-                            />
-                          )}
-                          {trainee.status === Status.Expectation && (
-                            <Chip
-                              label="Oczekiwanie"
-                              variant="filled"
-                              sx={{
-                                fontSize: 12,
-                                border: 1,
-                                backgroundColor: grey[100],
-                                borderColor: grey[900],
-                                color: grey[900],
-                              }}
-                            />
-                          )}
-                          {trainee.status ===
-                            Status.AcceptedWithoutContract && (
-                            <Chip
-                              label="Zaakceptowano (bez umowy)"
-                              variant="filled"
-                              sx={{
-                                fontSize: 12,
-                                border: 1,
-                                backgroundColor: lightGreen[100],
-                                borderColor: lightGreen[900],
-                                color: lightGreen[900],
-                              }}
-                            />
-                          )}
-                          {trainee.status === Status.Accepted && (
-                            <Chip
-                              label="Zaakceptowano"
-                              variant="filled"
-                              sx={{
-                                fontSize: 12,
-                                border: 1,
-                                backgroundColor: green[100],
-                                borderColor: green[900],
-                                color: green[900],
-                              }}
-                            />
-                          )}
+                          <StatusBox status={trainee.status} />
                         </Grid>
                       </Grid>
                     }

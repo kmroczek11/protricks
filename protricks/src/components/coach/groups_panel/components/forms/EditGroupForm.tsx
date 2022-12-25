@@ -11,6 +11,7 @@ interface EditGroupFormProps {
     id: string;
     name: string;
     limit: number;
+    price: number;
   };
 }
 
@@ -19,7 +20,10 @@ const EditGroupForm: React.FC<EditGroupFormProps> = (props) => {
   const { id, ...payload } = item;
   const [formGroupValues, setFormGroupValues] = useState(payload);
 
-  const { isLoading, mutate } = useEditGroupMutation<Error>(createAccessClient(), {});
+  const { isLoading, mutate } = useEditGroupMutation<Error>(
+    createAccessClient(),
+    {}
+  );
 
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
@@ -59,6 +63,17 @@ const EditGroupForm: React.FC<EditGroupFormProps> = (props) => {
         value={formGroupValues.limit}
         onChange={handleInputChange}
         InputProps={{
+          inputProps: { min: 0 },
+        }}
+      />
+      <TextField
+        id="price-input"
+        name="price"
+        label="Nowa cena"
+        type="number"
+        value={formGroupValues.price}
+        onChange={handleInputChange}
+        InputProps={{
           inputProps: { min: 1 },
         }}
       />
@@ -71,6 +86,7 @@ const EditGroupForm: React.FC<EditGroupFormProps> = (props) => {
               groupId: id,
               name: formGroupValues.name,
               limit: formGroupValues.limit,
+              price: formGroupValues.price,
             },
           })
         }

@@ -37,6 +37,7 @@ interface RowProps {
     id: string;
     name: string;
     limit: number;
+    price:number;
     exercises?: Array<{
       id: string;
       day: any;
@@ -58,7 +59,7 @@ interface RowProps {
 
 const GroupRow: React.FC<RowProps> = (props) => {
   const { i, item } = props;
-  const { id, name, limit, exercises, trainees } = item;
+  const { id, name, limit, price,exercises, trainees } = item;
   const [openExercises, setOpenExercises] = useState(false);
   const [openEditGroup, setOpenEditGroup] = useState(false);
   const [openCreateExercise, setOpenCreateExercise] = useState(false);
@@ -105,6 +106,7 @@ const GroupRow: React.FC<RowProps> = (props) => {
         </StyledTableCell>
         <StyledTableCell align="center">{name}</StyledTableCell>
         <StyledTableCell align="center">{limit}</StyledTableCell>
+        <StyledTableCell align="center">{price}</StyledTableCell>
         <StyledTableCell align="center">
           <Tooltip title="Edytuj grupę">
             <IconButton

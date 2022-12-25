@@ -20,16 +20,14 @@ import {
   useDeleteTraineeMutation,
 } from "../../../../../generated/graphql";
 import { useState } from "react";
-import { useAuth } from "../../../../auth";
 import InfoIcon from "@mui/icons-material/Info";
 import TraineeInfoDialog from "./TraineeInfoDialog";
 import { CustomAvatar, CustomDialog, LoadingScreen } from "../../../../lib";
-import Chip from "@mui/material/Chip";
 import Grid from "@mui/material/Grid";
-import { green, grey, lightGreen } from "@mui/material/colors";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material";
 import createAccessClient from "../../../../../graphql/clients/accessClient";
+import StatusBox from "./StatusBox";
 
 interface ManageMembersDialogProps {
   groupName: string;
@@ -195,57 +193,7 @@ const ManageMembersDialog: React.FC<ManageMembersDialogProps> = (props) => {
                           </Typography>
                         </Grid>
                         <Grid item>
-                          {trainee.status === Status.FirstTime && (
-                            <Chip
-                              label="Pierwszy raz"
-                              variant="outlined"
-                              sx={{
-                                fontSize: 12,
-                                borderColor: green.A200,
-                                color: green.A200,
-                              }}
-                            />
-                          )}
-                          {trainee.status === Status.Expectation && (
-                            <Chip
-                              label="Oczekiwanie"
-                              variant="filled"
-                              sx={{
-                                fontSize: 12,
-                                border: 1,
-                                backgroundColor: grey[100],
-                                borderColor: grey[900],
-                                color: grey[900],
-                              }}
-                            />
-                          )}
-                          {trainee.status ===
-                            Status.AcceptedWithoutContract && (
-                            <Chip
-                              label="Zaakceptowano (bez umowy)"
-                              variant="filled"
-                              sx={{
-                                fontSize: 12,
-                                border: 1,
-                                backgroundColor: lightGreen[100],
-                                borderColor: lightGreen[900],
-                                color: lightGreen[900],
-                              }}
-                            />
-                          )}
-                          {trainee.status === Status.Accepted && (
-                            <Chip
-                              label="Zaakceptowano"
-                              variant="filled"
-                              sx={{
-                                fontSize: 12,
-                                border: 1,
-                                backgroundColor: green[100],
-                                borderColor: green[900],
-                                color: green[900],
-                              }}
-                            />
-                          )}
+                          <StatusBox status={trainee.status} />
                         </Grid>
                       </Grid>
                     }

@@ -62,8 +62,8 @@ const City: React.FC<CityProps> = (props) => {
   const lgScreen = useMediaQuery(theme.breakpoints.up("lg"));
 
   useEffect(() => {
-    window.scrollTo({ top: 0 })
-  }, [])
+    window.scrollTo(0, 0);
+  }, []);
 
   return visible ? (
     <Grid container spacing={5} justifyContent="center" alignItems="center">

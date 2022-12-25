@@ -9,6 +9,7 @@ query GetCoach($id: String!) {
       id
       name
       limit
+      price
       exercises {
         id
         day

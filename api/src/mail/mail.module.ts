@@ -13,23 +13,24 @@ import { join } from 'path';
             host: process.env.MAIL_HOST,
             port: parseInt(<string>process.env.MAIL_PORT),
             secure: false,
-            ignoreTLS: true, // add this
             auth: {
               user: process.env.MAIL_USER,
               pass: process.env.MAIL_PASSWORD,
+            },
+            tls: {
+              // do not fail on invalid certs
+              rejectUnauthorized: false,
             },
           },
           defaults: {
             from: '"Protricks" <noreply@protricks.pl>',
           },
-          preview: true,
+          preview: false,
           template: {
             dir: join(__dirname, 'templates'),
-            adapter: new HandlebarsAdapter(
-              {
-                appHost: () => process.env.APP_HOST,
-              },
-            ),
+            adapter: new HandlebarsAdapter({
+              appHost: () => process.env.APP_HOST,
+            }),
             options: {
               strict: true,
             },

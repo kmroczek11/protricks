@@ -77,6 +77,7 @@ const GroupsPanel: React.FC = () => {
             <StyledTableCell align="center">Lp.</StyledTableCell>
             <StyledTableCell align="center">Nazwa grupy</StyledTableCell>
             <StyledTableCell align="center">Limit uczestników</StyledTableCell>
+            <StyledTableCell align="center">Cena</StyledTableCell>
           </StyledTableRow>
         </TableHead>
         <TableBody>

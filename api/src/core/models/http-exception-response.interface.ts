@@ -1,10 +1,12 @@
+import { GraphQLResolveInfo } from 'graphql';
+
 export interface HttpExceptionResponse {
   statusCode: number;
   error: string;
 }
 
 export interface CustomHttpExceptionResponse extends HttpExceptionResponse {
-  operationName: string;
-  query:string;
+  info: GraphQLResolveInfo;
+  rawArgs: any;
   timeStamp: Date;
 }
