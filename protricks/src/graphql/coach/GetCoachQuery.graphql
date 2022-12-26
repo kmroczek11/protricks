@@ -28,6 +28,7 @@ query GetCoach($id: String!) {
           id
           firstName
           lastName
+          email
           imgSrc
         }
       }

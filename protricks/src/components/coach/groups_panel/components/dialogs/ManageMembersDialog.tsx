@@ -56,9 +56,6 @@ const ManageMembersDialog: React.FC<ManageMembersDialogProps> = (props) => {
   const { isLoading: isDeleteTraineeLoading, mutate: deleteTrainee } =
     useDeleteTraineeMutation<Error>(createAccessClient(), {});
 
-  const { isLoading: isAcceptToGroupLoading, mutate: acceptToGroup } =
-    useAcceptToGroupMutation<Error>(createAccessClient(), {});
-
   const {
     isLoading: isConfirmContractReceiptLoading,
     mutate: confirmContractReceipt,
@@ -118,31 +115,6 @@ const ManageMembersDialog: React.FC<ManageMembersDialogProps> = (props) => {
                           <GroupRemoveIcon />
                         </IconButton>
                       </Tooltip>
-                      {trainee.status === Status.FirstTime && (
-                        <Tooltip
-                          title={
-                            <div style={{ whiteSpace: "pre-line" }}>
-                              {`Przyjmij do grupy\n
-                                Ten uczestnik będzie na zajęciach po raz pierwszy.
-                                 Kliknij ten przycisk, jeśli pojawi się na kolejnych zajęciach.
-                                 Zmieni to jego status na "Oczekiwanie" i da mu możliwość zapisania się do grupy na stałe.`}
-                            </div>
-                          }
-                        >
-                          <IconButton
-                            aria-label="accept-to-group"
-                            onClick={() =>
-                              acceptToGroup({
-                                input: {
-                                  id: trainee.id,
-                                },
-                              })
-                            }
-                          >
-                            <GroupAddIcon />
-                          </IconButton>
-                        </Tooltip>
-                      )}
                       {trainee.status === Status.AcceptedWithoutContract && (
                         <Tooltip
                           title={

@@ -5,6 +5,7 @@ import { TraineesService } from 'src/trainees/trainees.service';
 import { Repository } from 'typeorm';
 import { CreateAttendanceInput } from './dto/create-attendance.input';
 import { Attendance } from './entities/attendance';
+import { AttendanceByDayInput } from './entities/dto/attendance-by-day.input';
 
 @Injectable()
 export class AttendanceListService {
@@ -26,8 +27,10 @@ export class AttendanceListService {
     };
   }
 
-  findAll() {
-    return this.attendanceListRepository.find();
+  findAllByDay(attendanceByDayInput: AttendanceByDayInput) {
+    return this.attendanceListRepository.find({
+      where: { day: attendanceByDayInput.day },
+    });
   }
 
   getTrainee(traineeId: string) {

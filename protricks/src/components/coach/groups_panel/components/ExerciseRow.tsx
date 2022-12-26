@@ -6,10 +6,10 @@ import EditExerciseForm from "./forms/EditExerciseForm";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
 import {
-  GetAllAttendanceQuery,
+  GetAttendanceByDayQuery,
   Status,
   useDeleteExerciseMutation,
-  useGetAllAttendanceQuery,
+  useGetAttendanceByDayQuery,
 } from "../../../../generated/graphql";
 import Tooltip from "@mui/material/Tooltip";
 import { useAuth } from "../../../auth";
@@ -22,6 +22,7 @@ import DownloadIcon from "@mui/icons-material/Download";
 import AttendanceListDialog from "./dialogs/AttendanceListDialog";
 import createAccessClient from "../../../../graphql/clients/accessClient";
 import accessClient from "../../../../graphql/clients/accessClient";
+import { convertToPlDate, getTimeWithoutMiliseconds } from "./helpers";
 
 const StyledIconButton = styled(IconButton)({
   "&:hover": {
@@ -41,7 +42,7 @@ interface RowProps {
   trainees?: Array<{
     id: string;
     status: string;
-    user: { id: string; firstName: string; lastName: string };
+    user: { id: string; firstName: string; lastName: string; email: string };
   }> | null;
 }
 
@@ -53,16 +54,19 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
   const [openAttendanceList, setOpenAttendanceList] = useState(false);
   const [attendanceChecked, setAttendanceChecked] = useState(false);
   const [openAttendanceWarning, setOpenAttendanceWarning] = useState(false);
-  const [attendanceData, setAttendanceData] = useState([]);
 
   const {
     data,
     isLoading: attendanceLoading,
     error,
     refetch,
-  } = useGetAllAttendanceQuery<GetAllAttendanceQuery, Error>(
+  } = useGetAttendanceByDayQuery<GetAttendanceByDayQuery, Error>(
     accessClient(),
-    {}
+    {
+      attendanceByDayInput: {
+        day,
+      },
+    }
   );
 
   const { isLoading, mutate } = useDeleteExerciseMutation<Error>(
@@ -70,26 +74,10 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
     {}
   );
 
-  useEffect(() => {
-    if (!data) return;
-
-    data.attendances.filter((attendance) => {
-      const d1 = new Date(day);
-      const d2 = new Date(attendance.day);
-
-      return +d1 === +d2;
-    });
-  }, [data]);
-
-  const convertToPlDate = (d: string) =>
-    new Date(d).toLocaleDateString("pl-pl");
-
-  const getTimeWithoutMiliseconds = (t: string) => {
-    return t.slice(0, -3);
-  };
+  console.log(day, data?.getAttendanceByDay);
 
   const sheetData = [
-    data?.attendances?.map((attendance, i) =>
+    data?.getAttendanceByDay.map((attendance, i) =>
       i == 0
         ? {
             Dzień: convertToPlDate(day),
@@ -164,7 +152,7 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
               <DeleteIcon />
             </StyledIconButton>
           </Tooltip>
-          {data ? (
+          {data?.getAttendanceByDay.length ? (
             <Tooltip title="Eksportuj listę obecności">
               <StyledIconButton
                 aria-label="export-attendance-list"
@@ -214,11 +202,13 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
       {openAttendanceList && (
         <AttendanceListDialog
           groupName={groupName}
+          day={convertToPlDate(day)}
           trainees={trainees}
           open={openAttendanceList}
           handleClose={() => {
             if (!attendanceChecked) setOpenAttendanceWarning(true);
           }}
+          setOpenAttendanceList={setOpenAttendanceList}
         />
       )}
       {openAttendanceWarning && (

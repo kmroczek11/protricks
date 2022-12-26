@@ -37,7 +37,7 @@ interface RowProps {
     id: string;
     name: string;
     limit: number;
-    price:number;
+    price: number;
     exercises?: Array<{
       id: string;
       day: any;
@@ -52,14 +52,14 @@ interface RowProps {
       parentEmail: any;
       feedback: string;
       status: Status;
-      user: { id: string; firstName: string; lastName: string };
+      user: { id: string; firstName: string; lastName: string; email: string };
     }> | null;
   };
 }
 
 const GroupRow: React.FC<RowProps> = (props) => {
   const { i, item } = props;
-  const { id, name, limit, price,exercises, trainees } = item;
+  const { id, name, limit, price, exercises, trainees } = item;
   const [openExercises, setOpenExercises] = useState(false);
   const [openEditGroup, setOpenEditGroup] = useState(false);
   const [openCreateExercise, setOpenCreateExercise] = useState(false);
@@ -213,7 +213,8 @@ const GroupRow: React.FC<RowProps> = (props) => {
                 </TableHead>
                 <TableBody>
                   {exercises?.map((exercise, i) => (
-                    <ExerciseRow i={++i}
+                    <ExerciseRow
+                      i={++i}
                       item={exercise}
                       trainees={trainees}
                       groupName={name}

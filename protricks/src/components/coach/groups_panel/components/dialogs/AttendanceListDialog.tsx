@@ -10,40 +10,43 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import {
+  CreateAttendanceMutation,
+  CreateAttendanceMutationVariables,
   Status,
   useAcceptToGroupMutation,
-  useConfirmContractReceiptMutation,
   useCreateAttendanceMutation,
-  useDeleteTraineeMutation,
 } from "../../../../../generated/graphql";
 import { useEffect, useState } from "react";
-import { useAuth } from "../../../../auth";
 import {
   ColorButton,
   CustomAvatar,
-  CustomDialog,
   LoadingScreen,
 } from "../../../../lib";
-import Chip from "@mui/material/Chip";
 import Grid from "@mui/material/Grid";
-import { green, grey, lightGreen } from "@mui/material/colors";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Box, Theme, useTheme } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import clsx from "clsx";
 import Switch from "@mui/material/Switch";
 import createAccessClient from "../../../../../graphql/clients/accessClient";
 import StatusBox from "./StatusBox";
 
 interface AttendanceListDialogProps {
   groupName: string;
+  day: any;
   trainees?: Array<{
     id: string;
     status: string;
-    user: { id: string; firstName: string; lastName: string; imgSrc?: string };
+    user: {
+      id: string;
+      firstName: string;
+      lastName: string;
+      email: string;
+      imgSrc?: string;
+    };
   }> | null;
   open: boolean;
   handleClose: () => void;
+  setOpenAttendanceList: React.Dispatch<React.SetStateAction<boolean>>;
   onClose?: () => void;
 }
 
@@ -69,7 +72,15 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
-  const { groupName, open, trainees, handleClose, onClose } = props;
+  const {
+    groupName,
+    day,
+    open,
+    trainees,
+    handleClose,
+    setOpenAttendanceList,
+    onClose,
+  } = props;
   const theme = useTheme();
   const smScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const classes = useStyles();
@@ -81,18 +92,25 @@ const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
         id: string;
         firstName: string;
         lastName: string;
+        email: string;
         imgSrc?: string;
       };
       present: boolean;
     }[]
   >([]);
+  console.log(day)
 
-  const getTodaysDate = () => new Date().toISOString().slice(0, 10);
+  const { isLoading, mutate: createAttendance } =
+    useCreateAttendanceMutation<Error>(createAccessClient(), {
+      onSuccess: (
+        data: CreateAttendanceMutation,
+        _variables: CreateAttendanceMutationVariables,
+        _context: unknown
+      ) => setOpenAttendanceList(false),
+    });
 
-  const { isLoading, mutate } = useCreateAttendanceMutation<Error>(
-    createAccessClient(),
-    {}
-  );
+  const { isLoading: isAcceptToGroupLoading, mutate: acceptToGroup } =
+    useAcceptToGroupMutation<Error>(createAccessClient(), {});
 
   useEffect(() => {
     setTraineesPresence(
@@ -118,10 +136,20 @@ const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
 
   const saveAttendanceList = () => {
     traineesPresence.forEach((t) => {
-      mutate({
+      if (t.present && t.status === Status.FirstTime) {
+        // if trainee's first time accept to group and send email
+        acceptToGroup({
+          input: {
+            id: t.id,
+            email: t.user.email,
+          },
+        });
+      }
+
+      createAttendance({
         input: {
           traineeId: t.id,
-          day: getTodaysDate(),
+          day: day,
           present: t.present,
         },
       });

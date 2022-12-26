@@ -7,6 +7,7 @@ import { AttendanceListService } from './attendance-list.service';
 import { CreateAttendanceResponse } from './dto/create-attendance-response.ts';
 import { CreateAttendanceInput } from './dto/create-attendance.input';
 import { Attendance } from './entities/attendance';
+import { AttendanceByDayInput } from './entities/dto/attendance-by-day.input';
 
 @Resolver(() => Attendance)
 export class AttendanceListResolver {
@@ -21,10 +22,10 @@ export class AttendanceListResolver {
   }
 
   @Query(() => [Attendance])
-  @Roles(Role.COACH)
-  // @Public()
-  attendances(): Promise<Attendance[]> {
-    return this.attendanceListService.findAll();
+  // @Roles(Role.COACH)
+  @Public()
+  getAttendanceByDay(@Args('attendanceByDayInput') attendanceByDayInput: AttendanceByDayInput,): Promise<Attendance[]> {
+    return this.attendanceListService.findAllByDay(attendanceByDayInput);
   }
 
   @ResolveField(() => Attendance)

@@ -19,7 +19,11 @@ import {
 import { useAuth } from "../../auth";
 import { useLocation } from "react-router-dom";
 import { CustomDialog, PhotoCardsLoader } from "../../lib";
-import { limitReachedMessage, logInMessage, joinGroupSuccessMessage } from "../../../translations/pl/errorMessages";
+import {
+  limitReachedMessage,
+  logInMessage,
+  joinGroupSuccessMessage,
+} from "../../../translations/pl/errorMessages";
 import LinearProgress from "@mui/material/LinearProgress";
 import Typography from "@mui/material/Typography";
 
@@ -56,7 +60,11 @@ const MultistepForm: () => JSX.Element | null = () => {
     });
 
   const nextStep = () => {
-    setStep(step + 1);
+    if (!user) {
+      setRegistrationStatus("Not logged in");
+    } else {
+      setStep(step + 1);
+    }
   };
 
   const prevStep = () => {
@@ -64,26 +72,22 @@ const MultistepForm: () => JSX.Element | null = () => {
   };
 
   const joinGroup = () => {
-    if (user) {
-      const { birthDate, traineeName, parentPhone, parentEmail, feedback } =
-        extraData;
+    const { birthDate, traineeName, parentPhone, parentEmail, feedback } =
+      extraData;
 
-      mutate({
-        input: {
-          userId: user.id,
-          groupId: selectedGroup!,
-          birthDate: birthDate.toISOString().split('T')[0],
-          traineeName,
-          parentPhone: `+${parentPhone}`,
-          parentEmail,
-          feedback,
-        },
-      });
+    mutate({
+      input: {
+        userId: user?.id!,
+        groupId: selectedGroup!,
+        birthDate: birthDate.toISOString().split("T")[0],
+        traineeName,
+        parentPhone: `+${parentPhone}`,
+        parentEmail,
+        feedback,
+      },
+    });
 
-      setStep(0);
-    } else {
-      setRegistrationStatus("Not logged in");
-    }
+    setStep(0);
   };
 
   const renderStep = () => {
@@ -133,12 +137,20 @@ const MultistepForm: () => JSX.Element | null = () => {
   return (
     <Box sx={{ backgroundColor: "secondary.main", py: 10 }}>
       <Container>
-        <Box sx={{ display: 'flex', flexDirection: "column", alignItems: 'center', pb: 5 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            pb: 5,
+          }}
+        >
           <Typography variant="h1" color="primary" gutterBottom>
             {step + 1} / 4
           </Typography>
-          <Box sx={{ width: '100%' }}>
-            <LinearProgress variant="determinate"
+          <Box sx={{ width: "100%" }}>
+            <LinearProgress
+              variant="determinate"
               value={step * 25}
               sx={{
                 "& .MuiLinearProgress-colorPrimary": {
@@ -147,7 +159,8 @@ const MultistepForm: () => JSX.Element | null = () => {
                 "& .MuiLinearProgress-barColorPrimary": {
                   backgroundColor: "green",
                 },
-              }} />
+              }}
+            />
           </Box>
         </Box>
         {renderStep()}

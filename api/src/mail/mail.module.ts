@@ -25,7 +25,7 @@ import { join } from 'path';
           defaults: {
             from: '"Protricks" <noreply@protricks.pl>',
           },
-          preview: false,
+          preview: true,
           template: {
             dir: join(__dirname, 'templates'),
             adapter: new HandlebarsAdapter({

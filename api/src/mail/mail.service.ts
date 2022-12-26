@@ -40,4 +40,12 @@ export class MailService {
       template: './firstTime',
     });
   }
+
+  async sendStayMessage(to: string) {
+    await this.mailerService.sendMail({
+      to,
+      subject: 'CZY CHCESZ DO NAS DOŁĄCZYĆ?',
+      template: './traineeDecision',
+    });
+  }
 }

@@ -30,6 +30,7 @@ export type Scalars = {
 };
 
 export type AcceptToGroupInput = {
+  email: Scalars['String'];
   id: Scalars['String'];
 };
 
@@ -44,6 +45,10 @@ export type Attendance = {
   id: Scalars['String'];
   present: Scalars['Boolean'];
   trainee: Trainee;
+};
+
+export type AttendanceByDayInput = {
+  day: Scalars['LocalDate'];
 };
 
 export type AutoLogInUserInput = {
@@ -443,10 +448,10 @@ export type MutationSendEmailToGroupArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  attendances: Array<Attendance>;
   coaches: Array<Coach>;
   exercises: Array<Exercise>;
   findOne: User;
+  getAttendanceByDay: Array<Attendance>;
   getCoach: Coach;
   getTrainee: Trainee;
   groups: Array<Group>;
@@ -457,6 +462,11 @@ export type Query = {
 
 export type QueryFindOneArgs = {
   email: Scalars['String'];
+};
+
+
+export type QueryGetAttendanceByDayArgs = {
+  attendanceByDayInput: AttendanceByDayInput;
 };
 
 
@@ -651,17 +661,19 @@ export type EditGroupMutationVariables = Exact<{
 
 export type EditGroupMutation = { __typename?: 'Mutation', editGroup: { __typename?: 'EditGroupResponse', msg: string } };
 
-export type GetAllAttendanceQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetAttendanceByDayQueryVariables = Exact<{
+  attendanceByDayInput: AttendanceByDayInput;
+}>;
 
 
-export type GetAllAttendanceQuery = { __typename?: 'Query', attendances: Array<{ __typename?: 'Attendance', day: any, present: boolean, trainee: { __typename?: 'Trainee', status: Status, user: { __typename?: 'User', firstName: string, lastName: string } } }> };
+export type GetAttendanceByDayQuery = { __typename?: 'Query', getAttendanceByDay: Array<{ __typename?: 'Attendance', day: any, present: boolean, trainee: { __typename?: 'Trainee', status: Status, user: { __typename?: 'User', firstName: string, lastName: string } } }> };
 
 export type GetCoachQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type GetCoachQuery = { __typename?: 'Query', getCoach: { __typename?: 'Coach', id: string, city: { __typename?: 'City', id: string, name: string }, groups?: Array<{ __typename?: 'Group', id: string, name: string, limit: number, price: number, exercises?: Array<{ __typename?: 'Exercise', id: string, day: any, start: any, end: any }> | null, trainees?: Array<{ __typename?: 'Trainee', id: string, birthDate: any, traineeName: string, parentPhone: any, parentEmail: any, feedback: string, status: Status, user: { __typename?: 'User', id: string, firstName: string, lastName: string, imgSrc: string } }> | null }> | null } };
+export type GetCoachQuery = { __typename?: 'Query', getCoach: { __typename?: 'Coach', id: string, city: { __typename?: 'City', id: string, name: string }, groups?: Array<{ __typename?: 'Group', id: string, name: string, limit: number, price: number, exercises?: Array<{ __typename?: 'Exercise', id: string, day: any, start: any, end: any }> | null, trainees?: Array<{ __typename?: 'Trainee', id: string, birthDate: any, traineeName: string, parentPhone: any, parentEmail: any, feedback: string, status: Status, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string } }> | null }> | null } };
 
 export type SendEmailToGroupMutationVariables = Exact<{
   input: SendEmailToGroupInput;
@@ -1091,9 +1103,9 @@ export const useEditGroupMutation = <
       options
     );
 useEditGroupMutation.fetcher = (client: GraphQLClient, variables: EditGroupMutationVariables, headers?: RequestInit['headers']) => fetcher<EditGroupMutation, EditGroupMutationVariables>(client, EditGroupDocument, variables, headers);
-export const GetAllAttendanceDocument = `
-    query GetAllAttendance {
-  attendances {
+export const GetAttendanceByDayDocument = `
+    query GetAttendanceByDay($attendanceByDayInput: AttendanceByDayInput!) {
+  getAttendanceByDay(attendanceByDayInput: $attendanceByDayInput) {
     day
     present
     trainee {
@@ -1106,25 +1118,25 @@ export const GetAllAttendanceDocument = `
   }
 }
     `;
-export const useGetAllAttendanceQuery = <
-      TData = GetAllAttendanceQuery,
+export const useGetAttendanceByDayQuery = <
+      TData = GetAttendanceByDayQuery,
       TError = unknown
     >(
       client: GraphQLClient,
-      variables?: GetAllAttendanceQueryVariables,
-      options?: UseQueryOptions<GetAllAttendanceQuery, TError, TData>,
+      variables: GetAttendanceByDayQueryVariables,
+      options?: UseQueryOptions<GetAttendanceByDayQuery, TError, TData>,
       headers?: RequestInit['headers']
     ) =>
-    useQuery<GetAllAttendanceQuery, TError, TData>(
-      variables === undefined ? ['GetAllAttendance'] : ['GetAllAttendance', variables],
-      fetcher<GetAllAttendanceQuery, GetAllAttendanceQueryVariables>(client, GetAllAttendanceDocument, variables, headers),
+    useQuery<GetAttendanceByDayQuery, TError, TData>(
+      ['GetAttendanceByDay', variables],
+      fetcher<GetAttendanceByDayQuery, GetAttendanceByDayQueryVariables>(client, GetAttendanceByDayDocument, variables, headers),
       options
     );
 
-useGetAllAttendanceQuery.getKey = (variables?: GetAllAttendanceQueryVariables) => variables === undefined ? ['GetAllAttendance'] : ['GetAllAttendance', variables];
+useGetAttendanceByDayQuery.getKey = (variables: GetAttendanceByDayQueryVariables) => ['GetAttendanceByDay', variables];
 ;
 
-useGetAllAttendanceQuery.fetcher = (client: GraphQLClient, variables?: GetAllAttendanceQueryVariables, headers?: RequestInit['headers']) => fetcher<GetAllAttendanceQuery, GetAllAttendanceQueryVariables>(client, GetAllAttendanceDocument, variables, headers);
+useGetAttendanceByDayQuery.fetcher = (client: GraphQLClient, variables: GetAttendanceByDayQueryVariables, headers?: RequestInit['headers']) => fetcher<GetAttendanceByDayQuery, GetAttendanceByDayQueryVariables>(client, GetAttendanceByDayDocument, variables, headers);
 export const GetCoachDocument = `
     query GetCoach($id: String!) {
   getCoach(id: $id) {
@@ -1156,6 +1168,7 @@ export const GetCoachDocument = `
           id
           firstName
           lastName
+          email
           imgSrc
         }
       }
