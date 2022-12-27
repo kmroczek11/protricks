@@ -9,13 +9,11 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
-  app.enableCors({
-    origin: configService.get('FRONTEND_URL'),
-    credentials: true
-  });
+  app.enableCors();
   app.use(graphqlUploadExpress({ maxFileSize: 1000000, maxFiles: 10 }));
   await app.listen(process.env.APP_PORT, () =>
     console.log(`🚀 Server is listening on ${process.env.APP_PORT}`),
   );
 }
+
 bootstrap();

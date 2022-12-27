@@ -19,7 +19,10 @@ import { RolesGuard } from './auth/guards/roles.guard';
 import { GqlAuthGuard } from './auth/guards/gql-auth.guard';
 import { TokensModule } from './tokens/tokens.module';
 import { MailModule } from './mail/mail.module';
-import { GraphQLError, GraphQLFormattedError } from 'graphql/error/GraphQLError';
+import {
+  GraphQLError,
+  GraphQLFormattedError,
+} from 'graphql/error/GraphQLError';
 import { AttendanceListModule } from './attendance-list/attendance-list.module';
 import { StripeModule } from './stripe/stripe.module';
 

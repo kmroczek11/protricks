@@ -118,6 +118,16 @@ export type CreateAttendanceResponse = {
   msg: Scalars['String'];
 };
 
+export type CreateChargeInput = {
+  amount: Scalars['Float'];
+  paymentMethodId: Scalars['String'];
+};
+
+export type CreateChargeResponse = {
+  __typename?: 'CreateChargeResponse';
+  msg: Scalars['String'];
+};
+
 export type CreateCityInput = {
   citySrc: Scalars['String'];
   mapSrc: Scalars['String'];
@@ -286,6 +296,7 @@ export type Mutation = {
   changeProfilePic: ChangeProfilePicResponse;
   confirmContractReceipt: ConfirmContractReceiptResponse;
   createAttendance: CreateAttendanceResponse;
+  createCharge: CreateChargeResponse;
   createCity: City;
   createCoach: Coach;
   createExercise: CreateExerciseResponse;
@@ -340,6 +351,11 @@ export type MutationConfirmContractReceiptArgs = {
 
 export type MutationCreateAttendanceArgs = {
   createAttendanceInput: CreateAttendanceInput;
+};
+
+
+export type MutationCreateChargeArgs = {
+  createChargeInput: CreateChargeInput;
 };
 
 
@@ -534,6 +550,7 @@ export type User = {
   lastName: Scalars['String'];
   password: Scalars['String'];
   roles: Array<Role>;
+  stripeCustomerId: Scalars['String'];
 };
 
 export type AutoLogInUserMutationVariables = Exact<{
@@ -671,6 +688,13 @@ export type GetAllCoachesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetAllCoachesQuery = { __typename?: 'Query', coaches: Array<{ __typename?: 'Coach', facebookUrl: string, instagramUrl: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, imgSrc: string }, city: { __typename?: 'City', id: string, name: string, room: string, citySrc: string, roomSrc: string, mapSrc: string, priceListSrc: string }, groups?: Array<{ __typename?: 'Group', id: string, name: string, limit: number, trainees?: Array<{ __typename?: 'Trainee', id: string }> | null }> | null }> };
+
+export type CreateChargeMutationVariables = Exact<{
+  input: CreateChargeInput;
+}>;
+
+
+export type CreateChargeMutation = { __typename?: 'Mutation', createCharge: { __typename?: 'CreateChargeResponse', msg: string } };
 
 export type GetTraineeQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1236,6 +1260,27 @@ useGetAllCoachesQuery.getKey = (variables?: GetAllCoachesQueryVariables) => vari
 ;
 
 useGetAllCoachesQuery.fetcher = (client: GraphQLClient, variables?: GetAllCoachesQueryVariables, headers?: RequestInit['headers']) => fetcher<GetAllCoachesQuery, GetAllCoachesQueryVariables>(client, GetAllCoachesDocument, variables, headers);
+export const CreateChargeDocument = `
+    mutation CreateCharge($input: CreateChargeInput!) {
+  createCharge(createChargeInput: $input) {
+    msg
+  }
+}
+    `;
+export const useCreateChargeMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<CreateChargeMutation, TError, CreateChargeMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<CreateChargeMutation, TError, CreateChargeMutationVariables, TContext>(
+      ['CreateCharge'],
+      (variables?: CreateChargeMutationVariables) => fetcher<CreateChargeMutation, CreateChargeMutationVariables>(client, CreateChargeDocument, variables, headers)(),
+      options
+    );
+useCreateChargeMutation.fetcher = (client: GraphQLClient, variables: CreateChargeMutationVariables, headers?: RequestInit['headers']) => fetcher<CreateChargeMutation, CreateChargeMutationVariables>(client, CreateChargeDocument, variables, headers);
 export const GetTraineeDocument = `
     query GetTrainee($id: String!) {
   getTrainee(id: $id) {
