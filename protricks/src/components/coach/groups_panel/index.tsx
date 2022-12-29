@@ -13,7 +13,7 @@ import { ColorButton, LoadingScreen } from "../../lib";
 import AddIcon from "@mui/icons-material/Add";
 import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
-import CreateGroupForm from "./components/CreateGroupForm";
+import CreateGroupForm from "./components/forms/CreateGroupForm";
 import { useAuth } from "../../auth";
 import createAccessClient from "../../../graphql/clients/accessClient";
 
@@ -77,6 +77,7 @@ const GroupsPanel: React.FC = () => {
             <StyledTableCell align="center">Lp.</StyledTableCell>
             <StyledTableCell align="center">Nazwa grupy</StyledTableCell>
             <StyledTableCell align="center">Limit uczestników</StyledTableCell>
+            <StyledTableCell align="center">Cena</StyledTableCell>
           </StyledTableRow>
         </TableHead>
         <TableBody>

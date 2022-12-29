@@ -15,5 +15,6 @@ import { TraineesService } from './trainees.service';
     MailModule,
   ],
   providers: [TraineesService, TraineesResolver],
+  exports: [TraineesService],
 })
 export class TraineesModule {}

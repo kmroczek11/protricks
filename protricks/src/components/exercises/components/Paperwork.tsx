@@ -3,7 +3,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { IconButton } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Document, Page } from 'react-pdf/dist/esm/entry.webpack5';
 import ButtonGroup from "@mui/material/ButtonGroup";
 import { ColorButton } from "../../lib";
@@ -31,6 +31,10 @@ const Paperwork: React.FC<PaperworkProps> = (props) => {
   const onDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return visible ? (
     <Grid container justifyContent="center" alignItems="center">

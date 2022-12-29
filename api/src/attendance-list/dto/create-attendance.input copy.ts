@@ -1,10 +1,10 @@
 import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
-export class AcceptToGroupInput {
+export class CreateAttendanceInput {
   @Field()
-  id: string;
+  userId: string;
 
   @Field()
-  email: string;
+  present: boolean;
 }

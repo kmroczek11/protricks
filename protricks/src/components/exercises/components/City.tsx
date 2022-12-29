@@ -1,13 +1,11 @@
-import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../../auth";
 import { Role } from "../../../generated/graphql";
 import {
   ColorButton,
   PhotoCard,
-  CustomList,
   CustomAvatar,
   ButtonBox,
 } from "../../lib";
@@ -18,25 +16,6 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import PriceList from "./PriceList";
 import { useTheme, useMediaQuery } from "@mui/material";
-
-const txt = [
-  {
-    name: `Jeśli osoba nie miała wcześniej większego kontaktu z sportem polecamy
-    zacząć od grupy wprowadzającej, Ukształtuje odpowiednią siłę i gibkośc
-    oraz zostanie wprowadzona do pięknego świata akrobatyki.`,
-  },
-  {
-    name: `Grupę podstawową polecamy osobą, które miały wcześniej kontakt z
-        sportem. Ćwiczymy tutaj między innymi takie elementy jak stanie na rękach,
-        przewroty, gwiazdy czy przejścia.`,
-  },
-  {
-    name: `Grupa średnio-zaawansowana jest dla osób, które ćwiczyły już wcześniej
-        akrobatykę. Jeśli takie elementy jak rundak, stanie na rękach, przejścia w
-        przód i w tył nie stanowią dla niej większego problemu,to idealne
-        sprawdzi się w tej grupie.`,
-  },
-];
 
 interface CityProps {
   visible: boolean;
@@ -81,6 +60,10 @@ const City: React.FC<CityProps> = (props) => {
   const [selected, setSelected] = useState<boolean>(false);
   const theme = useTheme();
   const lgScreen = useMediaQuery(theme.breakpoints.up("lg"));
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return visible ? (
     <Grid container spacing={5} justifyContent="center" alignItems="center">
@@ -174,7 +157,7 @@ const City: React.FC<CityProps> = (props) => {
         item
         xs={12}
         sx={{
-          pt: lgScreen ? "0 !important":undefined,
+          pt: lgScreen ? "0 !important" : undefined,
         }}
       >
         <Typography
@@ -228,15 +211,6 @@ const City: React.FC<CityProps> = (props) => {
           />
         </Grid>
       ) : null}
-      <Grid item xs={12}>
-        <CustomList
-          title="Jak wybrać odpowiednią grupę?"
-          items={txt}
-          variant="secondary"
-          size="lg"
-          center
-        />
-      </Grid>
       <Grid
         item
         xs={12}

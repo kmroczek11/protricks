@@ -12,5 +12,5 @@ export class CreateGroupInput {
   limit: number;
 
   @Field(() => Number)
-  price:number;
+  price: number;
 }

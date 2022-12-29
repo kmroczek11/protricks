@@ -30,12 +30,25 @@ export type Scalars = {
 };
 
 export type AcceptToGroupInput = {
+  email: Scalars['String'];
   id: Scalars['String'];
 };
 
 export type AcceptToGroupResponse = {
   __typename?: 'AcceptToGroupResponse';
   msg: Scalars['String'];
+};
+
+export type Attendance = {
+  __typename?: 'Attendance';
+  day: Scalars['LocalDate'];
+  id: Scalars['String'];
+  present: Scalars['Boolean'];
+  trainee: Trainee;
+};
+
+export type AttendanceByDayInput = {
+  day: Scalars['LocalDate'];
 };
 
 export type AutoLogInUserInput = {
@@ -108,9 +121,9 @@ export type ConfirmContractReceiptResponse = {
 };
 
 export type CreateAttendanceInput = {
-  payed: Scalars['Boolean'];
+  day: Scalars['LocalDate'];
   present: Scalars['Boolean'];
-  userId: Scalars['String'];
+  traineeId: Scalars['String'];
 };
 
 export type CreateAttendanceResponse = {
@@ -224,6 +237,7 @@ export type EditGroupInput = {
   groupId: Scalars['String'];
   limit: Scalars['Int'];
   name: Scalars['String'];
+  price: Scalars['Float'];
 };
 
 export type EditGroupResponse = {
@@ -453,8 +467,8 @@ export type Query = {
   coaches: Array<Coach>;
   exercises: Array<Exercise>;
   findOne: User;
+  getAttendanceByDay: Array<Attendance>;
   getCoach: Coach;
-  getTotalPrice: Scalars['Float'];
   getTrainee: Trainee;
   groups: Array<Group>;
   trainees: Array<Trainee>;
@@ -467,13 +481,13 @@ export type QueryFindOneArgs = {
 };
 
 
-export type QueryGetCoachArgs = {
-  id: Scalars['String'];
+export type QueryGetAttendanceByDayArgs = {
+  attendanceByDayInput: AttendanceByDayInput;
 };
 
 
-export type QueryGetTotalPriceArgs = {
-  userId: Scalars['String'];
+export type QueryGetCoachArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -530,6 +544,7 @@ export enum Status {
 
 export type Trainee = {
   __typename?: 'Trainee';
+  attendances?: Maybe<Array<Attendance>>;
   birthDate: Scalars['LocalDate'];
   feedback: Scalars['String'];
   group: Group;
@@ -663,12 +678,19 @@ export type EditGroupMutationVariables = Exact<{
 
 export type EditGroupMutation = { __typename?: 'Mutation', editGroup: { __typename?: 'EditGroupResponse', msg: string } };
 
+export type GetAttendanceByDayQueryVariables = Exact<{
+  attendanceByDayInput: AttendanceByDayInput;
+}>;
+
+
+export type GetAttendanceByDayQuery = { __typename?: 'Query', getAttendanceByDay: Array<{ __typename?: 'Attendance', day: any, present: boolean, trainee: { __typename?: 'Trainee', status: Status, user: { __typename?: 'User', firstName: string, lastName: string } } }> };
+
 export type GetCoachQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type GetCoachQuery = { __typename?: 'Query', getCoach: { __typename?: 'Coach', id: string, city: { __typename?: 'City', id: string, name: string }, groups?: Array<{ __typename?: 'Group', id: string, name: string, limit: number, exercises?: Array<{ __typename?: 'Exercise', id: string, day: any, start: any, end: any }> | null, trainees?: Array<{ __typename?: 'Trainee', id: string, birthDate: any, traineeName: string, parentPhone: any, parentEmail: any, feedback: string, status: Status, user: { __typename?: 'User', id: string, firstName: string, lastName: string, imgSrc: string } }> | null }> | null } };
+export type GetCoachQuery = { __typename?: 'Query', getCoach: { __typename?: 'Coach', id: string, city: { __typename?: 'City', id: string, name: string }, groups?: Array<{ __typename?: 'Group', id: string, name: string, limit: number, price: number, exercises?: Array<{ __typename?: 'Exercise', id: string, day: any, start: any, end: any }> | null, trainees?: Array<{ __typename?: 'Trainee', id: string, birthDate: any, traineeName: string, parentPhone: any, parentEmail: any, feedback: string, status: Status, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string } }> | null }> | null } };
 
 export type SendEmailToGroupMutationVariables = Exact<{
   input: SendEmailToGroupInput;
@@ -1105,6 +1127,40 @@ export const useEditGroupMutation = <
       options
     );
 useEditGroupMutation.fetcher = (client: GraphQLClient, variables: EditGroupMutationVariables, headers?: RequestInit['headers']) => fetcher<EditGroupMutation, EditGroupMutationVariables>(client, EditGroupDocument, variables, headers);
+export const GetAttendanceByDayDocument = `
+    query GetAttendanceByDay($attendanceByDayInput: AttendanceByDayInput!) {
+  getAttendanceByDay(attendanceByDayInput: $attendanceByDayInput) {
+    day
+    present
+    trainee {
+      status
+      user {
+        firstName
+        lastName
+      }
+    }
+  }
+}
+    `;
+export const useGetAttendanceByDayQuery = <
+      TData = GetAttendanceByDayQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: GetAttendanceByDayQueryVariables,
+      options?: UseQueryOptions<GetAttendanceByDayQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<GetAttendanceByDayQuery, TError, TData>(
+      ['GetAttendanceByDay', variables],
+      fetcher<GetAttendanceByDayQuery, GetAttendanceByDayQueryVariables>(client, GetAttendanceByDayDocument, variables, headers),
+      options
+    );
+
+useGetAttendanceByDayQuery.getKey = (variables: GetAttendanceByDayQueryVariables) => ['GetAttendanceByDay', variables];
+;
+
+useGetAttendanceByDayQuery.fetcher = (client: GraphQLClient, variables: GetAttendanceByDayQueryVariables, headers?: RequestInit['headers']) => fetcher<GetAttendanceByDayQuery, GetAttendanceByDayQueryVariables>(client, GetAttendanceByDayDocument, variables, headers);
 export const GetCoachDocument = `
     query GetCoach($id: String!) {
   getCoach(id: $id) {
@@ -1117,6 +1173,7 @@ export const GetCoachDocument = `
       id
       name
       limit
+      price
       exercises {
         id
         day
@@ -1135,6 +1192,7 @@ export const GetCoachDocument = `
           id
           firstName
           lastName
+          email
           imgSrc
         }
       }

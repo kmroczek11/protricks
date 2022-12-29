@@ -9,6 +9,7 @@ import {
 } from '@nestjs/graphql';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Group } from 'src/groups/entities/group.entity';
+import { MailService } from 'src/mail/mail.service';
 import { Role } from 'src/users/entities/role.enum';
 import { User } from 'src/users/entities/user.entity';
 import { AcceptToGroupResponse } from './dto/accept-to-group-response';
@@ -27,7 +28,10 @@ import { TraineesService } from './trainees.service';
 
 @Resolver(() => Trainee)
 export class TraineesResolver {
-  constructor(private traineesService: TraineesService) {}
+  constructor(
+    private traineesService: TraineesService,
+    private mailService: MailService,
+  ) {}
 
   @Mutation(() => CreateTraineeResponse)
   @Roles(Role.USER)
@@ -69,9 +73,11 @@ export class TraineesResolver {
 
   @Mutation(() => AcceptToGroupResponse)
   @Roles(Role.COACH)
-  acceptToGroup(
+  async acceptToGroup(
     @Args('acceptToGroupInput') acceptToGroupInput: AcceptToGroupInput,
   ): Promise<AcceptToGroupResponse> {
+    await this.mailService.sendStayMessage(acceptToGroupInput.email);
+
     return this.traineesService.changeStatus(
       acceptToGroupInput.id,
       Status.EXPECTATION,

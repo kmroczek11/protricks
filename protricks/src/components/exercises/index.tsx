@@ -8,7 +8,6 @@ const Exercises: React.FC = () => {
     <React.Fragment>
       <Hero />
       <About />
-      <MultistepForm />
     </React.Fragment>
   );
 };

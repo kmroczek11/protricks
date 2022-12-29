@@ -10,39 +10,43 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import {
+  CreateAttendanceMutation,
+  CreateAttendanceMutationVariables,
   Status,
   useAcceptToGroupMutation,
-  useConfirmContractReceiptMutation,
   useCreateAttendanceMutation,
-  useDeleteTraineeMutation,
-} from "../../../../generated/graphql";
+} from "../../../../../generated/graphql";
 import { useEffect, useState } from "react";
-import { useAuth } from "../../../auth";
 import {
   ColorButton,
   CustomAvatar,
-  CustomDialog,
   LoadingScreen,
-} from "../../../lib";
-import Chip from "@mui/material/Chip";
+} from "../../../../lib";
 import Grid from "@mui/material/Grid";
-import { green, grey, lightGreen } from "@mui/material/colors";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Box, Theme, useTheme } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import clsx from "clsx";
 import Switch from "@mui/material/Switch";
-import createAccessClient from "../../../../graphql/clients/accessClient";
+import createAccessClient from "../../../../../graphql/clients/accessClient";
+import StatusBox from "./StatusBox";
 
 interface AttendanceListDialogProps {
   groupName: string;
+  day: any;
   trainees?: Array<{
     id: string;
     status: string;
-    user: { id: string; firstName: string; lastName: string; imgSrc?: string };
+    user: {
+      id: string;
+      firstName: string;
+      lastName: string;
+      email: string;
+      imgSrc?: string;
+    };
   }> | null;
   open: boolean;
   handleClose: () => void;
+  setOpenAttendanceList: React.Dispatch<React.SetStateAction<boolean>>;
   onClose?: () => void;
 }
 
@@ -68,7 +72,15 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
-  const { groupName, open, trainees, handleClose, onClose } = props;
+  const {
+    groupName,
+    day,
+    open,
+    trainees,
+    handleClose,
+    setOpenAttendanceList,
+    onClose,
+  } = props;
   const theme = useTheme();
   const smScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const classes = useStyles();
@@ -80,16 +92,25 @@ const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
         id: string;
         firstName: string;
         lastName: string;
+        email: string;
         imgSrc?: string;
       };
       present: boolean;
     }[]
   >([]);
+  console.log(day)
 
-  const { isLoading, mutate } = useCreateAttendanceMutation<Error>(
-    createAccessClient(),
-    {}
-  );
+  const { isLoading, mutate: createAttendance } =
+    useCreateAttendanceMutation<Error>(createAccessClient(), {
+      onSuccess: (
+        data: CreateAttendanceMutation,
+        _variables: CreateAttendanceMutationVariables,
+        _context: unknown
+      ) => setOpenAttendanceList(false),
+    });
+
+  const { isLoading: isAcceptToGroupLoading, mutate: acceptToGroup } =
+    useAcceptToGroupMutation<Error>(createAccessClient(), {});
 
   useEffect(() => {
     setTraineesPresence(
@@ -113,15 +134,27 @@ const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
     setTraineesPresence(presence);
   };
 
-  // const setAttendanceList = () => {
-  //   traineesPresence.forEach((t) => {
-  //     mutate({
-  //         userId: t.id,
-  //         present: t.present,
-  //       },
-  //     });
-  //   });
-  // };
+  const saveAttendanceList = () => {
+    traineesPresence.forEach((t) => {
+      if (t.present && t.status === Status.FirstTime) {
+        // if trainee's first time accept to group and send email
+        acceptToGroup({
+          input: {
+            id: t.id,
+            email: t.user.email,
+          },
+        });
+      }
+
+      createAttendance({
+        input: {
+          traineeId: t.id,
+          day: day,
+          present: t.present,
+        },
+      });
+    });
+  };
 
   return isLoading ? (
     <LoadingScreen />
@@ -196,57 +229,7 @@ const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
                           </Typography>
                         </Grid>
                         <Grid item>
-                          {trainee.status === Status.FirstTime && (
-                            <Chip
-                              label="Pierwszy raz"
-                              variant="outlined"
-                              sx={{
-                                fontSize: 12,
-                                borderColor: green.A200,
-                                color: green.A200,
-                              }}
-                            />
-                          )}
-                          {trainee.status === Status.Expectation && (
-                            <Chip
-                              label="Oczekiwanie"
-                              variant="filled"
-                              sx={{
-                                fontSize: 12,
-                                border: 1,
-                                backgroundColor: grey[100],
-                                borderColor: grey[900],
-                                color: grey[900],
-                              }}
-                            />
-                          )}
-                          {trainee.status ===
-                            Status.AcceptedWithoutContract && (
-                            <Chip
-                              label="Zaakceptowano (bez umowy)"
-                              variant="filled"
-                              sx={{
-                                fontSize: 12,
-                                border: 1,
-                                backgroundColor: lightGreen[100],
-                                borderColor: lightGreen[900],
-                                color: lightGreen[900],
-                              }}
-                            />
-                          )}
-                          {trainee.status === Status.Accepted && (
-                            <Chip
-                              label="Zaakceptowano"
-                              variant="filled"
-                              sx={{
-                                fontSize: 12,
-                                border: 1,
-                                backgroundColor: green[100],
-                                borderColor: green[900],
-                                color: green[900],
-                              }}
-                            />
-                          )}
+                          <StatusBox status={trainee.status} />
                         </Grid>
                       </Grid>
                     }
@@ -260,7 +243,7 @@ const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
                 color="success"
                 type="submit"
                 sx={{ my: 2 }}
-                // onClick={() => saveAttendanceList()}
+                onClick={() => saveAttendanceList()}
               >
                 Zapisz obecności
               </ColorButton>

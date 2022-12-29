@@ -10,9 +10,11 @@ import {
   Column,
   ManyToOne,
   BeforeInsert,
+  OneToMany,
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { Status } from './status.enum';
+import { Attendance } from 'src/attendance-list/entities/attendance';
 
 @Entity('trainees')
 @ObjectType()
@@ -38,6 +40,12 @@ export class Trainee {
 
   @ManyToOne(() => Group, (group) => group.trainees)
   group: Group;
+
+  @OneToMany(() => Attendance, (attendance) => attendance.trainee, {
+    eager: true,
+  })
+  @Field(() => [Attendance], { nullable: true })
+  attendances?: Attendance[];
 
   @Column({ type: 'date' })
   @Field(() => LocalDateResolver)
