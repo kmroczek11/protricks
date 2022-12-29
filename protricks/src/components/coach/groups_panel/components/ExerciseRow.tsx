@@ -66,7 +66,8 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
       attendanceByDayInput: {
         day,
       },
-    }
+    },
+    { refetchInterval: 1000 }
   );
 
   const { isLoading, mutate } = useDeleteExerciseMutation<Error>(

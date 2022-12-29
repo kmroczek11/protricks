@@ -21,6 +21,7 @@ import { TokensModule } from './tokens/tokens.module';
 import { MailModule } from './mail/mail.module';
 import { GraphQLError, GraphQLFormattedError } from 'graphql/error/GraphQLError';
 import { AttendanceListModule } from './attendance-list/attendance-list.module';
+import { PaymentsModule } from './payments/payments.module';
 
 @Module({
   imports: [
@@ -58,6 +59,9 @@ import { AttendanceListModule } from './attendance-list/attendance-list.module';
         MAIL_HOST: Joi.string().required(),
         MAIL_USER: Joi.string().required(),
         MAIL_PASSWORD: Joi.string().required(),
+        STRIPE_SECRET_KEY: Joi.string().required(),
+        STRIPE_CURRENCY: Joi.string().required(),
+        CLIENT_HOST: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRoot({
@@ -86,6 +90,7 @@ import { AttendanceListModule } from './attendance-list/attendance-list.module';
     TokensModule,
     MailModule,
     AttendanceListModule,
+    PaymentsModule,
   ],
   controllers: [],
   providers: [

@@ -1,0 +1,5 @@
+mutation createCharge($input: CreateChargeInput!) {
+  createCharge(createChargeInput: $input) {
+    msg
+  }
+}

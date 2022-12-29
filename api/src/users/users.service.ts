@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PaymentsService } from 'src/payments/payments.service';
 import { Repository } from 'typeorm';
 import { CreateUserInput } from './dto/create-user.input';
 import { Role } from './entities/role.enum';
@@ -10,10 +11,19 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    private paymentsService: PaymentsService,
   ) {}
 
-  createUser(createUserInput: CreateUserInput): Promise<User> {
-    const newUser = this.usersRepository.create(createUserInput);
+  async createUser(createUserInput: CreateUserInput): Promise<User> {
+    const stripeCustomer = await this.paymentsService.createCustomer(
+      createUserInput.firstName,
+      createUserInput.email,
+    );
+
+    const newUser = this.usersRepository.create({
+      ...createUserInput,
+      stripeCustomerId: stripeCustomer.id,
+    });
 
     return this.usersRepository.save(newUser);
   }

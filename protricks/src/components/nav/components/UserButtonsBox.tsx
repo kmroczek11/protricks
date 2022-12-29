@@ -110,7 +110,7 @@ const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
           color="secondary"
           variant="contained"
           sx={{ display: { xs: "none", md: "block" } }}
-          onClick={() => navigate("/zajecia#zarejestruj")}
+          onClick={() => navigate("/zajecia/zarejestruj")}
         >
           Zapisz się na zajęcia
         </ColorButton>
