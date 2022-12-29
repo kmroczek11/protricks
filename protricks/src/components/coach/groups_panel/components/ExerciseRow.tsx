@@ -74,8 +74,6 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
     {}
   );
 
-  console.log(day, data?.getAttendanceByDay);
-
   const sheetData = [
     data?.getAttendanceByDay.map((attendance, i) =>
       i == 0
@@ -202,7 +200,7 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
       {openAttendanceList && (
         <AttendanceListDialog
           groupName={groupName}
-          day={convertToPlDate(day)}
+          day={day}
           trainees={trainees}
           open={openAttendanceList}
           handleClose={() => {
