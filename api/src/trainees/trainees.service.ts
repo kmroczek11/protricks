@@ -50,8 +50,12 @@ export class TraineesService {
     return this.traineesRepository.find();
   }
 
-  findOne(id: string) {
+  findOneByTraineeId(id: string) {
     return this.traineesRepository.findOne({ where: { id } });
+  }
+
+  findOneByUserId(userId: string) {
+    return this.traineesRepository.findOne({ where: { userId } });
   }
 
   getUser(userId: string): Promise<User> {
@@ -73,7 +77,13 @@ export class TraineesService {
 
     await this.usersService.deleteRole(userId, Role.TRAINEE);
 
-    return this.traineesRepository.findOne({ where: { userId } });
+    const user = await this.usersService.findOneById(userId);
+
+    console.log(user)
+
+    return {
+      user,
+    };
   }
 
   async changeStatus(id: string, status: Status) {

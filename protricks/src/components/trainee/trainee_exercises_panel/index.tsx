@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { useAuth } from "../../auth";
@@ -7,12 +8,16 @@ import {
   useGetTraineeQuery,
 } from "../../../generated/graphql";
 import ExerciseCard from "./components/ExerciseCard";
-import { LoadingScreen } from "../../lib";
+import { CustomAlert, LoadingScreen } from "../../lib";
 import JoinGroupAlert from "./components/JoinGroupAlert";
 import createAccessClient from "../../../graphql/clients/accessClient";
 
+const successMessage =
+  "Pomyślnie dołączono do grupy. Na maila wysłaliśmy dalsze instrukcje.";
+
 const TraineeExercisesPanel: React.FC = () => {
-  const { user} = useAuth();
+  const { user } = useAuth();
+  const [joinGroupStatus, setJoinGroupStatus] = useState<string>("");
 
   const { data, isLoading, error, refetch } = useGetTraineeQuery<
     GetTraineeQuery,
@@ -62,8 +67,18 @@ const TraineeExercisesPanel: React.FC = () => {
     >
       <Grid item>
         {data?.getTrainee.status === Status.Expectation && (
-          <JoinGroupAlert traineeId={data?.getTrainee.id!} />
+          <JoinGroupAlert
+            traineeId={data?.getTrainee.id!}
+            setJoinGroupStatus={setJoinGroupStatus}
+          />
         )}
+         {joinGroupStatus === "Success" ? (
+        <CustomAlert severity="success" msg={successMessage} />
+      ) : (
+        joinGroupStatus && (
+          <CustomAlert severity="error" msg="Nieoczekiwany błąd." />
+        )
+      )}
       </Grid>
       <Grid
         item

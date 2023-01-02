@@ -14,7 +14,7 @@ import {
   StyledTableCell,
   StyledTableRow,
 } from "..";
-import EditGroupForm from "./EditGroupForm";
+import EditGroupForm from "./forms/EditGroupForm";
 import { ColorButton } from "../../../lib";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
@@ -22,13 +22,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EmailIcon from "@mui/icons-material/Email";
 import GroupIcon from "@mui/icons-material/Group";
 import CustomDialog from "../../../lib/CustomDialog";
-import CreateExerciseForm from "./CreateExerciseForm";
+import CreateExerciseForm from "./forms/CreateExerciseForm";
 import { Status, useDeleteGroupMutation } from "../../../../generated/graphql";
 import ExerciseRow from "./ExerciseRow";
 import Tooltip from "@mui/material/Tooltip";
-import ManageMembersDialog from "./ManageMembersDialog";
+import ManageMembersDialog from "./dialogs/ManageMembersDialog";
 import { useAuth } from "../../../auth";
-import SendEmailToGroupDialog from "./SendEmailToGroupDialog";
+import SendEmailToGroupDialog from "./dialogs/SendEmailToGroupDialog";
 import createAccessClient from "../../../../graphql/clients/accessClient";
 
 interface RowProps {
@@ -37,6 +37,7 @@ interface RowProps {
     id: string;
     name: string;
     limit: number;
+    price: number;
     exercises?: Array<{
       id: string;
       day: any;
@@ -51,14 +52,14 @@ interface RowProps {
       parentEmail: any;
       feedback: string;
       status: Status;
-      user: { id: string; firstName: string; lastName: string };
+      user: { id: string; firstName: string; lastName: string; email: string };
     }> | null;
   };
 }
 
 const GroupRow: React.FC<RowProps> = (props) => {
   const { i, item } = props;
-  const { id, name, limit, exercises, trainees } = item;
+  const { id, name, limit, price, exercises, trainees } = item;
   const [openExercises, setOpenExercises] = useState(false);
   const [openEditGroup, setOpenEditGroup] = useState(false);
   const [openCreateExercise, setOpenCreateExercise] = useState(false);
@@ -105,6 +106,7 @@ const GroupRow: React.FC<RowProps> = (props) => {
         </StyledTableCell>
         <StyledTableCell align="center">{name}</StyledTableCell>
         <StyledTableCell align="center">{limit}</StyledTableCell>
+        <StyledTableCell align="center">{price}</StyledTableCell>
         <StyledTableCell align="center">
           <Tooltip title="Edytuj grupę">
             <IconButton
@@ -211,7 +213,8 @@ const GroupRow: React.FC<RowProps> = (props) => {
                 </TableHead>
                 <TableBody>
                   {exercises?.map((exercise, i) => (
-                    <ExerciseRow i={++i}
+                    <ExerciseRow
+                      i={++i}
                       item={exercise}
                       trainees={trainees}
                       groupName={name}

@@ -11,10 +11,10 @@ const theme = createTheme({
     primary: {
       main: "#fff",
       dark: "#d3d3d3",
-      contrastText: "#000",
+      contrastText: "#6d67e4",
     },
     secondary: {
-      main: "#000",
+      main: "#6d67e4",
       contrastText: "#fff",
     },
   },

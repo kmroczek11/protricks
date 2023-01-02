@@ -49,6 +49,9 @@ export class User {
   @Field(() => [Role])
   roles: Role[];
 
+  @Column()
+  stripeCustomerId: string;
+
   @Column({ nullable: true })
   @Exclude()
   refreshToken?: string;

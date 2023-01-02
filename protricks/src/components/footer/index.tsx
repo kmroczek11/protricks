@@ -22,7 +22,7 @@ const txt1 = [
 
 const txt2 = [
   { id: 1, name: "Ernest Jędrzejek" },
-  { id: 2, name: "Telefon: +48 123 123 123" },
+  { id: 2, name: "Telefon: +48 699 829 573" },
   { id: 3, name: "Email: kontakt@protricks.pl" },
 ];
 
@@ -30,7 +30,7 @@ const Footer: React.FC = () => {
   const theme = useTheme();
 
   return (
-    <Box sx={{ backgroundColor: "secondary.main" }}>
+    <Box sx={{ backgroundColor: "#000" }}>
       <Grid container p={5} spacing={5}>
         <Grid item xs={12} md={4} textAlign="center">
           <Logo src={logo} alt="logo" />

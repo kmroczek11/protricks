@@ -30,12 +30,25 @@ export type Scalars = {
 };
 
 export type AcceptToGroupInput = {
+  email: Scalars['String'];
   id: Scalars['String'];
 };
 
 export type AcceptToGroupResponse = {
   __typename?: 'AcceptToGroupResponse';
   msg: Scalars['String'];
+};
+
+export type Attendance = {
+  __typename?: 'Attendance';
+  day: Scalars['LocalDate'];
+  id: Scalars['String'];
+  present: Scalars['Boolean'];
+  trainee: Trainee;
+};
+
+export type AttendanceByDayInput = {
+  day: Scalars['LocalDate'];
 };
 
 export type AutoLogInUserInput = {
@@ -108,9 +121,9 @@ export type ConfirmContractReceiptResponse = {
 };
 
 export type CreateAttendanceInput = {
-  payed: Scalars['Boolean'];
+  day: Scalars['LocalDate'];
   present: Scalars['Boolean'];
-  userId: Scalars['String'];
+  traineeId: Scalars['String'];
 };
 
 export type CreateAttendanceResponse = {
@@ -163,6 +176,25 @@ export type CreateGroupInput = {
 
 export type CreateGroupResponse = {
   __typename?: 'CreateGroupResponse';
+  msg: Scalars['String'];
+};
+
+export type CreateLostTraineeInput = {
+  traineeId: Scalars['String'];
+};
+
+export type CreateLostTraineeResponse = {
+  __typename?: 'CreateLostTraineeResponse';
+  msg: Scalars['String'];
+};
+
+export type CreatePaymentInput = {
+  amount: Scalars['Float'];
+  paymentMethodId: Scalars['String'];
+};
+
+export type CreatePaymentResponse = {
+  __typename?: 'CreatePaymentResponse';
   msg: Scalars['String'];
 };
 
@@ -224,6 +256,7 @@ export type EditGroupInput = {
   groupId: Scalars['String'];
   limit: Scalars['Int'];
   name: Scalars['String'];
+  price: Scalars['Float'];
 };
 
 export type EditGroupResponse = {
@@ -249,6 +282,15 @@ export type ForgotPasswordResponse = {
   msg: Scalars['String'];
 };
 
+export type GetMonthlyCostInput = {
+  userId: Scalars['String'];
+};
+
+export type GetMonthlyCostResponse = {
+  __typename?: 'GetMonthlyCostResponse';
+  amount: Scalars['Float'];
+};
+
 export type Group = {
   __typename?: 'Group';
   coach: Coach;
@@ -261,6 +303,7 @@ export type Group = {
 };
 
 export type JoinGroupInput = {
+  email: Scalars['String'];
   id: Scalars['String'];
 };
 
@@ -301,6 +344,8 @@ export type Mutation = {
   createCoach: Coach;
   createExercise: CreateExerciseResponse;
   createGroup: CreateGroupResponse;
+  createLostTrainee: CreateLostTraineeResponse;
+  createPayment: CreatePaymentResponse;
   createTrainee: CreateTraineeResponse;
   createUser: User;
   deleteCity: City;
@@ -379,6 +424,16 @@ export type MutationCreateGroupArgs = {
 };
 
 
+export type MutationCreateLostTraineeArgs = {
+  createLostTraineeInput: CreateLostTraineeInput;
+};
+
+
+export type MutationCreatePaymentArgs = {
+  createPaymentInput: CreatePaymentInput;
+};
+
+
 export type MutationCreateTraineeArgs = {
   createTraineeInput: CreateTraineeInput;
 };
@@ -453,8 +508,9 @@ export type Query = {
   coaches: Array<Coach>;
   exercises: Array<Exercise>;
   findOne: User;
+  getAttendanceByDay: Array<Attendance>;
   getCoach: Coach;
-  getTotalPrice: Scalars['Float'];
+  getMonthlyCost: GetMonthlyCostResponse;
   getTrainee: Trainee;
   groups: Array<Group>;
   trainees: Array<Trainee>;
@@ -467,13 +523,18 @@ export type QueryFindOneArgs = {
 };
 
 
+export type QueryGetAttendanceByDayArgs = {
+  attendanceByDayInput: AttendanceByDayInput;
+};
+
+
 export type QueryGetCoachArgs = {
   id: Scalars['String'];
 };
 
 
-export type QueryGetTotalPriceArgs = {
-  userId: Scalars['String'];
+export type QueryGetMonthlyCostArgs = {
+  getMonthlyCostInput: GetMonthlyCostInput;
 };
 
 
@@ -530,6 +591,7 @@ export enum Status {
 
 export type Trainee = {
   __typename?: 'Trainee';
+  attendances?: Maybe<Array<Attendance>>;
   birthDate: Scalars['LocalDate'];
   feedback: Scalars['String'];
   group: Group;
@@ -560,6 +622,13 @@ export type AutoLogInUserMutationVariables = Exact<{
 
 export type AutoLogInUserMutation = { __typename?: 'Mutation', autoLogInUser: { __typename?: 'LogInResponse', expiresIn: number, accessToken: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
 
+export type ForgotPasswordMutationVariables = Exact<{
+  input: ForgotPasswordInput;
+}>;
+
+
+export type ForgotPasswordMutation = { __typename?: 'Mutation', forgotPassword: { __typename?: 'ForgotPasswordResponse', msg: string } };
+
 export type LogInUserMutationVariables = Exact<{
   input: LogInUserInput;
 }>;
@@ -585,13 +654,6 @@ export type RegisterUserMutationVariables = Exact<{
 
 
 export type RegisterUserMutation = { __typename?: 'Mutation', registerUser: { __typename?: 'LogInResponse', expiresIn: number, accessToken: string, refreshToken: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
-
-export type ForgotPasswordMutationVariables = Exact<{
-  input: ForgotPasswordInput;
-}>;
-
-
-export type ForgotPasswordMutation = { __typename?: 'Mutation', forgotPassword: { __typename?: 'ForgotPasswordResponse', msg: string } };
 
 export type AcceptToGroupMutationVariables = Exact<{
   input: AcceptToGroupInput;
@@ -663,12 +725,19 @@ export type EditGroupMutationVariables = Exact<{
 
 export type EditGroupMutation = { __typename?: 'Mutation', editGroup: { __typename?: 'EditGroupResponse', msg: string } };
 
+export type GetAttendanceByDayQueryVariables = Exact<{
+  attendanceByDayInput: AttendanceByDayInput;
+}>;
+
+
+export type GetAttendanceByDayQuery = { __typename?: 'Query', getAttendanceByDay: Array<{ __typename?: 'Attendance', day: any, present: boolean, trainee: { __typename?: 'Trainee', status: Status, user: { __typename?: 'User', firstName: string, lastName: string } } }> };
+
 export type GetCoachQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type GetCoachQuery = { __typename?: 'Query', getCoach: { __typename?: 'Coach', id: string, city: { __typename?: 'City', id: string, name: string }, groups?: Array<{ __typename?: 'Group', id: string, name: string, limit: number, exercises?: Array<{ __typename?: 'Exercise', id: string, day: any, start: any, end: any }> | null, trainees?: Array<{ __typename?: 'Trainee', id: string, birthDate: any, traineeName: string, parentPhone: any, parentEmail: any, feedback: string, status: Status, user: { __typename?: 'User', id: string, firstName: string, lastName: string, imgSrc: string } }> | null }> | null } };
+export type GetCoachQuery = { __typename?: 'Query', getCoach: { __typename?: 'Coach', id: string, city: { __typename?: 'City', id: string, name: string }, groups?: Array<{ __typename?: 'Group', id: string, name: string, limit: number, price: number, exercises?: Array<{ __typename?: 'Exercise', id: string, day: any, start: any, end: any }> | null, trainees?: Array<{ __typename?: 'Trainee', id: string, birthDate: any, traineeName: string, parentPhone: any, parentEmail: any, feedback: string, status: Status, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string } }> | null }> | null } };
 
 export type SendEmailToGroupMutationVariables = Exact<{
   input: SendEmailToGroupInput;
@@ -689,12 +758,26 @@ export type GetAllCoachesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetAllCoachesQuery = { __typename?: 'Query', coaches: Array<{ __typename?: 'Coach', facebookUrl: string, instagramUrl: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, imgSrc: string }, city: { __typename?: 'City', id: string, name: string, room: string, citySrc: string, roomSrc: string, mapSrc: string, priceListSrc: string }, groups?: Array<{ __typename?: 'Group', id: string, name: string, limit: number, trainees?: Array<{ __typename?: 'Trainee', id: string }> | null }> | null }> };
 
-export type CreateChargeMutationVariables = Exact<{
-  input: CreateChargeInput;
+export type CreateLostTraineeMutationVariables = Exact<{
+  input: CreateLostTraineeInput;
 }>;
 
 
-export type CreateChargeMutation = { __typename?: 'Mutation', createCharge: { __typename?: 'CreateChargeResponse', msg: string } };
+export type CreateLostTraineeMutation = { __typename?: 'Mutation', createLostTrainee: { __typename?: 'CreateLostTraineeResponse', msg: string } };
+
+export type CreatePaymentMutationVariables = Exact<{
+  input: CreatePaymentInput;
+}>;
+
+
+export type CreatePaymentMutation = { __typename?: 'Mutation', createPayment: { __typename?: 'CreatePaymentResponse', msg: string } };
+
+export type GetMonthlyCostQueryVariables = Exact<{
+  getMonthlyCostInput: GetMonthlyCostInput;
+}>;
+
+
+export type GetMonthlyCostQuery = { __typename?: 'Query', getMonthlyCost: { __typename?: 'GetMonthlyCostResponse', amount: number } };
 
 export type GetTraineeQueryVariables = Exact<{
   id: Scalars['String'];
@@ -762,6 +845,27 @@ export const useAutoLogInUserMutation = <
       options
     );
 useAutoLogInUserMutation.fetcher = (client: GraphQLClient, variables: AutoLogInUserMutationVariables, headers?: RequestInit['headers']) => fetcher<AutoLogInUserMutation, AutoLogInUserMutationVariables>(client, AutoLogInUserDocument, variables, headers);
+export const ForgotPasswordDocument = `
+    mutation forgotPassword($input: ForgotPasswordInput!) {
+  forgotPassword(forgotPasswordInput: $input) {
+    msg
+  }
+}
+    `;
+export const useForgotPasswordMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<ForgotPasswordMutation, TError, ForgotPasswordMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<ForgotPasswordMutation, TError, ForgotPasswordMutationVariables, TContext>(
+      ['forgotPassword'],
+      (variables?: ForgotPasswordMutationVariables) => fetcher<ForgotPasswordMutation, ForgotPasswordMutationVariables>(client, ForgotPasswordDocument, variables, headers)(),
+      options
+    );
+useForgotPasswordMutation.fetcher = (client: GraphQLClient, variables: ForgotPasswordMutationVariables, headers?: RequestInit['headers']) => fetcher<ForgotPasswordMutation, ForgotPasswordMutationVariables>(client, ForgotPasswordDocument, variables, headers);
 export const LogInUserDocument = `
     mutation LogInUser($input: LogInUserInput!) {
   logInUser(logInUserInput: $input) {
@@ -867,27 +971,6 @@ export const useRegisterUserMutation = <
       options
     );
 useRegisterUserMutation.fetcher = (client: GraphQLClient, variables: RegisterUserMutationVariables, headers?: RequestInit['headers']) => fetcher<RegisterUserMutation, RegisterUserMutationVariables>(client, RegisterUserDocument, variables, headers);
-export const ForgotPasswordDocument = `
-    mutation forgotPassword($input: ForgotPasswordInput!) {
-  forgotPassword(forgotPasswordInput: $input) {
-    msg
-  }
-}
-    `;
-export const useForgotPasswordMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<ForgotPasswordMutation, TError, ForgotPasswordMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<ForgotPasswordMutation, TError, ForgotPasswordMutationVariables, TContext>(
-      ['forgotPassword'],
-      (variables?: ForgotPasswordMutationVariables) => fetcher<ForgotPasswordMutation, ForgotPasswordMutationVariables>(client, ForgotPasswordDocument, variables, headers)(),
-      options
-    );
-useForgotPasswordMutation.fetcher = (client: GraphQLClient, variables: ForgotPasswordMutationVariables, headers?: RequestInit['headers']) => fetcher<ForgotPasswordMutation, ForgotPasswordMutationVariables>(client, ForgotPasswordDocument, variables, headers);
 export const AcceptToGroupDocument = `
     mutation AcceptToGroup($input: AcceptToGroupInput!) {
   acceptToGroup(acceptToGroupInput: $input) {
@@ -1105,6 +1188,40 @@ export const useEditGroupMutation = <
       options
     );
 useEditGroupMutation.fetcher = (client: GraphQLClient, variables: EditGroupMutationVariables, headers?: RequestInit['headers']) => fetcher<EditGroupMutation, EditGroupMutationVariables>(client, EditGroupDocument, variables, headers);
+export const GetAttendanceByDayDocument = `
+    query GetAttendanceByDay($attendanceByDayInput: AttendanceByDayInput!) {
+  getAttendanceByDay(attendanceByDayInput: $attendanceByDayInput) {
+    day
+    present
+    trainee {
+      status
+      user {
+        firstName
+        lastName
+      }
+    }
+  }
+}
+    `;
+export const useGetAttendanceByDayQuery = <
+      TData = GetAttendanceByDayQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: GetAttendanceByDayQueryVariables,
+      options?: UseQueryOptions<GetAttendanceByDayQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<GetAttendanceByDayQuery, TError, TData>(
+      ['GetAttendanceByDay', variables],
+      fetcher<GetAttendanceByDayQuery, GetAttendanceByDayQueryVariables>(client, GetAttendanceByDayDocument, variables, headers),
+      options
+    );
+
+useGetAttendanceByDayQuery.getKey = (variables: GetAttendanceByDayQueryVariables) => ['GetAttendanceByDay', variables];
+;
+
+useGetAttendanceByDayQuery.fetcher = (client: GraphQLClient, variables: GetAttendanceByDayQueryVariables, headers?: RequestInit['headers']) => fetcher<GetAttendanceByDayQuery, GetAttendanceByDayQueryVariables>(client, GetAttendanceByDayDocument, variables, headers);
 export const GetCoachDocument = `
     query GetCoach($id: String!) {
   getCoach(id: $id) {
@@ -1117,6 +1234,7 @@ export const GetCoachDocument = `
       id
       name
       limit
+      price
       exercises {
         id
         day
@@ -1135,6 +1253,7 @@ export const GetCoachDocument = `
           id
           firstName
           lastName
+          email
           imgSrc
         }
       }
@@ -1260,27 +1379,74 @@ useGetAllCoachesQuery.getKey = (variables?: GetAllCoachesQueryVariables) => vari
 ;
 
 useGetAllCoachesQuery.fetcher = (client: GraphQLClient, variables?: GetAllCoachesQueryVariables, headers?: RequestInit['headers']) => fetcher<GetAllCoachesQuery, GetAllCoachesQueryVariables>(client, GetAllCoachesDocument, variables, headers);
-export const CreateChargeDocument = `
-    mutation CreateCharge($input: CreateChargeInput!) {
-  createCharge(createChargeInput: $input) {
+export const CreateLostTraineeDocument = `
+    mutation createLostTrainee($input: CreateLostTraineeInput!) {
+  createLostTrainee(createLostTraineeInput: $input) {
     msg
   }
 }
     `;
-export const useCreateChargeMutation = <
+export const useCreateLostTraineeMutation = <
       TError = unknown,
       TContext = unknown
     >(
       client: GraphQLClient,
-      options?: UseMutationOptions<CreateChargeMutation, TError, CreateChargeMutationVariables, TContext>,
+      options?: UseMutationOptions<CreateLostTraineeMutation, TError, CreateLostTraineeMutationVariables, TContext>,
       headers?: RequestInit['headers']
     ) =>
-    useMutation<CreateChargeMutation, TError, CreateChargeMutationVariables, TContext>(
-      ['CreateCharge'],
-      (variables?: CreateChargeMutationVariables) => fetcher<CreateChargeMutation, CreateChargeMutationVariables>(client, CreateChargeDocument, variables, headers)(),
+    useMutation<CreateLostTraineeMutation, TError, CreateLostTraineeMutationVariables, TContext>(
+      ['createLostTrainee'],
+      (variables?: CreateLostTraineeMutationVariables) => fetcher<CreateLostTraineeMutation, CreateLostTraineeMutationVariables>(client, CreateLostTraineeDocument, variables, headers)(),
       options
     );
-useCreateChargeMutation.fetcher = (client: GraphQLClient, variables: CreateChargeMutationVariables, headers?: RequestInit['headers']) => fetcher<CreateChargeMutation, CreateChargeMutationVariables>(client, CreateChargeDocument, variables, headers);
+useCreateLostTraineeMutation.fetcher = (client: GraphQLClient, variables: CreateLostTraineeMutationVariables, headers?: RequestInit['headers']) => fetcher<CreateLostTraineeMutation, CreateLostTraineeMutationVariables>(client, CreateLostTraineeDocument, variables, headers);
+export const CreatePaymentDocument = `
+    mutation createPayment($input: CreatePaymentInput!) {
+  createPayment(createPaymentInput: $input) {
+    msg
+  }
+}
+    `;
+export const useCreatePaymentMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<CreatePaymentMutation, TError, CreatePaymentMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<CreatePaymentMutation, TError, CreatePaymentMutationVariables, TContext>(
+      ['createPayment'],
+      (variables?: CreatePaymentMutationVariables) => fetcher<CreatePaymentMutation, CreatePaymentMutationVariables>(client, CreatePaymentDocument, variables, headers)(),
+      options
+    );
+useCreatePaymentMutation.fetcher = (client: GraphQLClient, variables: CreatePaymentMutationVariables, headers?: RequestInit['headers']) => fetcher<CreatePaymentMutation, CreatePaymentMutationVariables>(client, CreatePaymentDocument, variables, headers);
+export const GetMonthlyCostDocument = `
+    query GetMonthlyCost($getMonthlyCostInput: GetMonthlyCostInput!) {
+  getMonthlyCost(getMonthlyCostInput: $getMonthlyCostInput) {
+    amount
+  }
+}
+    `;
+export const useGetMonthlyCostQuery = <
+      TData = GetMonthlyCostQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: GetMonthlyCostQueryVariables,
+      options?: UseQueryOptions<GetMonthlyCostQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<GetMonthlyCostQuery, TError, TData>(
+      ['GetMonthlyCost', variables],
+      fetcher<GetMonthlyCostQuery, GetMonthlyCostQueryVariables>(client, GetMonthlyCostDocument, variables, headers),
+      options
+    );
+
+useGetMonthlyCostQuery.getKey = (variables: GetMonthlyCostQueryVariables) => ['GetMonthlyCost', variables];
+;
+
+useGetMonthlyCostQuery.fetcher = (client: GraphQLClient, variables: GetMonthlyCostQueryVariables, headers?: RequestInit['headers']) => fetcher<GetMonthlyCostQuery, GetMonthlyCostQueryVariables>(client, GetMonthlyCostDocument, variables, headers);
 export const GetTraineeDocument = `
     query GetTrainee($id: String!) {
   getTrainee(id: $id) {

@@ -18,6 +18,10 @@ const limitReachedMessage = `Niestety, w danej grupie osiągnięto już maksymal
 
 const joinGroupSuccessMessage = `Pomyślnie zapisano do grupy. Na maila wysłaliśmy krótki przewodnik, jak przygotować się do pierwszych zajęć. Aby wyświetlić najbliższe zajęcia, otwórz panel użytkownika, a następnie wybierz zakładkę "Moje zajęcia".`;
 
+const amountToSmall = "Podana kwota jest za niska."
+
+const accountNumberInvalid = "Nieprawidłowy numer konta."
+
 export {
   invalidTokenMessage,
   unexpectedErrorMessage,
@@ -26,4 +30,6 @@ export {
   logInMessage,
   limitReachedMessage,
   joinGroupSuccessMessage,
+  amountToSmall,
+  accountNumberInvalid
 };

@@ -1,50 +1,14 @@
 import React from "react";
 import Container from "@mui/material/Container";
-import LooksOneOutlinedIcon from "@mui/icons-material/LooksOneOutlined";
-import LooksTwoOutlinedIcon from "@mui/icons-material/LooksTwoOutlined";
-import Looks3OutlinedIcon from "@mui/icons-material/Looks3Outlined";
-import { ColorButton } from "../../lib";
+import { ColorButton, CustomList } from "../../lib";
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 import { useNavigate } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import CustomExercisesList from "./CustomExercisesList";
-import { useTheme} from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-
-const txt = [
-  {
-    title: "Rozgrzewka",
-    text: `Podopiecznych od początku uczymy,
-    Jak ważna ona jest do podniesienia efektywności
-    Treningowej i uniknięcia kontuzji.
-    Każda nasza rozgrzewka oparta jest o protokół R.A.M.P.
-    Dlatego jest tak bardzo skuteczna.`,
-    titleColor: "error.main",
-    ElementIcon: LooksOneOutlinedIcon,
-  },
-  {
-    title: "Część akrobatyczna",
-    text: `Czyli to, co wszyscy lubimy najbardziej.
-    Tutaj uczymy się wszystkich salt, przerzutów,
-    Kształtujemy koordynację ruchową,
-    Zwinność oraz walczymy ze strachem, oczywiście w
-    Kontrolowanych warunkach.`,
-    titleColor: "#424242",
-    ElementIcon: LooksTwoOutlinedIcon,
-  },
-  {
-    title: "Rozciąganie/Wzmacnianie/Zabawa",
-    text: `Na samym końcu jednostki treningowej, w
-    Zależności od decyzji trenera oraz poziomu
-    Zaawansowania grupy, robimy krótkie wzmacnianie,
-    Poprawiające siłę i szybkość, rozciąganie, które dba
-    O odpowiednie zakresy ruchu lub zabawę ruchową,
-    Która udoskonala koordynację, poprawia zwinność,
-    A zarazem przynosi mnóstwo frajdy.`,
-    titleColor: "#01579b",
-    ElementIcon: Looks3OutlinedIcon,
-  },
-];
+import { exercisesPlanMessages, choosingGroupMessages } from '../../../translations/pl/infoMessages'
+import Box from "@mui/material/Box";
 
 const About: React.FC = () => {
   const navigate = useNavigate();
@@ -52,9 +16,8 @@ const About: React.FC = () => {
   const smScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
-    <Container maxWidth={false} sx={{ py: 15 }}>
+    <Box sx={{ pt: 15 }}>
       <Container
-        maxWidth={false}
         sx={{
           pb: 5,
           display: "flex",
@@ -66,9 +29,7 @@ const About: React.FC = () => {
           color="secondary"
           variant="contained"
           sx={{ width: 250, height: 50, fontSize: 20 }}
-          startIcon={<KeyboardDoubleArrowDownIcon />}
-          endIcon={<KeyboardDoubleArrowDownIcon />}
-          onClick={() => navigate("/zajecia#zarejestruj")}
+          onClick={() => navigate("/zajecia/zarejestruj")}
         >
           Zapisz się
         </ColorButton>
@@ -89,13 +50,38 @@ const About: React.FC = () => {
       <Container>
         <CustomExercisesList
           title="Nasze zajęcia składają się z 3 głównych części"
-          items={txt}
+          items={exercisesPlanMessages}
           variant="primary"
           size="lg"
           center
         />
       </Container>
-    </Container>
+      <Box sx={{
+        backgroundColor: "secondary.main",
+        py: 10,
+        display: "flex",
+        flexDirection:"column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}>
+        <CustomList
+          title="Jak wybrać odpowiednią grupę?"
+          items={choosingGroupMessages}
+          variant="secondary"
+          sxBackground={{ backgroundColor: 'secondary.main' }}
+          size="lg"
+          center
+        />
+        <ColorButton
+          color="primary"
+          variant="contained"
+          sx={{ width: 250, height: 50, fontSize: 20 }}
+          onClick={() => navigate("/zajecia/zarejestruj")}
+        >
+          Zapisz się
+        </ColorButton>
+      </Box>
+    </Box>
   );
 };
 

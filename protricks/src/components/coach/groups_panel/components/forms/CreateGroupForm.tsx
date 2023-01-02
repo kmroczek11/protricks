@@ -1,25 +1,28 @@
 import { useState } from "react";
 import TextField from "@mui/material/TextField";
-import { ColorButton, LoadingScreen } from "../../../lib";
+import { ColorButton, LoadingScreen } from "../../../../lib";
 import Box from "@mui/material/Box";
-import { useEditGroupMutation } from "../../../../generated/graphql";
-import { useAuth } from "../../../auth";
-import createAccessClient from "../../../../graphql/clients/accessClient";
+import { useCreateGroupMutation } from "../../../../../generated/graphql";
+import createAccessClient from "../../../../../graphql/clients/accessClient";
 
-interface EditGroupFormProps {
-  item: {
-    id: string;
-    name: string;
-    limit: number;
-  };
+const defaultGroupValues = {
+  name: "Nowa grupa",
+  limit: 1,
+  price:0,
+};
+
+interface CreateGroupFormProps {
+  coachId: string;
 }
 
-const EditGroupForm: React.FC<EditGroupFormProps> = (props) => {
-  const { item } = props;
-  const { id, ...payload } = item;
-  const [formGroupValues, setFormGroupValues] = useState(payload);
+const CreateGroupForm: React.FC<CreateGroupFormProps> = (props) => {
+  const { coachId } = props;
+  const [formGroupValues, setFormGroupValues] = useState(defaultGroupValues);
 
-  const { isLoading, mutate } = useEditGroupMutation<Error>(createAccessClient(), {});
+  const { isLoading, mutate } = useCreateGroupMutation<Error>(
+    createAccessClient(),
+    {}
+  );
 
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
@@ -46,7 +49,7 @@ const EditGroupForm: React.FC<EditGroupFormProps> = (props) => {
       <TextField
         id="name-input"
         name="name"
-        label="Nowa nazwa grupy"
+        label="Nazwa grupy"
         type="text"
         value={formGroupValues.name}
         onChange={handleInputChange}
@@ -54,12 +57,23 @@ const EditGroupForm: React.FC<EditGroupFormProps> = (props) => {
       <TextField
         id="limit-input"
         name="limit"
-        label="Nowy limit"
+        label="Limit"
         type="number"
         value={formGroupValues.limit}
         onChange={handleInputChange}
         InputProps={{
           inputProps: { min: 1 },
+        }}
+      />
+      <TextField
+        id="price-input"
+        name="price"
+        label="Cena"
+        type="number"
+        value={formGroupValues.price}
+        onChange={handleInputChange}
+        InputProps={{
+          inputProps: { min: 0 },
         }}
       />
       <ColorButton
@@ -68,17 +82,18 @@ const EditGroupForm: React.FC<EditGroupFormProps> = (props) => {
         onClick={() =>
           mutate({
             input: {
-              groupId: id,
+              coachId: coachId,
               name: formGroupValues.name,
               limit: formGroupValues.limit,
+              price: formGroupValues.price,
             },
           })
         }
       >
-        Zmień
+        Dodaj
       </ColorButton>
     </Box>
   );
 };
 
-export default EditGroupForm;
+export default CreateGroupForm;

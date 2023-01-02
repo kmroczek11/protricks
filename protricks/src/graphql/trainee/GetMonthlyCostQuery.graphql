@@ -1,0 +1,5 @@
+query GetMonthlyCost($getMonthlyCostInput: GetMonthlyCostInput!){
+  getMonthlyCost(getMonthlyCostInput:$getMonthlyCostInput){
+    amount
+  }
+}

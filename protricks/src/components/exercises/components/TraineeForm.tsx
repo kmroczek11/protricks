@@ -58,18 +58,14 @@ const FormObserver: React.FC<FormObserverProps> = (props) => {
 const TraineeForm: React.FC<TraineeFormProps> = (props) => {
   const { visible, nextStep, prevStep, setExtraData } = props;
   const [formValues, setFormValues] = useState<FormValuesType>(defaultValues);
-  const [form, setForm] = useState<HTMLFormElement | null>(null);
 
   useEffect(() => {
-    form?.scrollIntoView();
-  }, [form]);
+    window.scrollTo(0, 0);
+  }, []);
 
   const Calendar: React.FC<any> = ({ ...props }) => (
     <LocalizationProvider dateAdapter={AdapterDateFns} locale={plLocale}>
-      <DatePicker
-        {...props}
-
-      />
+      <DatePicker {...props} />
     </LocalizationProvider>
   );
 
@@ -112,7 +108,6 @@ const TraineeForm: React.FC<TraineeFormProps> = (props) => {
           return (
             <Grid item xs={12}>
               <Form
-                ref={setForm}
                 onSubmit={handleSubmit}
                 style={{
                   display: "flex",

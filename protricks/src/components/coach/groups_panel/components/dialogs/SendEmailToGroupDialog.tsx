@@ -8,16 +8,16 @@ import {
   SendEmailToGroupMutation,
   SendEmailToGroupMutationVariables,
   useSendEmailToGroupMutation,
-} from "../../../../generated/graphql";
-import LoadingScreen from "../../../lib/LoadingScreen";
-import { ColorButton, CustomAlert } from "../../../lib";
+} from "../../../../../generated/graphql";
+import LoadingScreen from "../../../../lib/LoadingScreen";
+import { ColorButton, CustomAlert } from "../../../../lib";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import Grid from "@mui/material/Grid";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { useAuth } from "../../../auth";
-import createAccessClient from "../../../../graphql/clients/accessClient";
+import { useAuth } from "../../../../auth";
+import createAccessClient from "../../../../../graphql/clients/accessClient";
 
 const defaultValues = {
   subject: "",

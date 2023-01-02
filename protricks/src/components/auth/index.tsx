@@ -18,7 +18,7 @@ const AuthContext = createContext<{
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }>({
   user: null,
-  setUser: () => {},
+  setUser: () => { },
 });
 
 interface AuthProviderProps {
@@ -68,7 +68,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     )
       return;
 
-      console.log('autoLogin')
+    console.log('autoLogin')
 
     autoLogin({
       input: {
@@ -99,7 +99,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useInterval(
     () => refreshToken,
-    parseInt(process.env.REACT_APP_REFRESH_TOKEN_EXPIRATION!) - 1000
+    parseInt(process.env.REACT_APP_ACCESS_TOKEN_EXPIRATION!) - 1000
   );
 
   return (

@@ -8,6 +8,7 @@ import Container from "@mui/material/Container";
 import { NavItemsObject } from "../../routes";
 import AppBar from "@mui/material/AppBar";
 import UserButtonsBox from "./components/UserButtonsBox";
+import { useMediaQuery, useTheme } from "@mui/material";
 
 interface NavProps {
   items: NavItemsObject[];
@@ -15,11 +16,18 @@ interface NavProps {
 
 const Navbar: React.FC<NavProps> = (props) => {
   const { items } = props;
+  const theme = useTheme();
+  const smScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
     <React.Fragment>
-      <AppBar sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-        <Container maxWidth="xl">
+      <AppBar
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          background: "black",
+        }}
+      >
+        <Box sx={{ px: smScreen ? 10 : 30 }}>
           <Toolbar
             sx={{
               justifyContent: "space-between",
@@ -28,26 +36,33 @@ const Navbar: React.FC<NavProps> = (props) => {
             }}
             disableGutters
           >
-            <Link href="/">
-              <Logo src={logo} alt="logo" />
+            <Link
+              color="secondary"
+              noWrap
+              variant="h2"
+              href="/"
+              underline="none"
+              fontWeight={900}
+            >
+              PROTRICKS
             </Link>
             <Box
               sx={{
                 flexGrow: 1,
-                justifyContent: "center",
+                justifyContent: "right",
                 display: { xs: "none", md: "flex" },
               }}
             >
               {items.map(({ id, name, path }) => (
                 <Link
-                  color="inherit"
+                  color="primary"
                   noWrap
                   key={id}
                   variant="body1"
                   href={path}
                   underline="none"
                   sx={{
-                    p: 1,
+                    px: 5,
                     flexShrink: 0,
 
                     "&:hover": {
@@ -61,7 +76,7 @@ const Navbar: React.FC<NavProps> = (props) => {
             </Box>
             <UserButtonsBox items={items} />
           </Toolbar>
-        </Container>
+        </Box>
       </AppBar>
       <Toolbar />
     </React.Fragment>
