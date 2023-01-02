@@ -1,13 +1,11 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import PaymentForm from './PaymentForm';
 import { Container } from '@mui/system';
- 
+
 const stripePromise = loadStripe('pk_test_51MAsN1IyDnSXVChX2ykvh5aqKLm7rc8Xx9wJc0mnnzRnCKbMtcSFiPIsYaig9l28LcsRvVxk6RcIckC9ZjDLBwmX00Z3rePGkR');
-/*function identity<Type>(arg: Type): Type {
-  return arg;
-}
+
 
 const appearance = {
 
@@ -30,20 +28,20 @@ const appearance = {
       boxShadow: '0 1px 1px 0 rgba(0, 0, 0, 0.07), 0 0 0 2px var(--colorDanger)',
     },
 
-    
+
   }
-}; */
+};
 
 function App() {
   return (
-      
-    <Container sx={{p:15}}>
-    <Elements stripe={stripePromise}>
-      <PaymentForm />
-    </Elements>
+
+    <Container sx={{ p: 15 }}>
+      <Elements stripe={stripePromise}>
+        <PaymentForm />
+      </Elements>
     </Container>
-    
+
   );
 }
- 
+
 export default App;
