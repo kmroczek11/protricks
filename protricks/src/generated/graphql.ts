@@ -758,27 +758,6 @@ export type GetAllCoachesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetAllCoachesQuery = { __typename?: 'Query', coaches: Array<{ __typename?: 'Coach', facebookUrl: string, instagramUrl: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, imgSrc: string }, city: { __typename?: 'City', id: string, name: string, room: string, citySrc: string, roomSrc: string, mapSrc: string, priceListSrc: string }, groups?: Array<{ __typename?: 'Group', id: string, name: string, limit: number, trainees?: Array<{ __typename?: 'Trainee', id: string }> | null }> | null }> };
 
-export type CreateLostTraineeMutationVariables = Exact<{
-  input: CreateLostTraineeInput;
-}>;
-
-
-export type CreateLostTraineeMutation = { __typename?: 'Mutation', createLostTrainee: { __typename?: 'CreateLostTraineeResponse', msg: string } };
-
-export type CreatePaymentMutationVariables = Exact<{
-  input: CreatePaymentInput;
-}>;
-
-
-export type CreatePaymentMutation = { __typename?: 'Mutation', createPayment: { __typename?: 'CreatePaymentResponse', msg: string } };
-
-export type GetMonthlyCostQueryVariables = Exact<{
-  getMonthlyCostInput: GetMonthlyCostInput;
-}>;
-
-
-export type GetMonthlyCostQuery = { __typename?: 'Query', getMonthlyCost: { __typename?: 'GetMonthlyCostResponse', amount: number } };
-
 export type GetTraineeQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
@@ -1379,74 +1358,6 @@ useGetAllCoachesQuery.getKey = (variables?: GetAllCoachesQueryVariables) => vari
 ;
 
 useGetAllCoachesQuery.fetcher = (client: GraphQLClient, variables?: GetAllCoachesQueryVariables, headers?: RequestInit['headers']) => fetcher<GetAllCoachesQuery, GetAllCoachesQueryVariables>(client, GetAllCoachesDocument, variables, headers);
-export const CreateLostTraineeDocument = `
-    mutation createLostTrainee($input: CreateLostTraineeInput!) {
-  createLostTrainee(createLostTraineeInput: $input) {
-    msg
-  }
-}
-    `;
-export const useCreateLostTraineeMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<CreateLostTraineeMutation, TError, CreateLostTraineeMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<CreateLostTraineeMutation, TError, CreateLostTraineeMutationVariables, TContext>(
-      ['createLostTrainee'],
-      (variables?: CreateLostTraineeMutationVariables) => fetcher<CreateLostTraineeMutation, CreateLostTraineeMutationVariables>(client, CreateLostTraineeDocument, variables, headers)(),
-      options
-    );
-useCreateLostTraineeMutation.fetcher = (client: GraphQLClient, variables: CreateLostTraineeMutationVariables, headers?: RequestInit['headers']) => fetcher<CreateLostTraineeMutation, CreateLostTraineeMutationVariables>(client, CreateLostTraineeDocument, variables, headers);
-export const CreatePaymentDocument = `
-    mutation createPayment($input: CreatePaymentInput!) {
-  createPayment(createPaymentInput: $input) {
-    msg
-  }
-}
-    `;
-export const useCreatePaymentMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<CreatePaymentMutation, TError, CreatePaymentMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<CreatePaymentMutation, TError, CreatePaymentMutationVariables, TContext>(
-      ['createPayment'],
-      (variables?: CreatePaymentMutationVariables) => fetcher<CreatePaymentMutation, CreatePaymentMutationVariables>(client, CreatePaymentDocument, variables, headers)(),
-      options
-    );
-useCreatePaymentMutation.fetcher = (client: GraphQLClient, variables: CreatePaymentMutationVariables, headers?: RequestInit['headers']) => fetcher<CreatePaymentMutation, CreatePaymentMutationVariables>(client, CreatePaymentDocument, variables, headers);
-export const GetMonthlyCostDocument = `
-    query GetMonthlyCost($getMonthlyCostInput: GetMonthlyCostInput!) {
-  getMonthlyCost(getMonthlyCostInput: $getMonthlyCostInput) {
-    amount
-  }
-}
-    `;
-export const useGetMonthlyCostQuery = <
-      TData = GetMonthlyCostQuery,
-      TError = unknown
-    >(
-      client: GraphQLClient,
-      variables: GetMonthlyCostQueryVariables,
-      options?: UseQueryOptions<GetMonthlyCostQuery, TError, TData>,
-      headers?: RequestInit['headers']
-    ) =>
-    useQuery<GetMonthlyCostQuery, TError, TData>(
-      ['GetMonthlyCost', variables],
-      fetcher<GetMonthlyCostQuery, GetMonthlyCostQueryVariables>(client, GetMonthlyCostDocument, variables, headers),
-      options
-    );
-
-useGetMonthlyCostQuery.getKey = (variables: GetMonthlyCostQueryVariables) => ['GetMonthlyCost', variables];
-;
-
-useGetMonthlyCostQuery.fetcher = (client: GraphQLClient, variables: GetMonthlyCostQueryVariables, headers?: RequestInit['headers']) => fetcher<GetMonthlyCostQuery, GetMonthlyCostQueryVariables>(client, GetMonthlyCostDocument, variables, headers);
 export const GetTraineeDocument = `
     query GetTrainee($id: String!) {
   getTrainee(id: $id) {

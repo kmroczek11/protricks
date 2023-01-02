@@ -24,9 +24,6 @@ import {
   GraphQLFormattedError,
 } from 'graphql/error/GraphQLError';
 import { AttendanceListModule } from './attendance-list/attendance-list.module';
-import { PaymentsModule } from './payments/payments.module';
-import { LostTraineesModule } from './lost_trainees/lost_trainees.module';
-import { WaitingTraineesModule } from './waiting_trainees/waiting_trainees.module';
 
 @Module({
   imports: [
@@ -95,9 +92,6 @@ import { WaitingTraineesModule } from './waiting_trainees/waiting_trainees.modul
     TokensModule,
     MailModule,
     AttendanceListModule,
-    PaymentsModule,
-    LostTraineesModule,
-    WaitingTraineesModule,
   ],
   controllers: [],
   providers: [

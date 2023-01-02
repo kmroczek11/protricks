@@ -4,10 +4,7 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import {
-  GqlArgumentsHost,
-  GqlExceptionFilter
-} from '@nestjs/graphql';
+import { GqlArgumentsHost, GqlExceptionFilter } from '@nestjs/graphql';
 import * as fs from 'fs';
 import { GraphQLResolveInfo } from 'graphql';
 import {
@@ -36,7 +33,7 @@ export class AllExceptionsFilter implements GqlExceptionFilter {
     const error = this.getErrorResponse(status, errorMessage, ctx);
 
     const errorLog = this.getErrorLog(error, exception, ctx);
-    
+
     this.writeErrorLogToFile(errorLog);
 
     return exception;
