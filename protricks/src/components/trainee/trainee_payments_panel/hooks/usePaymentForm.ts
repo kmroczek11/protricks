@@ -1,6 +1,6 @@
 import { FormEvent, useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { useCreateChargeMutation } from "../../../../generated/graphql";
+import { useCreatePaymentMutation } from "../../../../generated/graphql";
 import createAccessClient from "../../../../graphql/clients/accessClient";
 
 const usePaymentForm = () => {
@@ -8,7 +8,7 @@ const usePaymentForm = () => {
   const elements = useElements();
   const [errorMessage, setErrorMessage] = useState<string>("");
 
-  const { isLoading, mutate } = useCreateChargeMutation<Error>(
+  const { isLoading, mutate } = useCreatePaymentMutation<Error>(
     createAccessClient(),
     {
       onError: (error: Error) => {
@@ -24,10 +24,8 @@ const usePaymentForm = () => {
     //   ) => onSuccessCallback(data),}
   );
 
-  const handleSubmit = async (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent, amountToCharge: number) => {
     event.preventDefault();
-
-    const amountToCharge = 1000;
 
     const cardElement = elements?.getElement(CardElement);
 
@@ -51,14 +49,14 @@ const usePaymentForm = () => {
     mutate({
       input: {
         paymentMethodId,
-        amount: amountToCharge,
+        amount: amountToCharge * 100,
       },
     });
   };
 
   return {
     handleSubmit,
-    errorMessage
+    errorMessage,
   };
 };
 

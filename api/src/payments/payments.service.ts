@@ -1,11 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AttendanceListService } from 'src/attendance-list/attendance-list.service';
-import { TraineesService } from 'src/trainees/trainees.service';
 import Stripe from 'stripe';
 import { Repository } from 'typeorm';
-import CreateChargeInput from './dto/create-charge.input';
-import GetMonthlyCostInput from './dto/get-monthly-cost.input';
+import CreateChargeInput from './dto/create-payment.input';
 import { Payment } from './entities/payment.entity';
 
 @Injectable()
@@ -14,7 +11,7 @@ export class PaymentsService {
 
   constructor(
     @InjectRepository(Payment)
-    private readonly paymentsRepository: Repository<Payment>
+    private readonly paymentsRepository: Repository<Payment>,
   ) {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
       apiVersion: '2022-11-15',
@@ -31,6 +28,35 @@ export class PaymentsService {
   async charge(createChargeInput: CreateChargeInput, customerId: string) {
     const { amount, paymentMethodId } = createChargeInput;
 
+    const months = [
+      'styczeń',
+      'luty',
+      'marzec',
+      'kwiecień',
+      'maj',
+      'czerwiec',
+      'lipiec',
+      'sierpień',
+      'wrzesień',
+      'październik',
+      'listopad',
+      'grudzień',
+    ];
+
+    const d = new Date();
+
+    const month = months[d.getMonth()];
+
+    const createPaymentInput = {
+      customerId,
+      amount,
+      month,
+    };
+
+    const newPayment = await this.paymentsRepository.create(createPaymentInput);
+
+    await this.paymentsRepository.save(newPayment);
+
     await this.stripe.paymentIntents.create({
       amount,
       customer: customerId,
@@ -44,14 +70,7 @@ export class PaymentsService {
     };
   }
 
-  async getMonthlyCost(getMonthlyCostInput: GetMonthlyCostInput) {
-    // const attendance = await this.attendanceListService.count({where:{getMonthlyCostInput.traineeId}})
-    //     const groupPrice = await (await this.groupsService.findOne(userId)).price
-
-    //     return attendance * groupPrice;
-
-    return {
-      amount: 1000,
-    };
+  async findOneByMonth(month: string) {
+    return this.paymentsRepository.findOne({ where: { month } });
   }
 }

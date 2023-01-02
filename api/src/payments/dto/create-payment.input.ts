@@ -1,7 +1,7 @@
 import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
-export class CreateChargeInput {
+export class CreatePaymentInput {
   @Field()
   paymentMethodId: string;
 
@@ -9,4 +9,4 @@ export class CreateChargeInput {
   amount: number;
 }
 
-export default CreateChargeInput;
+export default CreatePaymentInput;

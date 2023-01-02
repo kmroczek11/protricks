@@ -1,20 +1,18 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { City } from 'src/cities/entities/city.entity';
+import { LocalDateResolver, LocalTimeResolver } from 'graphql-scalars';
 import { Group } from 'src/groups/entities/group.entity';
-import { User } from 'src/users/entities/user.entity';
 import {
   Entity,
   PrimaryColumn,
-  OneToOne,
   Column,
-  OneToMany,
+  ManyToOne,
   BeforeInsert,
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
-@Entity('payments')
+@Entity('lost_trainees')
 @ObjectType()
-export class Payment {
+export class LostTrainee {
   @PrimaryColumn()
   @Field()
   id: string;
@@ -26,13 +24,5 @@ export class Payment {
 
   @Column()
   @Field()
-  customerId: string;
-
-  @Column()
-  @Field()
-  month: string;
-
-  @Column()
-  @Field()
-  amount: Number;
+  traineeId: string;
 }

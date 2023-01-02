@@ -1,0 +1,5 @@
+mutation createLostTrainee($input: CreateLostTraineeInput!) {
+  createLostTrainee(createLostTraineeInput: $input) {
+    msg
+  }
+}

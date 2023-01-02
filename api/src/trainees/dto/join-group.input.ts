@@ -4,4 +4,7 @@ import { Field, InputType } from '@nestjs/graphql';
 export class JoinGroupInput {
   @Field()
   id: string;
+
+  @Field()
+  email: string;
 }

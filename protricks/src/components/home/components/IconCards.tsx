@@ -1,14 +1,9 @@
-import Card from "@mui/material/Card";
-import CardActionArea from "@mui/material/CardActionArea";
-import CardContent from "@mui/material/CardContent";
-import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
 import React from "react";
-import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import Link from "@mui/material/Link";
+import Grid from "@mui/material/Grid";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
 import { SvgIconTypeMap } from "@mui/material/SvgIcon";
 import { useMediaQuery, useTheme } from "@mui/material";
+import IconCard from "./IconCard";
 
 interface IconCardsProps {
   data: ReadonlyArray<{
@@ -34,40 +29,13 @@ const IconCards: React.FC<IconCardsProps> = (props) => {
       justifyContent="center"
       alignItems="center"
     >
-      {data.map(({ Icon, name, content, path }, i) => (
+      {data.map((item, i) => (
         <Grid item xs={12} md={12 / data.length} key={i}>
-          <Link key={i} href={path} underline="none">
-            <Card
-              sx={{
-                position: "relative",
-                textAlign: "center",
-                maxWidth: 345,
-              }}
-            >
-              <CardActionArea sx={{ p: 5 }}>
-                <Icon sx={{ width: 100, height: 100 }} />
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    {name}
-                  </Typography>
-                  <Typography variant="body2" color="primary.dark">
-                    {content}
-                  </Typography>
-                </CardContent>
-                <Grid
-                  container
-                  direction="row"
-                  justifyContent="center"
-                  alignItems="center"
-                >
-                  <Typography variant="body2" color="secondary.main">
-                    Dowiedz się więcej
-                  </Typography>
-                  <ArrowRightIcon />
-                </Grid>
-              </CardActionArea>
-            </Card>
-          </Link>
+          <IconCard
+            i={i}
+            item={item}
+            variant={i == 1 ? "primary" : "secondary"}
+          />
         </Grid>
       ))}
     </Grid>

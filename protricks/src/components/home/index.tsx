@@ -4,17 +4,20 @@ import TextBlock from "./components/TextBlock";
 import IconCards from "./components/IconCards";
 import GroupsIcon from "@mui/icons-material/Groups";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
-import PreviewIcon from "@mui/icons-material/Preview";
+import SearchIcon from '@mui/icons-material/Search';
 import CheckIcon from "@mui/icons-material/Check";
 import Container from "@mui/material/Container";
 import { CustomList, PhotoCards } from "../lib";
 import Box from "@mui/material/Box";
+import CustomPhotoCards from "./components/CustomPhotoCards";
+import { useMediaQuery, useTheme } from "@mui/material";
 
 const txt1 = {
-  title: "Czym jest akrobatyka?",
+  title: "Z CZYM TO SIĘ JE?",
   content: `Akrobatyka to ewolucje cielesne
     o dużym stopniu trudności,
-    wykraczające poza przeciętne ludzkie umiejętności`,
+    wykraczające poza przeciętne
+    ludzkie umiejętności`,
 };
 
 const data1 = [
@@ -27,12 +30,12 @@ const data1 = [
 ];
 
 const txt2 = {
-  title: `Wierzymy, że jest ona wyjątkowym sportem
-    kształtującym nie tylko ciało ale i umysł, pozwala
-    przełamywać granice, pokonywać strach a to
-    kształtuje charakter, nie tylko w sporcie ale i w życiu.`,
-  content: `Naszą misją jest pokazanie piękna akrobatyki
-    i zainspirowanie nią jak największego grona osób w Polsce.`,
+  title: `DLACZEGO AKROBATYKA?`,
+  content: `Wierzymy, że jest ona wyjątkowym sportem kształtującym
+  nie tylko ciało ale i umysł, pozwala przełamywać granice,
+  pokonywać strach a to kształtuje charakter, nie tylko w sporcie
+  ale i w życiu. Naszą misją jest pokazanie piękna akrobatyki
+  i zainspirowanie nią jak największego grona osób w Polsce.`,
 };
 
 const data2 = [
@@ -49,7 +52,7 @@ const data2 = [
     path: "/zloty",
   },
   {
-    Icon: PreviewIcon,
+    Icon: SearchIcon,
     name: "Pokazy",
     content: "Organizujemy pokazy akrobatyczne.",
     path: "/pokazy",
@@ -65,24 +68,41 @@ const txt3 = [
 ];
 
 const Home: React.FC = () => {
+  const theme = useTheme();
+  const smScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
   return (
     <React.Fragment>
       <Hero />
-      <Container sx={{ backgroundColor: "primary", py: 15 }}>
-        <TextBlock texts={txt1} variant="primary" />
+      <Container
+        sx={{
+          backgroundColor: "primary",
+          py: 18,
+          display: "flex",
+          flexDirection: smScreen ? "column" : "row",
+        }}
+      >
+        <TextBlock texts={txt1} variant="primary" align="left" />
+        <Container>
+          {smScreen ? (
+            <PhotoCards
+              items={data1}
+              sxRoot={{
+                filter: "grayscale(80%)",
+              }}
+            />
+          ) : (
+            <CustomPhotoCards
+              items={data1}
+              sxRoot={{
+                filter: "grayscale(80%)",
+              }}
+            />
+          )}
+        </Container>
       </Container>
       <Box sx={{ backgroundColor: "secondary.main", py: 10 }}>
-        <Container>
-          <PhotoCards
-            items={data1}
-            sxRoot={{
-              position: "relative",
-              top: "-120px",
-              filter: "grayscale(80%)",
-            }}
-          />
-        </Container>
-        <TextBlock texts={txt2} variant="secondary" />
+        <TextBlock texts={txt2} variant="secondary" align="center" />
       </Box>
       <Container sx={{ backgroundColor: "primary", py: 15 }}>
         <IconCards data={data2} />
@@ -90,15 +110,14 @@ const Home: React.FC = () => {
       <Container
         maxWidth={false}
         sx={{
-          backgroundImage: "linear-gradient(#434343 0%, black 100%)",
-          py: 15,
+          pb: 15,
         }}
       >
         <Container>
           <CustomList
             title="CO ROBIMY?"
             items={txt3}
-            variant="secondary"
+            variant="primary"
             sxBackground={{
               background: "transparent",
             }}

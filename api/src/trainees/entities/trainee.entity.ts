@@ -43,6 +43,7 @@ export class Trainee {
 
   @OneToMany(() => Attendance, (attendance) => attendance.trainee, {
     eager: true,
+    cascade: true,
   })
   @Field(() => [Attendance], { nullable: true })
   attendances?: Attendance[];

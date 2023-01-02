@@ -3,10 +3,36 @@ import { CardElement } from "@stripe/react-stripe-js";
 import usePaymentForm from "../hooks/usePaymentForm";
 import { ColorButton, CustomAlert } from "../../../lib";
 import Box from "@mui/material/Box";
-import { accountNumberInvalid, amountToSmall } from "../../../../translations/pl/errorMessages";
+import {
+  accountNumberInvalid,
+  amountToSmall,
+} from "../../../../translations/pl/errorMessages";
+import {
+  GetMonthlyCostQuery,
+  useGetMonthlyCostQuery,
+} from "../../../../generated/graphql";
+import accessClient from "../../../../graphql/clients/accessClient";
+import { useAuth } from "../../../auth";
+import InfoBox from "./InfoBox";
 
 const CheckoutForm = () => {
   const { handleSubmit, errorMessage } = usePaymentForm();
+  const { user } = useAuth();
+
+  const {
+    data,
+    isLoading: getMonthlyCostLoading,
+    error,
+    refetch,
+  } = useGetMonthlyCostQuery<GetMonthlyCostQuery, Error>(
+    accessClient(),
+    {
+      getMonthlyCostInput: {
+        userId: user?.id!,
+      },
+    },
+    { refetchInterval: 1000 }
+  );
 
   return (
     <Box
@@ -14,7 +40,8 @@ const CheckoutForm = () => {
         p: { xs: 10, md: 30 },
       }}
     >
-      <form onSubmit={handleSubmit}>
+      <InfoBox amount={data?.getMonthlyCost.amount!} />
+      <form onSubmit={(e) => handleSubmit(e, data?.getMonthlyCost.amount!)}>
         <CardElement />
         <ColorButton
           variant="contained"

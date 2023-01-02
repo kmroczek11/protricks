@@ -30,7 +30,7 @@ const Footer: React.FC = () => {
   const theme = useTheme();
 
   return (
-    <Box sx={{ backgroundColor: "secondary.main" }}>
+    <Box sx={{ backgroundColor: "#000" }}>
       <Grid container p={5} spacing={5}>
         <Grid item xs={12} md={4} textAlign="center">
           <Logo src={logo} alt="logo" />

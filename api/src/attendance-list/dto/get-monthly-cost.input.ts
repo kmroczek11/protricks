@@ -1,10 +1,9 @@
 import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
-export class CreateAttendanceInput {
+export class GetMonthlyCostInput {
   @Field()
   userId: string;
-
-  @Field()
-  present: boolean;
 }
+
+export default GetMonthlyCostInput;
