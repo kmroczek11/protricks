@@ -125,7 +125,7 @@ const JoinGroupAlert: React.FC<JoinGroupAlertProps> = (props) => {
             onClick={() =>
               joinGroup({
                 input: {
-                  id: traineeId,
+                  traineeId: traineeId,
                   email: user?.email!,
                 },
               })
@@ -145,11 +145,11 @@ const JoinGroupAlert: React.FC<JoinGroupAlertProps> = (props) => {
                 },
               });
 
-              // createLostTrainee({
-              //   input: {
-              //     traineeId,
-              //   },
-              // });
+              createLostTrainee({
+                input: {
+                  traineeId,
+                },
+              });
             }}
           >
             Opuść

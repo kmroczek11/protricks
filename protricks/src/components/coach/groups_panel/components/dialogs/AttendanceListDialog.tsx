@@ -139,7 +139,7 @@ const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
         // if trainee's first time accept to group and send email
         acceptToGroup({
           input: {
-            id: t.id,
+            traineeId: t.id,
             email: t.user.email,
           },
         });

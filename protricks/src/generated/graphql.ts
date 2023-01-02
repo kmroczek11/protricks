@@ -31,7 +31,7 @@ export type Scalars = {
 
 export type AcceptToGroupInput = {
   email: Scalars['String'];
-  id: Scalars['String'];
+  traineeId: Scalars['String'];
 };
 
 export type AcceptToGroupResponse = {
@@ -294,7 +294,7 @@ export type Group = {
 
 export type JoinGroupInput = {
   email: Scalars['String'];
-  id: Scalars['String'];
+  traineeId: Scalars['String'];
 };
 
 export type JoinGroupResponse = {
