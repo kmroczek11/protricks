@@ -2,7 +2,14 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { LocalDateResolver } from 'graphql-scalars';
 import { Trainee } from 'src/trainees/entities/trainee.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Entity, PrimaryColumn, Column, OneToOne, BeforeInsert, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryColumn,
+  Column,
+  OneToOne,
+  BeforeInsert,
+  ManyToOne,
+} from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
 @Entity('attendance')
@@ -20,7 +27,9 @@ export class Attendance {
   @Column()
   traineeId: string;
 
-  @ManyToOne(() => Trainee, (trainee) => trainee.attendances)
+  @ManyToOne(() => Trainee, (trainee) => trainee.attendances, {
+    onDelete: 'CASCADE',
+  })
   @Field(() => Trainee)
   trainee: Trainee;
 

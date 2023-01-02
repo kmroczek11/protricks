@@ -5,10 +5,13 @@ import { green } from "@mui/material/colors";
 import { ColorButton, CustomAlert } from "../../../lib";
 import Box from "@mui/material/Box";
 import {
+  CreateLostTraineeMutation,
+  CreateLostTraineeMutationVariables,
   DeleteTraineeMutation,
   DeleteTraineeMutationVariables,
   JoinGroupMutation,
   JoinGroupMutationVariables,
+  useCreateLostTraineeMutation,
   useDeleteTraineeMutation,
   useJoinGroupMutation,
 } from "../../../../generated/graphql";
@@ -17,16 +20,13 @@ import createAccessClient from "../../../../graphql/clients/accessClient";
 
 interface JoinGroupAlertProps {
   traineeId: string;
+  setJoinGroupStatus: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const successMessage =
-  "Pomyślnie dołączono do grupy. Na maila wysłaliśmy dalsze instrukcje.";
-
 const JoinGroupAlert: React.FC<JoinGroupAlertProps> = (props) => {
-  const { traineeId } = props;
+  const { traineeId, setJoinGroupStatus } = props;
   const { user, setUser } = useAuth();
   const [deleteTraineeStatus, setDeleteTraineeStatus] = useState<string>("");
-  const [joinGroupStatus, setJoinGroupStatus] = useState<string>("");
 
   const { isLoading: isDeleteTraineeLoading, mutate: deleteTrainee } =
     useDeleteTraineeMutation<Error>(createAccessClient(), {
@@ -43,6 +43,20 @@ const JoinGroupAlert: React.FC<JoinGroupAlertProps> = (props) => {
         // queryClient.invalidateQueries('GetAllAuthors');
         setUser(data.deleteTrainee.user!);
       },
+    });
+
+  const { isLoading: isCreateLostTraineeLoading, mutate: createLostTrainee } =
+    useCreateLostTraineeMutation<Error>(createAccessClient(), {
+      onError: (error: Error) => {
+        let err: any = {};
+        err.data = error;
+        setDeleteTraineeStatus(err?.data?.response.errors[0].message);
+      },
+      onSuccess: (
+        data: CreateLostTraineeMutation,
+        _variables: CreateLostTraineeMutationVariables,
+        _context: unknown
+      ) => {},
     });
 
   const { isLoading: isJoinGroupLoading, mutate: joinGroup } =
@@ -112,6 +126,7 @@ const JoinGroupAlert: React.FC<JoinGroupAlertProps> = (props) => {
               joinGroup({
                 input: {
                   id: traineeId,
+                  email: user?.email!,
                 },
               })
             }
@@ -123,25 +138,24 @@ const JoinGroupAlert: React.FC<JoinGroupAlertProps> = (props) => {
             color="error"
             type="submit"
             sx={{ my: 2 }}
-            onClick={() =>
+            onClick={() => {
               deleteTrainee({
                 input: {
                   userId: user?.id!,
                 },
-              })
-            }
+              });
+
+              // createLostTrainee({
+              //   input: {
+              //     traineeId,
+              //   },
+              // });
+            }}
           >
             Opuść
           </ColorButton>
         </Box>
       </Grid>
-      {joinGroupStatus === "Success" ? (
-        <CustomAlert severity="success" msg={successMessage} />
-      ) : (
-        joinGroupStatus && (
-          <CustomAlert severity="error" msg="Nieoczekiwany błąd." />
-        )
-      )}
       {deleteTraineeStatus && (
         <CustomAlert severity="error" msg="Nieoczekiwany błąd." />
       )}

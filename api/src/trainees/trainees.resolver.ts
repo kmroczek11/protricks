@@ -86,9 +86,11 @@ export class TraineesResolver {
 
   @Mutation(() => JoinGroupResponse)
   @Roles(Role.TRAINEE)
-  joinGroup(
+  async joinGroup(
     @Args('joinGroupInput') joinGroupInput: JoinGroupInput,
   ): Promise<AcceptToGroupResponse> {
+    await this.mailService.sendContractMessage(joinGroupInput.email);
+
     return this.traineesService.changeStatus(
       joinGroupInput.id,
       Status.ACCEPTED_WITHOUT_CONTRACT,

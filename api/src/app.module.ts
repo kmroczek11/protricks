@@ -24,7 +24,6 @@ import {
   GraphQLFormattedError,
 } from 'graphql/error/GraphQLError';
 import { AttendanceListModule } from './attendance-list/attendance-list.module';
-import { StripeModule } from './stripe/stripe.module';
 
 @Module({
   imports: [
@@ -62,6 +61,9 @@ import { StripeModule } from './stripe/stripe.module';
         MAIL_HOST: Joi.string().required(),
         MAIL_USER: Joi.string().required(),
         MAIL_PASSWORD: Joi.string().required(),
+        STRIPE_SECRET_KEY: Joi.string().required(),
+        STRIPE_CURRENCY: Joi.string().required(),
+        CLIENT_HOST: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRoot({
@@ -90,7 +92,6 @@ import { StripeModule } from './stripe/stripe.module';
     TokensModule,
     MailModule,
     AttendanceListModule,
-    StripeModule,
   ],
   controllers: [],
   providers: [

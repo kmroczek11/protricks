@@ -48,4 +48,12 @@ export class MailService {
       template: './traineeDecision',
     });
   }
+
+  async sendContractMessage(to: string) {
+    await this.mailerService.sendMail({
+      to,
+      subject: 'TO JUŻ OSTATNI KROK!',
+      template: './contractMessage',
+    });
+  }
 }

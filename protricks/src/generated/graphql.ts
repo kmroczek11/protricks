@@ -179,6 +179,25 @@ export type CreateGroupResponse = {
   msg: Scalars['String'];
 };
 
+export type CreateLostTraineeInput = {
+  traineeId: Scalars['String'];
+};
+
+export type CreateLostTraineeResponse = {
+  __typename?: 'CreateLostTraineeResponse';
+  msg: Scalars['String'];
+};
+
+export type CreatePaymentInput = {
+  amount: Scalars['Float'];
+  paymentMethodId: Scalars['String'];
+};
+
+export type CreatePaymentResponse = {
+  __typename?: 'CreatePaymentResponse';
+  msg: Scalars['String'];
+};
+
 export type CreateTraineeInput = {
   birthDate: Scalars['LocalDate'];
   feedback: Scalars['String'];
@@ -263,6 +282,15 @@ export type ForgotPasswordResponse = {
   msg: Scalars['String'];
 };
 
+export type GetMonthlyCostInput = {
+  userId: Scalars['String'];
+};
+
+export type GetMonthlyCostResponse = {
+  __typename?: 'GetMonthlyCostResponse';
+  amount: Scalars['Float'];
+};
+
 export type Group = {
   __typename?: 'Group';
   coach: Coach;
@@ -275,6 +303,7 @@ export type Group = {
 };
 
 export type JoinGroupInput = {
+  email: Scalars['String'];
   id: Scalars['String'];
 };
 
@@ -315,6 +344,8 @@ export type Mutation = {
   createCoach: Coach;
   createExercise: CreateExerciseResponse;
   createGroup: CreateGroupResponse;
+  createLostTrainee: CreateLostTraineeResponse;
+  createPayment: CreatePaymentResponse;
   createTrainee: CreateTraineeResponse;
   createUser: User;
   deleteCity: City;
@@ -390,6 +421,16 @@ export type MutationCreateExerciseArgs = {
 
 export type MutationCreateGroupArgs = {
   createGroupInput: CreateGroupInput;
+};
+
+
+export type MutationCreateLostTraineeArgs = {
+  createLostTraineeInput: CreateLostTraineeInput;
+};
+
+
+export type MutationCreatePaymentArgs = {
+  createPaymentInput: CreatePaymentInput;
 };
 
 
@@ -469,6 +510,7 @@ export type Query = {
   findOne: User;
   getAttendanceByDay: Array<Attendance>;
   getCoach: Coach;
+  getMonthlyCost: GetMonthlyCostResponse;
   getTrainee: Trainee;
   groups: Array<Group>;
   trainees: Array<Trainee>;
@@ -488,6 +530,11 @@ export type QueryGetAttendanceByDayArgs = {
 
 export type QueryGetCoachArgs = {
   id: Scalars['String'];
+};
+
+
+export type QueryGetMonthlyCostArgs = {
+  getMonthlyCostInput: GetMonthlyCostInput;
 };
 
 
@@ -575,6 +622,13 @@ export type AutoLogInUserMutationVariables = Exact<{
 
 export type AutoLogInUserMutation = { __typename?: 'Mutation', autoLogInUser: { __typename?: 'LogInResponse', expiresIn: number, accessToken: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
 
+export type ForgotPasswordMutationVariables = Exact<{
+  input: ForgotPasswordInput;
+}>;
+
+
+export type ForgotPasswordMutation = { __typename?: 'Mutation', forgotPassword: { __typename?: 'ForgotPasswordResponse', msg: string } };
+
 export type LogInUserMutationVariables = Exact<{
   input: LogInUserInput;
 }>;
@@ -600,13 +654,6 @@ export type RegisterUserMutationVariables = Exact<{
 
 
 export type RegisterUserMutation = { __typename?: 'Mutation', registerUser: { __typename?: 'LogInResponse', expiresIn: number, accessToken: string, refreshToken: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
-
-export type ForgotPasswordMutationVariables = Exact<{
-  input: ForgotPasswordInput;
-}>;
-
-
-export type ForgotPasswordMutation = { __typename?: 'Mutation', forgotPassword: { __typename?: 'ForgotPasswordResponse', msg: string } };
 
 export type AcceptToGroupMutationVariables = Exact<{
   input: AcceptToGroupInput;
@@ -711,13 +758,6 @@ export type GetAllCoachesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetAllCoachesQuery = { __typename?: 'Query', coaches: Array<{ __typename?: 'Coach', facebookUrl: string, instagramUrl: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, imgSrc: string }, city: { __typename?: 'City', id: string, name: string, room: string, citySrc: string, roomSrc: string, mapSrc: string, priceListSrc: string }, groups?: Array<{ __typename?: 'Group', id: string, name: string, limit: number, trainees?: Array<{ __typename?: 'Trainee', id: string }> | null }> | null }> };
 
-export type CreateChargeMutationVariables = Exact<{
-  input: CreateChargeInput;
-}>;
-
-
-export type CreateChargeMutation = { __typename?: 'Mutation', createCharge: { __typename?: 'CreateChargeResponse', msg: string } };
-
 export type GetTraineeQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
@@ -784,6 +824,27 @@ export const useAutoLogInUserMutation = <
       options
     );
 useAutoLogInUserMutation.fetcher = (client: GraphQLClient, variables: AutoLogInUserMutationVariables, headers?: RequestInit['headers']) => fetcher<AutoLogInUserMutation, AutoLogInUserMutationVariables>(client, AutoLogInUserDocument, variables, headers);
+export const ForgotPasswordDocument = `
+    mutation forgotPassword($input: ForgotPasswordInput!) {
+  forgotPassword(forgotPasswordInput: $input) {
+    msg
+  }
+}
+    `;
+export const useForgotPasswordMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<ForgotPasswordMutation, TError, ForgotPasswordMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<ForgotPasswordMutation, TError, ForgotPasswordMutationVariables, TContext>(
+      ['forgotPassword'],
+      (variables?: ForgotPasswordMutationVariables) => fetcher<ForgotPasswordMutation, ForgotPasswordMutationVariables>(client, ForgotPasswordDocument, variables, headers)(),
+      options
+    );
+useForgotPasswordMutation.fetcher = (client: GraphQLClient, variables: ForgotPasswordMutationVariables, headers?: RequestInit['headers']) => fetcher<ForgotPasswordMutation, ForgotPasswordMutationVariables>(client, ForgotPasswordDocument, variables, headers);
 export const LogInUserDocument = `
     mutation LogInUser($input: LogInUserInput!) {
   logInUser(logInUserInput: $input) {
@@ -889,27 +950,6 @@ export const useRegisterUserMutation = <
       options
     );
 useRegisterUserMutation.fetcher = (client: GraphQLClient, variables: RegisterUserMutationVariables, headers?: RequestInit['headers']) => fetcher<RegisterUserMutation, RegisterUserMutationVariables>(client, RegisterUserDocument, variables, headers);
-export const ForgotPasswordDocument = `
-    mutation forgotPassword($input: ForgotPasswordInput!) {
-  forgotPassword(forgotPasswordInput: $input) {
-    msg
-  }
-}
-    `;
-export const useForgotPasswordMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<ForgotPasswordMutation, TError, ForgotPasswordMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<ForgotPasswordMutation, TError, ForgotPasswordMutationVariables, TContext>(
-      ['forgotPassword'],
-      (variables?: ForgotPasswordMutationVariables) => fetcher<ForgotPasswordMutation, ForgotPasswordMutationVariables>(client, ForgotPasswordDocument, variables, headers)(),
-      options
-    );
-useForgotPasswordMutation.fetcher = (client: GraphQLClient, variables: ForgotPasswordMutationVariables, headers?: RequestInit['headers']) => fetcher<ForgotPasswordMutation, ForgotPasswordMutationVariables>(client, ForgotPasswordDocument, variables, headers);
 export const AcceptToGroupDocument = `
     mutation AcceptToGroup($input: AcceptToGroupInput!) {
   acceptToGroup(acceptToGroupInput: $input) {
@@ -1318,27 +1358,6 @@ useGetAllCoachesQuery.getKey = (variables?: GetAllCoachesQueryVariables) => vari
 ;
 
 useGetAllCoachesQuery.fetcher = (client: GraphQLClient, variables?: GetAllCoachesQueryVariables, headers?: RequestInit['headers']) => fetcher<GetAllCoachesQuery, GetAllCoachesQueryVariables>(client, GetAllCoachesDocument, variables, headers);
-export const CreateChargeDocument = `
-    mutation CreateCharge($input: CreateChargeInput!) {
-  createCharge(createChargeInput: $input) {
-    msg
-  }
-}
-    `;
-export const useCreateChargeMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<CreateChargeMutation, TError, CreateChargeMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<CreateChargeMutation, TError, CreateChargeMutationVariables, TContext>(
-      ['CreateCharge'],
-      (variables?: CreateChargeMutationVariables) => fetcher<CreateChargeMutation, CreateChargeMutationVariables>(client, CreateChargeDocument, variables, headers)(),
-      options
-    );
-useCreateChargeMutation.fetcher = (client: GraphQLClient, variables: CreateChargeMutationVariables, headers?: RequestInit['headers']) => fetcher<CreateChargeMutation, CreateChargeMutationVariables>(client, CreateChargeDocument, variables, headers);
 export const GetTraineeDocument = `
     query GetTrainee($id: String!) {
   getTrainee(id: $id) {

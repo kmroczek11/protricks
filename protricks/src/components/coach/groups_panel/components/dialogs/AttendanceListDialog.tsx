@@ -98,7 +98,6 @@ const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
       present: boolean;
     }[]
   >([]);
-  console.log(day)
 
   const { isLoading, mutate: createAttendance } =
     useCreateAttendanceMutation<Error>(createAccessClient(), {

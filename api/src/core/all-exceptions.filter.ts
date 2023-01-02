@@ -14,15 +14,21 @@ import {
 
 @Catch()
 export class AllExceptionsFilter implements GqlExceptionFilter {
-  catch(exception: HttpException, host: ArgumentsHost) {
+  catch(exception: unknown, host: ArgumentsHost) {
     const ctx = GqlArgumentsHost.create(host);
 
-    const status = exception.getStatus();
+    let status: HttpStatus;
+    let errorMessage: string;
 
-    const errorResponse = exception.getResponse();
-
-    const errorMessage =
-      (errorResponse as HttpExceptionResponse).error || exception.message;
+    if (exception instanceof HttpException) {
+      status = exception.getStatus();
+      const errorResponse = exception.getResponse();
+      errorMessage =
+        (errorResponse as HttpExceptionResponse).error || exception.message;
+    } else {
+      status = HttpStatus.INTERNAL_SERVER_ERROR;
+      errorMessage = 'Critical internal server error occurred!';
+    }
 
     const error = this.getErrorResponse(status, errorMessage, ctx);
 
@@ -47,7 +53,7 @@ export class AllExceptionsFilter implements GqlExceptionFilter {
 
   private getErrorLog = (
     errorResponse: CustomHttpExceptionResponse,
-    exception: HttpException,
+    exception: unknown,
     ctx: GqlArgumentsHost,
   ): string => {
     const { statusCode, error } = errorResponse;

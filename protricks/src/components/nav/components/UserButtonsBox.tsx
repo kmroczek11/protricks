@@ -110,7 +110,7 @@ const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
           color="secondary"
           variant="contained"
           sx={{ display: { xs: "none", md: "block" } }}
-          onClick={() => navigate("/zajecia#zarejestruj")}
+          onClick={() => navigate("/zajecia/zarejestruj")}
         >
           Zapisz się na zajęcia
         </ColorButton>
@@ -119,7 +119,7 @@ const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
         <React.Fragment>
           <Tooltip title="Kliknij, aby się zalogować">
             <IconButton onClick={handleDialogOpen}>
-              <PersonIcon />
+              <PersonIcon color="primary"/>
             </IconButton>
           </Tooltip>
           <UserDialog open={dialogOpen} handleClose={handleDialogClose} />
@@ -140,7 +140,7 @@ const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
           </Tooltip>
           <Typography
             variant="body2"
-            color="secondary.main"
+            color="primary"
             sx={{ display: { xs: "none", md: "block" } }}
           >
             {user.firstName}
