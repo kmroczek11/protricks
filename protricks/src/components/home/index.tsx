@@ -86,7 +86,7 @@ const Home: React.FC = () => {
           texts={txt1}
           headColor="secondary.main"
           contentColor="#000"
-          align="left"
+          align={smScreen ? "center" : "left"}
         />
         <Container>
           {smScreen ? (
