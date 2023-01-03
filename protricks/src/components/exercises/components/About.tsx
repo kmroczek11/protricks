@@ -67,7 +67,8 @@ const About: React.FC = () => {
         <CustomList
           title="Jak wybrać odpowiednią grupę?"
           items={choosingGroupMessages}
-          variant="secondary"
+          headColor="primary.main"
+          contentColor="primary.main"
           sxBackground={{ backgroundColor: 'secondary.main' }}
           size="lg"
           center

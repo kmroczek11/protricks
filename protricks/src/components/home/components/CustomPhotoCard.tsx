@@ -23,6 +23,7 @@ const CustomPhotoCard: React.FC<CustomPhotoCardProps> = (props) => {
         width: 300,
         height: 300,
         borderRadius: "4px 4px 40px",
+        boxShadow: "-30px -30px 40px #6d67e4",
         ...sxBackground,
       }}
     >

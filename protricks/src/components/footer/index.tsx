@@ -134,7 +134,8 @@ const Footer: React.FC = () => {
           <CustomList
             title="DANE KONTAKTOWE"
             items={txt2}
-            variant="secondary"
+            headColor="primary.main"
+            contentColor="primary.main"
             center={useMediaQuery(theme.breakpoints.down("sm"))}
           />
         </Grid>

@@ -56,4 +56,20 @@ export class MailService {
       template: './contractMessage',
     });
   }
+
+  async sendAfter72h(to: string) {
+    await this.mailerService.sendMail({
+      to,
+      subject: 'MINĄŁ CZAS NA PODJĘCIE DECYZJI',
+      template: './after72hMessage',
+    });
+  }
+
+  async sendAfter96h(to: string) {
+    await this.mailerService.sendMail({
+      to,
+      subject: 'BRAK UMOWY',
+      template: './after96hMessage',
+    });
+  }
 }

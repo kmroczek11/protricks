@@ -20,7 +20,8 @@ interface CustomListObject {
 interface CustomListProps {
   items: CustomListObject[];
   sxBackground?: SxProps<Theme>;
-  variant: string;
+  headColor: string;
+  contentColor: string;
   size?: "sm" | "lg";
   center?: boolean;
   title?: string;
@@ -33,7 +34,8 @@ const CustomList: React.FC<CustomListProps> = (props) => {
   const {
     items,
     sxBackground,
-    variant,
+    headColor,
+    contentColor,
     size = "sm",
     center,
     title,
@@ -48,7 +50,7 @@ const CustomList: React.FC<CustomListProps> = (props) => {
         <Typography
           variant={size === "lg" ? "h1" : "sm" ? "subtitle1" : undefined}
           align={center ? "center" : undefined}
-          color={`${variant}.contrastText`}
+          color={headColor}
           gutterBottom
         >
           {title}
@@ -63,10 +65,10 @@ const CustomList: React.FC<CustomListProps> = (props) => {
         >
           <ListItem
             sx={{
-              color: `${variant}.contrastText`,
+              color: contentColor,
 
               "& .MuiListItemIcon-root, & .MuiListItemText-primary": {
-                color: `${variant}.contrastText`,
+                color: contentColor,
               },
 
               "&:hover": {

@@ -4,7 +4,7 @@ import TextBlock from "./components/TextBlock";
 import IconCards from "./components/IconCards";
 import GroupsIcon from "@mui/icons-material/Groups";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
-import SearchIcon from '@mui/icons-material/Search';
+import SearchIcon from "@mui/icons-material/Search";
 import CheckIcon from "@mui/icons-material/Check";
 import Container from "@mui/material/Container";
 import { CustomList, PhotoCards } from "../lib";
@@ -82,7 +82,12 @@ const Home: React.FC = () => {
           flexDirection: smScreen ? "column" : "row",
         }}
       >
-        <TextBlock texts={txt1} variant="primary" align="left" />
+        <TextBlock
+          texts={txt1}
+          headColor="secondary.main"
+          contentColor="#000"
+          align="left"
+        />
         <Container>
           {smScreen ? (
             <PhotoCards
@@ -102,7 +107,12 @@ const Home: React.FC = () => {
         </Container>
       </Container>
       <Box sx={{ backgroundColor: "secondary.main", py: 10 }}>
-        <TextBlock texts={txt2} variant="secondary" align="center" />
+        <TextBlock
+          texts={txt2}
+          headColor="primary.main"
+          contentColor="primary.main"
+          align="center"
+        />
       </Box>
       <Container sx={{ backgroundColor: "primary", py: 15 }}>
         <IconCards data={data2} />
@@ -115,9 +125,10 @@ const Home: React.FC = () => {
       >
         <Container>
           <CustomList
-            title="CO ROBIMY?"
+            title="CO MAMY DO ZAOFEROWANIA?"
             items={txt3}
-            variant="primary"
+            headColor="secondary.main"
+            contentColor="#000"
             sxBackground={{
               background: "transparent",
             }}

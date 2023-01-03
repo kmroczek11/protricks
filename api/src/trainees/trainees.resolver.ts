@@ -73,28 +73,18 @@ export class TraineesResolver {
 
   @Mutation(() => AcceptToGroupResponse)
   @Roles(Role.COACH)
-  async acceptToGroup(
+  acceptToGroup(
     @Args('acceptToGroupInput') acceptToGroupInput: AcceptToGroupInput,
   ): Promise<AcceptToGroupResponse> {
-    await this.mailService.sendStayMessage(acceptToGroupInput.email);
-
-    return this.traineesService.changeStatus(
-      acceptToGroupInput.id,
-      Status.EXPECTATION,
-    );
+    return this.traineesService.acceptToGroup(acceptToGroupInput)
   }
 
   @Mutation(() => JoinGroupResponse)
   @Roles(Role.TRAINEE)
-  async joinGroup(
+  joinGroup(
     @Args('joinGroupInput') joinGroupInput: JoinGroupInput,
   ): Promise<AcceptToGroupResponse> {
-    await this.mailService.sendContractMessage(joinGroupInput.email);
-
-    return this.traineesService.changeStatus(
-      joinGroupInput.id,
-      Status.ACCEPTED_WITHOUT_CONTRACT,
-    );
+    return this.traineesService.joinGroup(joinGroupInput)
   }
 
   @Mutation(() => ConfirmContractReceiptResponse)

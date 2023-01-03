@@ -7,5 +7,6 @@ import { LostTraineesService } from './lost_trainees.service';
 @Module({
   imports: [TypeOrmModule.forFeature([LostTrainee])],
   providers: [LostTraineesResolver, LostTraineesService],
+  exports: [LostTraineesService],
 })
 export class LostTraineesModule {}

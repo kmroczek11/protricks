@@ -1,7 +1,7 @@
 import React from "react";
 import Toolbar from "@mui/material/Toolbar";
 import Link from "@mui/material/Link";
-import logo from "../../assets/logos/logo_alt.jpg";
+import logo from "../../assets/logos/logo2.jpg";
 import { Logo } from "../lib";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -36,15 +36,8 @@ const Navbar: React.FC<NavProps> = (props) => {
             }}
             disableGutters
           >
-            <Link
-              color="secondary"
-              noWrap
-              variant="h2"
-              href="/"
-              underline="none"
-              fontWeight={900}
-            >
-              PROTRICKS
+            <Link href="/">
+              <Logo src={logo} alt="logo" />
             </Link>
             <Box
               sx={{

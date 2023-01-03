@@ -7,19 +7,20 @@ interface TextBlockProps {
     title: string;
     content: string;
   };
-  variant: string;
+  headColor: string;
+  contentColor: string;
   align?: "right" | "left" | "inherit" | "center" | "justify" | undefined;
 }
 
 const TextBlock: React.FC<TextBlockProps> = (props) => {
-  const { texts, variant, align } = props;
+  const { texts, headColor, contentColor, align } = props;
   const { title, content } = texts;
 
   return (
     <Container>
       <Typography
         variant="h1"
-        color={`${variant}.contrastText`}
+        color={headColor}
         align={align}
         sx={{ p: 2 }}
         gutterBottom
@@ -28,7 +29,7 @@ const TextBlock: React.FC<TextBlockProps> = (props) => {
       </Typography>
       <Typography
         variant="h2"
-        color={`${variant}.contrastText`}
+        color={contentColor}
         align={align}
         whiteSpace="pre-line"
         gutterBottom

@@ -23,7 +23,7 @@ import { GraphQLError, GraphQLFormattedError } from 'graphql/error/GraphQLError'
 import { AttendanceListModule } from './attendance-list/attendance-list.module';
 import { PaymentsModule } from './payments/payments.module';
 import { LostTraineesModule } from './lost_trainees/lost_trainees.module';
-import { WaitingTraineesModule } from './waiting_trainees/waiting_trainees.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -81,6 +81,7 @@ import { WaitingTraineesModule } from './waiting_trainees/waiting_trainees.modul
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'static'),
     }),
+    ScheduleModule.forRoot(),
     CitiesModule,
     GroupsModule,
     AuthModule,
@@ -93,8 +94,7 @@ import { WaitingTraineesModule } from './waiting_trainees/waiting_trainees.modul
     MailModule,
     AttendanceListModule,
     PaymentsModule,
-    LostTraineesModule,
-    WaitingTraineesModule,
+    LostTraineesModule
   ],
   controllers: [],
   providers: [
