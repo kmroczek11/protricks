@@ -127,7 +127,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       )}
       {autoLoginUserError && (
         <CustomDialog
-          title="Nieoczekiwany błąd"
+          title="Twoja sesja wygasła"
           content={unexpectedErrorMessage}
           onClose={() => setAutoLoginError("")}
         />

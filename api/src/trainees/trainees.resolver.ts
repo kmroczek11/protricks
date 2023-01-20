@@ -19,6 +19,8 @@ import { ConfirmContractReceiptInput } from './dto/confirm-contract-receipt.inpu
 import { CreateTraineeResponse } from './dto/create-trainee-response';
 import { CreateTraineeInput } from './dto/create-trainee.input';
 import { DeleteTraineeResponse } from './dto/delete-trainee-response';
+import { DeleteTraineeWithMessageResponse } from './dto/delete-trainee-with-message-response';
+import { DeleteTraineeWithMessageInput } from './dto/delete-trainee-with-message.input';
 import { DeleteTraineeInput } from './dto/delete-trainee.input';
 import { JoinGroupResponse } from './dto/join-group-response';
 import { JoinGroupInput } from './dto/join-group.input';
@@ -42,11 +44,19 @@ export class TraineesResolver {
   }
 
   @Mutation(() => DeleteTraineeResponse)
-  @Roles(Role.COACH, Role.TRAINEE)
+  @Roles(Role.COACH)
   deleteTrainee(
     @Args('deleteTraineeInput') deleteTraineeInput: DeleteTraineeInput,
   ): Promise<DeleteTraineeResponse> {
     return this.traineesService.deleteTrainee(deleteTraineeInput);
+  }
+
+  @Mutation(() => DeleteTraineeWithMessageResponse)
+  @Roles(Role.TRAINEE)
+  deleteTraineeWithMessage(
+    @Args('deleteTraineeWithMessageInput') deleteTraineeWithMessageInput: DeleteTraineeWithMessageInput,
+  ): Promise<DeleteTraineeResponse> {
+    return this.traineesService.deleteTraineeWithMessage(deleteTraineeWithMessageInput);
   }
 
   @Query(() => [Trainee])

@@ -15,6 +15,7 @@ interface TraineeInfoDialogProps {
     parentPhone: any;
     parentEmail: any;
     feedback: string;
+    dateJoined:string;
     user: { id: string; firstName: string; lastName: string; imgSrc?: string };
   };
   open: boolean;
@@ -41,6 +42,10 @@ const TraineeInfoDialog: React.FC<TraineeInfoDialogProps> = (props) => {
     {
       name: "Skąd dowiedzieli się Państwo o zajęciach?",
       value: feedback ? feedback : "-",
+    },
+    {
+      name: "Data dołączenia",
+      value: convertToPlDate(birthDate),
     },
   ];
 

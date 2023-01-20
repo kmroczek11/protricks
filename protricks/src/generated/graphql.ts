@@ -32,6 +32,7 @@ export type Scalars = {
 export type AcceptToGroupInput = {
   email: Scalars['String'];
   traineeId: Scalars['String'];
+  userId: Scalars['String'];
 };
 
 export type AcceptToGroupResponse = {
@@ -44,6 +45,7 @@ export type Attendance = {
   day: Scalars['LocalDate'];
   id: Scalars['String'];
   present: Scalars['Boolean'];
+  status: Scalars['String'];
   trainee: Trainee;
 };
 
@@ -123,6 +125,7 @@ export type ConfirmContractReceiptResponse = {
 export type CreateAttendanceInput = {
   day: Scalars['LocalDate'];
   present: Scalars['Boolean'];
+  status: Scalars['String'];
   traineeId: Scalars['String'];
 };
 
@@ -190,6 +193,7 @@ export type CreatePaymentResponse = {
 
 export type CreateTraineeInput = {
   birthDate: Scalars['LocalDate'];
+  dateJoined: Scalars['LocalDate'];
   feedback: Scalars['String'];
   groupId: Scalars['String'];
   parentEmail: Scalars['EmailAddress'];
@@ -227,6 +231,16 @@ export type DeleteTraineeInput = {
 
 export type DeleteTraineeResponse = {
   __typename?: 'DeleteTraineeResponse';
+  user?: Maybe<User>;
+};
+
+export type DeleteTraineeWithMessageInput = {
+  email: Scalars['String'];
+  userId: Scalars['String'];
+};
+
+export type DeleteTraineeWithMessageResponse = {
+  __typename?: 'DeleteTraineeWithMessageResponse';
   user?: Maybe<User>;
 };
 
@@ -278,7 +292,10 @@ export type GetMonthlyCostInput = {
 
 export type GetMonthlyCostResponse = {
   __typename?: 'GetMonthlyCostResponse';
+  actualExercises: Array<Exercise>;
   amount: Scalars['Float'];
+  firstTimeDiscountApplied: Scalars['Boolean'];
+  groupPrice: Scalars['Float'];
 };
 
 export type Group = {
@@ -295,6 +312,7 @@ export type Group = {
 export type JoinGroupInput = {
   email: Scalars['String'];
   traineeId: Scalars['String'];
+  userId: Scalars['String'];
 };
 
 export type JoinGroupResponse = {
@@ -341,6 +359,7 @@ export type Mutation = {
   deleteExercise: DeleteExerciseResponse;
   deleteGroup: DeleteGroupResponse;
   deleteTrainee: DeleteTraineeResponse;
+  deleteTraineeWithMessage: DeleteTraineeWithMessageResponse;
   editExercise: EditExerciseResponse;
   editGroup: EditGroupResponse;
   forgotPassword: ForgotPasswordResponse;
@@ -445,6 +464,11 @@ export type MutationDeleteGroupArgs = {
 
 export type MutationDeleteTraineeArgs = {
   deleteTraineeInput: DeleteTraineeInput;
+};
+
+
+export type MutationDeleteTraineeWithMessageArgs = {
+  deleteTraineeWithMessageInput: DeleteTraineeWithMessageInput;
 };
 
 
@@ -577,6 +601,7 @@ export type Trainee = {
   __typename?: 'Trainee';
   attendances?: Maybe<Array<Attendance>>;
   birthDate: Scalars['LocalDate'];
+  dateJoined: Scalars['LocalDate'];
   feedback: Scalars['String'];
   group: Group;
   id: Scalars['String'];
@@ -713,14 +738,14 @@ export type GetAttendanceByDayQueryVariables = Exact<{
 }>;
 
 
-export type GetAttendanceByDayQuery = { __typename?: 'Query', getAttendanceByDay: Array<{ __typename?: 'Attendance', day: any, present: boolean, trainee: { __typename?: 'Trainee', status: Status, user: { __typename?: 'User', firstName: string, lastName: string } } }> };
+export type GetAttendanceByDayQuery = { __typename?: 'Query', getAttendanceByDay: Array<{ __typename?: 'Attendance', day: any, present: boolean, status: string, trainee: { __typename?: 'Trainee', status: Status, user: { __typename?: 'User', firstName: string, lastName: string } } }> };
 
 export type GetCoachQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type GetCoachQuery = { __typename?: 'Query', getCoach: { __typename?: 'Coach', id: string, city: { __typename?: 'City', id: string, name: string }, groups?: Array<{ __typename?: 'Group', id: string, name: string, limit: number, price: number, exercises?: Array<{ __typename?: 'Exercise', id: string, day: any, start: any, end: any }> | null, trainees?: Array<{ __typename?: 'Trainee', id: string, birthDate: any, traineeName: string, parentPhone: any, parentEmail: any, feedback: string, status: Status, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string } }> | null }> | null } };
+export type GetCoachQuery = { __typename?: 'Query', getCoach: { __typename?: 'Coach', id: string, city: { __typename?: 'City', id: string, name: string }, groups?: Array<{ __typename?: 'Group', id: string, name: string, limit: number, price: number, exercises?: Array<{ __typename?: 'Exercise', id: string, day: any, start: any, end: any }> | null, trainees?: Array<{ __typename?: 'Trainee', id: string, birthDate: any, traineeName: string, parentPhone: any, parentEmail: any, feedback: string, status: Status, dateJoined: any, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string } }> | null }> | null } };
 
 export type SendEmailToGroupMutationVariables = Exact<{
   input: SendEmailToGroupInput;
@@ -755,12 +780,19 @@ export type CreatePaymentMutationVariables = Exact<{
 
 export type CreatePaymentMutation = { __typename?: 'Mutation', createPayment: { __typename?: 'CreatePaymentResponse', msg: string } };
 
+export type DeleteTraineeWithMessageMutationVariables = Exact<{
+  input: DeleteTraineeWithMessageInput;
+}>;
+
+
+export type DeleteTraineeWithMessageMutation = { __typename?: 'Mutation', deleteTraineeWithMessage: { __typename?: 'DeleteTraineeWithMessageResponse', user?: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } | null } };
+
 export type GetMonthlyCostQueryVariables = Exact<{
   getMonthlyCostInput: GetMonthlyCostInput;
 }>;
 
 
-export type GetMonthlyCostQuery = { __typename?: 'Query', getMonthlyCost: { __typename?: 'GetMonthlyCostResponse', amount: number } };
+export type GetMonthlyCostQuery = { __typename?: 'Query', getMonthlyCost: { __typename?: 'GetMonthlyCostResponse', amount: number, groupPrice: number, firstTimeDiscountApplied: boolean, actualExercises: Array<{ __typename?: 'Exercise', id: string, day: any }> } };
 
 export type GetTraineeQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1176,6 +1208,7 @@ export const GetAttendanceByDayDocument = `
   getAttendanceByDay(attendanceByDayInput: $attendanceByDayInput) {
     day
     present
+    status
     trainee {
       status
       user {
@@ -1232,6 +1265,7 @@ export const GetCoachDocument = `
         parentEmail
         feedback
         status
+        dateJoined
         user {
           id
           firstName
@@ -1404,10 +1438,44 @@ export const useCreatePaymentMutation = <
       options
     );
 useCreatePaymentMutation.fetcher = (client: GraphQLClient, variables: CreatePaymentMutationVariables, headers?: RequestInit['headers']) => fetcher<CreatePaymentMutation, CreatePaymentMutationVariables>(client, CreatePaymentDocument, variables, headers);
+export const DeleteTraineeWithMessageDocument = `
+    mutation DeleteTraineeWithMessage($input: DeleteTraineeWithMessageInput!) {
+  deleteTraineeWithMessage(deleteTraineeWithMessageInput: $input) {
+    user {
+      id
+      firstName
+      lastName
+      email
+      imgSrc
+      roles
+    }
+  }
+}
+    `;
+export const useDeleteTraineeWithMessageMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<DeleteTraineeWithMessageMutation, TError, DeleteTraineeWithMessageMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<DeleteTraineeWithMessageMutation, TError, DeleteTraineeWithMessageMutationVariables, TContext>(
+      ['DeleteTraineeWithMessage'],
+      (variables?: DeleteTraineeWithMessageMutationVariables) => fetcher<DeleteTraineeWithMessageMutation, DeleteTraineeWithMessageMutationVariables>(client, DeleteTraineeWithMessageDocument, variables, headers)(),
+      options
+    );
+useDeleteTraineeWithMessageMutation.fetcher = (client: GraphQLClient, variables: DeleteTraineeWithMessageMutationVariables, headers?: RequestInit['headers']) => fetcher<DeleteTraineeWithMessageMutation, DeleteTraineeWithMessageMutationVariables>(client, DeleteTraineeWithMessageDocument, variables, headers);
 export const GetMonthlyCostDocument = `
     query GetMonthlyCost($getMonthlyCostInput: GetMonthlyCostInput!) {
   getMonthlyCost(getMonthlyCostInput: $getMonthlyCostInput) {
+    actualExercises {
+      id
+      day
+    }
     amount
+    groupPrice
+    firstTimeDiscountApplied
   }
 }
     `;

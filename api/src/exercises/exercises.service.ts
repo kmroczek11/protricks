@@ -6,6 +6,8 @@ import { GroupsService } from 'src/groups/groups.service';
 import { CreateExerciseInput } from './dto/create-exercise.input';
 import { Exercise } from './entities/exercise.entity';
 import { EditExerciseInput } from './dto/edit-exercise.input';
+import { TraineesService } from 'src/trainees/trainees.service';
+import GetMonthlyExercisesInput from './dto/get-monthly-exercises.input';
 
 @Injectable()
 export class ExercisesService {
@@ -13,6 +15,7 @@ export class ExercisesService {
     @InjectRepository(Exercise)
     private exercisesRepository: Repository<Exercise>,
     private groupsService: GroupsService,
+    private traineesService: TraineesService,
   ) {}
 
   async createExercise(createExerciseInput: CreateExerciseInput) {

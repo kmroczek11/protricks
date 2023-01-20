@@ -71,4 +71,8 @@ export class Trainee {
   @Column('varchar', { default: Status.FIRST_TIME })
   @Field(() => Status)
   status: Status;
+
+  @Column({ type: 'date' })
+  @Field(() => LocalDateResolver)
+  dateJoined: string;
 }

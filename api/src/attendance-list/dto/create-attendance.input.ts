@@ -11,4 +11,7 @@ export class CreateAttendanceInput {
 
   @Field()
   present: boolean;
+
+  @Field()
+  status: string;
 }

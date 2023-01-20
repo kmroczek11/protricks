@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GroupsService } from 'src/groups/groups.service';
 import { PaymentsService } from 'src/payments/payments.service';
+import { Status } from 'src/trainees/entities/status.enum';
 import { TraineesService } from 'src/trainees/trainees.service';
 import { Repository } from 'typeorm';
 import { AttendanceByDayInput } from './dto/attendance-by-day.input';
@@ -53,6 +54,17 @@ export class AttendanceListService {
       return true;
   }
 
+  isRelevant(dateJoined: string, exercisesDay: string) {
+    return new Date(dateJoined) <= new Date(exercisesDay);
+  }
+
+  isFirstTimeDiscountApplied(firstTimeDate: string, currentFirstTime: string) {
+    return (
+      new Date(firstTimeDate).getMonth() ===
+      new Date(currentFirstTime).getMonth()
+    );
+  }
+
   async getMonthlyCost(getMonthlyCostInput: GetMonthlyCostInput) {
     const months = [
       'styczeń',
@@ -81,18 +93,36 @@ export class AttendanceListService {
       getMonthlyCostInput.userId,
     );
 
-    const group = await await this.groupsService.findOne(trainee.groupId);
+    const group = await this.groupsService.findOne(trainee.groupId);
 
     const groupPrice = group.price;
 
-    const monthExercisesCount = group.exercises.filter((a) =>
-      this.checkIfCurrentMonth(a.day),
-    ).length;
+    const currentMonthExercises = group.exercises.filter((g) =>
+      this.checkIfCurrentMonth(g.day),
+    );
 
-    const amount = monthExercisesCount * groupPrice;
+    const actualExercises = currentMonthExercises.filter((m) =>
+      this.isRelevant(trainee.dateJoined, m.day),
+    );
+
+    let actualExercisesCount = actualExercises.length;
+
+    const lastExercise = actualExercises[actualExercisesCount - 1];
+
+    const firstTimeDiscountApplied = this.isFirstTimeDiscountApplied(
+      lastExercise.day,
+      trainee.dateJoined,
+    );
+
+    if (firstTimeDiscountApplied) actualExercisesCount -= 1;
+
+    const amount = actualExercisesCount * groupPrice;
 
     return {
+      actualExercises,
       amount,
+      groupPrice,
+      firstTimeDiscountApplied,
     };
   }
 }

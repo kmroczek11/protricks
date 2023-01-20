@@ -39,6 +39,7 @@ interface ManageMembersDialogProps {
     parentEmail: any;
     feedback: string;
     status: Status;
+    dateJoined: string;
     user: { id: string; firstName: string; lastName: string; imgSrc?: string };
   }> | null;
   open: boolean;
@@ -52,6 +53,7 @@ const ManageMembersDialog: React.FC<ManageMembersDialogProps> = (props) => {
   const [openDetailedInfo, setOpenDetailedInfo] = useState(false);
   const theme = useTheme();
   const smScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  console.log(trainees);
 
   const { isLoading: isDeleteTraineeLoading, mutate: deleteTrainee } =
     useDeleteTraineeMutation<Error>(createAccessClient(), {});
@@ -93,10 +95,10 @@ const ManageMembersDialog: React.FC<ManageMembersDialogProps> = (props) => {
       <DialogContent dividers>
         {trainees?.length != 0 ? (
           <List sx={{ pt: 0 }}>
-            {trainees?.map((trainee) => (
+            {trainees?.map((trainee, i) => (
               <React.Fragment>
                 <ListItem
-                  key={trainee.id}
+                  key={i}
                   secondaryAction={
                     <React.Fragment>
                       <Tooltip title="Szczegółowe informacje">
@@ -147,7 +149,9 @@ const ManageMembersDialog: React.FC<ManageMembersDialogProps> = (props) => {
                       size="small"
                       imgSrc={
                         trainee.user?.imgSrc &&
-                        `${process.env.REACT_APP_HOST}/images/${trainee.user?.imgSrc}`
+                        (process.env.NODE_ENV === "development"
+                          ? `${process.env.REACT_APP_HOST}/images/${trainee.user?.imgSrc}`
+                          : `${process.env.REACT_APP_HOST}/public/images/${trainee.user?.imgSrc}`)
                       }
                     />
                   </ListItemAvatar>

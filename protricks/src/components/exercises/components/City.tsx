@@ -3,12 +3,7 @@ import Typography from "@mui/material/Typography";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../auth";
 import { Role } from "../../../generated/graphql";
-import {
-  ColorButton,
-  PhotoCard,
-  CustomAvatar,
-  ButtonBox,
-} from "../../lib";
+import { ColorButton, PhotoCard, CustomAvatar, ButtonBox } from "../../lib";
 import GroupList from "./GroupList";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
@@ -85,7 +80,11 @@ const City: React.FC<CityProps> = (props) => {
           <PhotoCard
             item={{
               name: room,
-              imgSrc: `${process.env.REACT_APP_HOST}/images/${roomSrc}`,
+              imgSrc:
+                roomSrc &&
+                (process.env.NODE_ENV === "development"
+                  ? `${process.env.REACT_APP_HOST}/images/${roomSrc}`
+                  : `${process.env.REACT_APP_HOST}/public/images/${roomSrc}`),
             }}
           />
         </Grid>
@@ -129,7 +128,12 @@ const City: React.FC<CityProps> = (props) => {
           <CustomAvatar
             name={`${firstName} ${lastName}`}
             size="large"
-            imgSrc={imgSrc && `${process.env.REACT_APP_HOST}/images/${imgSrc}`}
+            imgSrc={
+              imgSrc &&
+              (process.env.NODE_ENV === "development"
+                ? `${process.env.REACT_APP_HOST}/images/${imgSrc}`
+                : `${process.env.REACT_APP_HOST}/public/images/${imgSrc}`)
+            }
           />
           <Typography
             variant="subtitle1"
@@ -177,7 +181,12 @@ const City: React.FC<CityProps> = (props) => {
           Tak prezentuje się cennik w wybranym mieście
         </Typography>
         <PriceList
-          imgSrc={`${process.env.REACT_APP_HOST}/images/${priceListSrc}`}
+          imgSrc={
+            priceListSrc &&
+            (process.env.NODE_ENV === "development"
+              ? `${process.env.REACT_APP_HOST}/images/${priceListSrc}`
+              : `${process.env.REACT_APP_HOST}/public/images/${priceListSrc}`)
+          }
         />
       </Grid>
       {![Role.Coach, Role.Trainee].some((e) => user?.roles?.includes(e)) ? (

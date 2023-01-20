@@ -76,6 +76,7 @@ const UserAvatar: React.FC<UserAvatarProps> = (props) => {
       onError: (error: Error) => {
         let err: any = {};
         err.data = error;
+        console.log(err?.data?.response.errors[0].message)
         setChangeProfilePicStatus(err?.data?.response.errors[0].message);
       },
       onSuccess: (
@@ -84,6 +85,7 @@ const UserAvatar: React.FC<UserAvatarProps> = (props) => {
         _context: unknown
       ) => {
         // queryClient.invalidateQueries('GetAllAuthors');
+        console.log(data.changeProfilePic.user)
         setUser(data.changeProfilePic.user);
       },
     }

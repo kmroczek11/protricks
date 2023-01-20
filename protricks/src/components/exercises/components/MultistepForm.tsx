@@ -84,6 +84,7 @@ const MultistepForm: () => JSX.Element | null = () => {
         parentPhone: `+${parentPhone}`,
         parentEmail,
         feedback,
+        dateJoined: new Date().toISOString().split("T")[0],
       },
     });
 
@@ -102,7 +103,10 @@ const MultistepForm: () => JSX.Element | null = () => {
               data?.coaches?.map(({ city }) => ({
                 id: city.id,
                 name: city.name,
-                imgSrc: `${process.env.REACT_APP_HOST}/images/${city.citySrc}`,
+                imgSrc:
+                  process.env.NODE_ENV === "development"
+                    ? `${process.env.REACT_APP_HOST}/images/${city.citySrc}`
+                    : `${process.env.REACT_APP_HOST}/public/images/${city.citySrc}`,
               }))!
             }
             onClick={setName}

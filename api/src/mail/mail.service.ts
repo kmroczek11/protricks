@@ -41,35 +41,27 @@ export class MailService {
     });
   }
 
-  async sendStayMessage(to: string) {
+  async sendLastStepMessage(to: string) {
     await this.mailerService.sendMail({
       to,
-      subject: 'CZY CHCESZ DO NAS DOŁĄCZYĆ?',
-      template: './traineeDecision',
+      subject: 'ZOSTAŁ OSTATNI KROK!',
+      template: './lastStepMessage',
     });
   }
 
-  async sendContractMessage(to: string) {
+  async sendDecisionMessage(to: string) {
     await this.mailerService.sendMail({
       to,
-      subject: 'TO JUŻ OSTATNI KROK!',
-      template: './contractMessage',
+      subject: 'CZAS PODJĄĆ DECYZJĘ',
+      template: './decisionMessage',
     });
   }
 
-  async sendAfter72h(to: string) {
+  async sendLeaveMessage(to: string) {
     await this.mailerService.sendMail({
       to,
-      subject: 'MINĄŁ CZAS NA PODJĘCIE DECYZJI',
-      template: './after72hMessage',
-    });
-  }
-
-  async sendAfter96h(to: string) {
-    await this.mailerService.sendMail({
-      to,
-      subject: 'BRAK UMOWY',
-      template: './after96hMessage',
+      subject: 'SZKODA, ŻE NIE ZOSTAJESZ Z NAMI',
+      template: './leaveMessage',
     });
   }
 }

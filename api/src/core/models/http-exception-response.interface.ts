@@ -7,6 +7,6 @@ export interface HttpExceptionResponse {
 
 export interface CustomHttpExceptionResponse extends HttpExceptionResponse {
   info: GraphQLResolveInfo;
-  rawArgs: any;
+  // rawArgs: any;
   timeStamp: Date;
 }

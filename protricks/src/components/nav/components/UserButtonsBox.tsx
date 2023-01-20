@@ -119,7 +119,7 @@ const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
         <React.Fragment>
           <Tooltip title="Kliknij, aby się zalogować">
             <IconButton onClick={handleDialogOpen}>
-              <PersonIcon color="primary"/>
+              <PersonIcon color="primary" />
             </IconButton>
           </Tooltip>
           <UserDialog open={dialogOpen} handleClose={handleDialogClose} />
@@ -132,8 +132,10 @@ const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
                 name={`${user.firstName} ${user.lastName}`}
                 size="small"
                 imgSrc={
-                  user.imgSrc &&
-                  `${process.env.REACT_APP_HOST}/images/${user.imgSrc}`
+                  user?.imgSrc &&
+                  (process.env.NODE_ENV === "development"
+                    ? `${process.env.REACT_APP_HOST}/images/${user.imgSrc}`
+                    : `${process.env.REACT_APP_HOST}/public/images/${user.imgSrc}`)
                 }
               />
             </IconButton>

@@ -15,6 +15,8 @@ import { CreateExerciseInput } from './dto/create-exercise.input';
 import { DeleteExerciseResponse } from './dto/delete-exercise-response';
 import { EditExerciseResponse } from './dto/edit-exercise-response';
 import { EditExerciseInput } from './dto/edit-exercise.input';
+import { GetMonthlyExercisesResponse } from './dto/get-monthly-exercises-response';
+import GetMonthlyExercisesInput from './dto/get-monthly-exercises.input';
 import { Exercise } from './entities/exercise.entity';
 import { ExercisesService } from './exercises.service';
 
@@ -51,9 +53,7 @@ export class ExercisesResolver {
 
   @Mutation(() => DeleteExerciseResponse)
   @Roles(Role.COACH)
-  deleteExercise(
-    @Args('id') id: string,
-  ): Promise<DeleteExerciseResponse> {
+  deleteExercise(@Args('id') id: string): Promise<DeleteExerciseResponse> {
     return this.exercisesService.deleteExercise(id);
   }
 }
