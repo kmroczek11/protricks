@@ -7,6 +7,8 @@ const createAccessClient = () =>
         process.env.REACT_APP_ACCESS_TOKEN_SECRET!
       )}`,
       "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
+      
     },
   });
 

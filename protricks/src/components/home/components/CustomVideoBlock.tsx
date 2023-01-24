@@ -19,7 +19,7 @@ const Background = styled("video")({
   width: "100%",
   height: "100%",
   position: "absolute",
-  top:0,
+  top: 0,
   filter: "grayscale(100%)",
   objectFit: "cover",
 });

@@ -14,20 +14,20 @@ const Hero: React.FC = () => {
     <CustomVideoBlock url={videoUrl}>
       <Typography variant="h1" color="primary" align="right" gutterBottom>
         ROZWIJAMY SPORTY
-        <Typography variant="h1" color="secondary">
+        <p style={{ color: "#6d67e4" }}>
           AKROBATYCZNE
-        </Typography>
+        </p>
         W POLSCE
       </Typography>
-        <ColorButton
-          color="secondary"
-          variant="contained"
-          sx={{ width: 300, height: 50, borderWidth: 2, fontSize: 20 }}
-          endIcon={<ArrowRightIcon />}
-          onClick={() => navigate("/zajecia/zarejestruj")}
-        >
-          Dołącz do nas
-        </ColorButton>
+      <ColorButton
+        color="secondary"
+        variant="contained"
+        sx={{ width: 300, height: 50, borderWidth: 2, fontSize: 20 }}
+        endIcon={<ArrowRightIcon />}
+        onClick={() => navigate("/zajecia/zarejestruj")}
+      >
+        Dołącz do nas
+      </ColorButton>
     </CustomVideoBlock>
   );
 };

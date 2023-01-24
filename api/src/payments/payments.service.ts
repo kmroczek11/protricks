@@ -62,6 +62,9 @@ export class PaymentsService {
       customer: customerId,
       payment_method: paymentMethodId,
       currency: process.env.STRIPE_CURRENCY,
+      automatic_payment_methods: {
+        enabled: true,
+      },
       confirm: true,
     });
 

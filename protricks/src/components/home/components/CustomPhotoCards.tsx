@@ -30,6 +30,7 @@ const CustomPhotoCards: React.FC<CustomPhotoCardObjectProps> = (props) => {
       {items.map((item, i) => (
         <CustomPhotoCard
           item={item}
+          key={i}
           onClick={onClick}
           sxBackground={{
             position: "absolute",
