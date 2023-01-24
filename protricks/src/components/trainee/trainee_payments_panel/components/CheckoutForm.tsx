@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { CardElement } from "@stripe/react-stripe-js";
 import usePaymentForm from "../hooks/usePaymentForm";
 import { ColorButton, CustomAlert } from "../../../lib";
@@ -14,10 +14,18 @@ import {
 import accessClient from "../../../../graphql/clients/accessClient";
 import { useAuth } from "../../../auth";
 import InfoBox from "./InfoBox";
+import ExercisesTable from "./ExercisesTable";
 
 const CheckoutForm = () => {
   const { handleSubmit, errorMessage } = usePaymentForm();
   const { user } = useAuth();
+  const [exercisesWithPrice, setExercisesWithPrice] = useState<
+    {
+      id: string;
+      day: any;
+      price: number;
+    }[]
+  >([]);
 
 
   const {
@@ -35,12 +43,27 @@ const CheckoutForm = () => {
     { refetchInterval: 1000 }
   );
 
+  useEffect(() => {
+    const e = data?.getMonthlyCost.actualExercises.map((a, i) => ({
+      ...a,
+      price:
+        i == 0 && data.getMonthlyCost.firstTimeDiscountApplied
+          ? 0
+          : data.getMonthlyCost.groupPrice,
+    }))!;
+
+    console.log(e)
+
+    setExercisesWithPrice(e);
+  }, [data]);
+
   return (
     <Box
       sx={{
         p: { xs: 10, md: 30 },
       }}
     >
+      <ExercisesTable data={exercisesWithPrice} />
       <InfoBox amount={data?.getMonthlyCost.amount!} />
       <form onSubmit={(e) => handleSubmit(e, data?.getMonthlyCost.amount!)}>
         <CardElement />

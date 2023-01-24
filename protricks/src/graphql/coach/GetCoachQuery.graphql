@@ -24,6 +24,7 @@ query GetCoach($id: String!) {
         parentEmail
         feedback
         status
+        dateJoined
         user {
           id
           firstName

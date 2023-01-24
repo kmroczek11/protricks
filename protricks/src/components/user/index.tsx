@@ -51,7 +51,9 @@ const UserPanel: React.FC = () => {
           size="large"
           imgSrc={
             user?.imgSrc &&
-            `${process.env.REACT_APP_HOST}/images/${user?.imgSrc}`
+            (process.env.NODE_ENV === "production"
+              ? `${process.env.REACT_APP_HOST}/public/images/${user?.imgSrc}`
+              : `${process.env.REACT_APP_HOST}/images/${user?.imgSrc}`)
           }
           BadgeIcon={AddAPhotoIcon}
         />

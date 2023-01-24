@@ -19,7 +19,10 @@ import { RolesGuard } from './auth/guards/roles.guard';
 import { GqlAuthGuard } from './auth/guards/gql-auth.guard';
 import { TokensModule } from './tokens/tokens.module';
 import { MailModule } from './mail/mail.module';
-import { GraphQLError, GraphQLFormattedError } from 'graphql/error/GraphQLError';
+import {
+  GraphQLError,
+  GraphQLFormattedError,
+} from 'graphql/error/GraphQLError';
 import { AttendanceListModule } from './attendance-list/attendance-list.module';
 import { PaymentsModule } from './payments/payments.module';
 import { LostTraineesModule } from './lost_trainees/lost_trainees.module';
@@ -79,7 +82,7 @@ import { ScheduleModule } from '@nestjs/schedule';
       synchronize: true,
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'static'),
+      rootPath: join(__dirname, '..', 'public'),
     }),
     ScheduleModule.forRoot(),
     CitiesModule,
@@ -94,7 +97,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     MailModule,
     AttendanceListModule,
     PaymentsModule,
-    LostTraineesModule
+    LostTraineesModule,
   ],
   controllers: [],
   providers: [

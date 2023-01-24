@@ -16,6 +16,8 @@ import { SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob } from 'cron';
 import { AcceptToGroupInput } from './dto/accept-to-group.input';
 import { LostTraineesService } from 'src/lost_trainees/lost_trainees.service';
+import { DeleteTraineeWithMessageInput } from './dto/delete-trainee-with-message.input';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class TraineesService {
@@ -86,7 +88,23 @@ export class TraineesService {
 
     const user = await this.usersService.findOneById(userId);
 
-    console.log(user);
+    return {
+      user,
+    };
+  }
+
+  async deleteTraineeWithMessage(
+    deleteTraineeWithMessageInput: DeleteTraineeWithMessageInput,
+  ) {
+    const { userId, email } = deleteTraineeWithMessageInput;
+
+    await this.traineesRepository.delete({ userId });
+
+    await this.usersService.deleteRole(userId, Role.TRAINEE);
+
+    const user = await this.usersService.findOneById(userId);
+
+    await this.mailService.sendLeaveMessage(email);
 
     return {
       user,
@@ -99,35 +117,6 @@ export class TraineesService {
     return result;
   }
 
-  async acceptToGroup(acceptToGroupInput: AcceptToGroupInput) {
-    const { email, traineeId } = acceptToGroupInput;
-
-    await this.mailService.sendStayMessage(email);
-
-    // const job = new CronJob(new Date(Date.now() + 10 * 1000), async () => {
-    //   await this.traineesRepository.delete(acceptToGroupInput.traineeId);
-    //   this.mailService.sendAfter72h(acceptToGroupInput.email);
-    // });
-
-    const job = new CronJob(new Date(this.addDays(Date.now(), 3)), async () => {
-      const trainee = await this.traineesRepository.findOne({
-        where: { id: traineeId },
-      });
-
-      if (trainee.status === Status.EXPECTATION) {
-        await this.traineesRepository.delete({ id: traineeId });
-        await this.lostTraineesService.createLostTrainee({ traineeId });
-        this.mailService.sendAfter72h(email);
-      }
-    });
-
-    this.schedulerRegistry.addCronJob('sendAfter72h', job);
-
-    job.start();
-
-    return this.changeStatus(acceptToGroupInput.traineeId, Status.EXPECTATION);
-  }
-
   async changeStatus(traineeId: string, status: Status) {
     await this.traineesRepository.update(traineeId, { status });
 
@@ -136,27 +125,81 @@ export class TraineesService {
     };
   }
 
-  async joinGroup(joinGroupInput: JoinGroupInput) {
-    const { email, traineeId } = joinGroupInput;
+  async acceptToGroup(acceptToGroupInput: AcceptToGroupInput) {
+    const { email, userId, traineeId } = acceptToGroupInput;
 
-    await this.mailService.sendContractMessage(email);
+    this.mailService.sendDecisionMessage(email);
 
-    const job = new CronJob(new Date(this.addDays(Date.now(), 4)), async () => {
+    const job = new CronJob(new Date(this.addDays(Date.now(), 3)), async () => {
       const trainee = await this.traineesRepository.findOne({
         where: { id: traineeId },
       });
 
-      if (trainee.status === Status.ACCEPTED_WITHOUT_CONTRACT) {
+      // if trainee hasn't send a contract,delete him after 72h
+      if (trainee.status === Status.EXPECTATION) {
         await this.traineesRepository.delete({ id: traineeId });
+        await this.usersService.deleteRole(userId, Role.TRAINEE);
         await this.lostTraineesService.createLostTrainee({ traineeId });
-        this.mailService.sendAfter96h(email);
+        this.mailService.sendLeaveMessage(email);
       }
     });
 
-    this.schedulerRegistry.addCronJob('sendAfter96h', job);
+    this.schedulerRegistry.addCronJob(
+      `${Date.now()}-sendAfter72hLeaveMessage`,
+      job,
+    );
 
     job.start();
-    
+
+    return this.changeStatus(acceptToGroupInput.traineeId, Status.EXPECTATION);
+  }
+
+  async joinGroup(joinGroupInput: JoinGroupInput) {
+    const { email, userId, traineeId } = joinGroupInput;
+
+    await this.mailService.sendLastStepMessage(email);
+
+    const job1 = new CronJob(
+      new Date(this.addDays(Date.now(), 3)),
+      async () => {
+        const trainee = await this.traineesRepository.findOne({
+          where: { id: traineeId },
+        });
+
+        if (trainee.status === Status.ACCEPTED_WITHOUT_CONTRACT) {
+          this.mailService.sendDecisionMessage(email);
+        }
+      },
+    );
+
+    const job2 = new CronJob(
+      new Date(this.addDays(Date.now(), 4)),
+      async () => {
+        const trainee = await this.traineesRepository.findOne({
+          where: { id: traineeId },
+        });
+
+        if (trainee.status === Status.ACCEPTED_WITHOUT_CONTRACT) {
+          await this.traineesRepository.delete({ id: traineeId });
+          await this.usersService.deleteRole(userId, Role.TRAINEE);
+          await this.lostTraineesService.createLostTrainee({ traineeId });
+          this.mailService.sendLeaveMessage(email);
+        }
+      },
+    );
+
+    this.schedulerRegistry.addCronJob(
+      `${Date.now()}-sendAfter72hDecisionMessage`,
+      job1,
+    );
+    this.schedulerRegistry.addCronJob(
+      `${Date.now()}-sendAfter96hLeaveMessage`,
+      job2,
+    );
+
+    job1.start();
+    job2.start();
+
     return this.changeStatus(
       joinGroupInput.traineeId,
       Status.ACCEPTED_WITHOUT_CONTRACT,

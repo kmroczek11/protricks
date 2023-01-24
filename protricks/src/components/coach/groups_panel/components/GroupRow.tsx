@@ -52,6 +52,7 @@ interface RowProps {
       parentEmail: any;
       feedback: string;
       status: Status;
+      dateJoined: string;
       user: { id: string; firstName: string; lastName: string; email: string };
     }> | null;
   };

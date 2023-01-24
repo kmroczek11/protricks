@@ -88,7 +88,7 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
             Nazwisko: attendance.trainee.user.lastName,
             Obecny: attendance.present ? "tak" : "nie",
             "Pierwszy raz":
-              attendance.trainee.status === Status.FirstTime ? "tak" : "nie",
+              attendance.status === Status.FirstTime ? "tak" : "nie",
           }
         : {
             Dzień: "",
@@ -98,7 +98,7 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
             Nazwisko: attendance.trainee.user.lastName,
             Obecny: attendance.present ? "tak" : "nie",
             "Pierwszy raz":
-              attendance.trainee.status === Status.FirstTime ? "tak" : "nie",
+              attendance.status === Status.FirstTime ? "tak" : "nie",
           }
     )!,
   ].flat();

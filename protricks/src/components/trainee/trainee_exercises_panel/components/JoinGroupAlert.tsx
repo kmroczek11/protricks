@@ -9,10 +9,13 @@ import {
   CreateLostTraineeMutationVariables,
   DeleteTraineeMutation,
   DeleteTraineeMutationVariables,
+  DeleteTraineeWithMessageMutation,
+  DeleteTraineeWithMessageMutationVariables,
   JoinGroupMutation,
   JoinGroupMutationVariables,
   useCreateLostTraineeMutation,
   useDeleteTraineeMutation,
+  useDeleteTraineeWithMessageMutation,
   useJoinGroupMutation,
 } from "../../../../generated/graphql";
 import { useAuth } from "../../../auth";
@@ -28,22 +31,24 @@ const JoinGroupAlert: React.FC<JoinGroupAlertProps> = (props) => {
   const { user, setUser } = useAuth();
   const [deleteTraineeStatus, setDeleteTraineeStatus] = useState<string>("");
 
-  const { isLoading: isDeleteTraineeLoading, mutate: deleteTrainee } =
-    useDeleteTraineeMutation<Error>(createAccessClient(), {
-      onError: (error: Error) => {
-        let err: any = {};
-        err.data = error;
-        setDeleteTraineeStatus(err?.data?.response.errors[0].message);
-      },
-      onSuccess: (
-        data: DeleteTraineeMutation,
-        _variables: DeleteTraineeMutationVariables,
-        _context: unknown
-      ) => {
-        // queryClient.invalidateQueries('GetAllAuthors');
-        setUser(data.deleteTrainee.user!);
-      },
-    });
+  const {
+    isLoading: isDeleteTraineeWithMessageLoading,
+    mutate: deleteTraineeWithMessage,
+  } = useDeleteTraineeWithMessageMutation<Error>(createAccessClient(), {
+    onError: (error: Error) => {
+      let err: any = {};
+      err.data = error;
+      setDeleteTraineeStatus(err?.data?.response.errors[0].message);
+    },
+    onSuccess: (
+      data: DeleteTraineeWithMessageMutation,
+      _variables: DeleteTraineeWithMessageMutationVariables,
+      _context: unknown
+    ) => {
+      // queryClient.invalidateQueries('GetAllAuthors');
+      setUser(data.deleteTraineeWithMessage.user!);
+    },
+  });
 
   const { isLoading: isCreateLostTraineeLoading, mutate: createLostTrainee } =
     useCreateLostTraineeMutation<Error>(createAccessClient(), {
@@ -125,6 +130,7 @@ const JoinGroupAlert: React.FC<JoinGroupAlertProps> = (props) => {
             onClick={() =>
               joinGroup({
                 input: {
+                  userId: user?.id!,
                   traineeId: traineeId,
                   email: user?.email!,
                 },
@@ -139,9 +145,10 @@ const JoinGroupAlert: React.FC<JoinGroupAlertProps> = (props) => {
             type="submit"
             sx={{ my: 2 }}
             onClick={() => {
-              deleteTrainee({
+              deleteTraineeWithMessage({
                 input: {
                   userId: user?.id!,
+                  email: user?.email!,
                 },
               });
 

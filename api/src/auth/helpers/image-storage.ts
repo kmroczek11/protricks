@@ -33,7 +33,7 @@ export const saveImage = async (image: FileUpload, folder: string) => {
 
   const filePath = folder + '/' + fileName;
 
-  const imagesFolderPath = join(process.cwd(), `static/images`);
+  const imagesFolderPath = join(process.cwd(), `public/images`);
 
   const fullImagePath = join(imagesFolderPath + '/' + filePath);
 
@@ -43,9 +43,11 @@ export const saveImage = async (image: FileUpload, folder: string) => {
 };
 
 export const removeFile = (filePath: string): void => {
-  const filesFolderPath = join(process.cwd(), `uploads`);
+  const filesFolderPath = join(process.cwd(), `public/images`);
 
   const fullFilePath = join(filesFolderPath + '/' + filePath);
+
+  console.log(fullFilePath)
 
   try {
     fs.unlinkSync(fullFilePath);

@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { LocalDateResolver } from 'graphql-scalars';
+import { Status } from 'src/trainees/entities/status.enum';
 import { Trainee } from 'src/trainees/entities/trainee.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
@@ -40,4 +41,8 @@ export class Attendance {
   @Column()
   @Field(() => Boolean)
   present: boolean;
+
+  @Column()
+  @Field()
+  status: string;
 }

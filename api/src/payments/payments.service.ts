@@ -57,19 +57,16 @@ export class PaymentsService {
 
     await this.paymentsRepository.save(newPayment);
 
-    await this.stripe.paymentIntents.create({
+    const paymentIntent = await this.stripe.paymentIntents.create({
       amount,
-      customer: customerId,
-      payment_method: paymentMethodId,
       currency: process.env.STRIPE_CURRENCY,
       automatic_payment_methods: {
         enabled: true,
       },
-      confirm: true,
     });
 
     return {
-      msg: 'Success',
+      clientSecret: paymentIntent.client_secret,
     };
   }
 

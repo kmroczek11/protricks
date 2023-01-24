@@ -1,4 +1,11 @@
-import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Trainee } from 'src/trainees/entities/trainee.entity';
@@ -26,7 +33,9 @@ export class AttendanceListResolver {
   @Query(() => [Attendance])
   // @Roles(Role.COACH)
   @Public()
-  getAttendanceByDay(@Args('attendanceByDayInput') attendanceByDayInput: AttendanceByDayInput,): Promise<Attendance[]> {
+  getAttendanceByDay(
+    @Args('attendanceByDayInput') attendanceByDayInput: AttendanceByDayInput,
+  ): Promise<Attendance[]> {
     return this.attendanceListService.findAllByDay(attendanceByDayInput);
   }
 
@@ -38,8 +47,8 @@ export class AttendanceListResolver {
   @Query(() => GetMonthlyCostResponse)
   @Roles(Role.USER)
   getMonthlyCost(
-    @Args('getMonthlyCostInput') getMonthlyCostInput: GetMonthlyCostInput
-  ): Promise<GetMonthlyCostResponse> {
+    @Args('getMonthlyCostInput') getMonthlyCostInput: GetMonthlyCostInput,
+  ) {
     return this.attendanceListService.getMonthlyCost(getMonthlyCostInput);
   }
 }

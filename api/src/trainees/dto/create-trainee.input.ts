@@ -24,4 +24,7 @@ export class CreateTraineeInput {
 
   @Field()
   feedback?: string;
+
+  @Field(() => LocalDateResolver)
+  dateJoined: string;
 }

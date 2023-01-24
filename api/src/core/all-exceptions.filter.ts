@@ -50,7 +50,7 @@ export class AllExceptionsFilter implements GqlExceptionFilter {
     statusCode: status,
     error: errorMessage,
     info: ctx.getInfo<GraphQLResolveInfo>(),
-    rawArgs: JSON.stringify(ctx.getArgs()),
+    // rawArgs: JSON.stringify(ctx.getArgs()),
     timeStamp: new Date(),
   });
 
@@ -62,10 +62,11 @@ export class AllExceptionsFilter implements GqlExceptionFilter {
     const { statusCode, error } = errorResponse;
     const errorLog = `Response Code: ${statusCode}\n\n
     ${JSON.stringify(errorResponse)}\n\n
-    User: ${JSON.stringify(ctx.getContext().req.user ?? 'Not signed in')}\n\n
     ${exception instanceof HttpException ? exception.stack : error}\n\n`;
     return errorLog;
   };
+
+  //User: ${JSON.stringify(ctx.getContext().req.user ?? 'Not signed in')}\n\n
 
   private writeErrorLogToFile = (errorLog: string): void => {
     fs.appendFile('error.log', errorLog, 'utf8', (err) => {

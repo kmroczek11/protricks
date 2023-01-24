@@ -14,7 +14,11 @@ import { TraineesService } from './trainees.service';
     UsersModule,
     GroupsModule,
     MailModule,
+<<<<<<< HEAD
     LostTraineesModule,
+=======
+    LostTraineesModule
+>>>>>>> 829d47d5d56c9a46b549d8ccf4d606974ffa2d63
   ],
   providers: [TraineesService, TraineesResolver],
   exports: [TraineesService],

@@ -10,6 +10,8 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import {
+  AcceptToGroupMutation,
+  AcceptToGroupMutationVariables,
   CreateAttendanceMutation,
   CreateAttendanceMutationVariables,
   Status,
@@ -19,6 +21,7 @@ import {
 import { useEffect, useState } from "react";
 import {
   ColorButton,
+  CustomAlert,
   CustomAvatar,
   LoadingScreen,
 } from "../../../../lib";
@@ -71,6 +74,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+const acceptToGroupSuccessMessage = "Pomyślnie wysłano zaproszenia do uczniów.";
+
 const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
   const {
     groupName,
@@ -109,7 +114,20 @@ const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
     });
 
   const { isLoading: isAcceptToGroupLoading, mutate: acceptToGroup } =
-    useAcceptToGroupMutation<Error>(createAccessClient(), {});
+    useAcceptToGroupMutation<Error>(createAccessClient(), {
+      onError: (error: Error) => {
+        let err: any = {};
+        err.data = error;
+        console.log(err?.data?.response.errors[0].message);
+      },
+      onSuccess: (
+        data: AcceptToGroupMutation,
+        _variables: AcceptToGroupMutationVariables,
+        _context: unknown
+      ) => {
+        console.log(data.acceptToGroup.msg);
+      },
+    });
 
   useEffect(() => {
     setTraineesPresence(
@@ -139,6 +157,7 @@ const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
         // if trainee's first time accept to group and send email
         acceptToGroup({
           input: {
+            userId: t.user.id,
             traineeId: t.id,
             email: t.user.email,
           },
@@ -150,6 +169,7 @@ const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
           traineeId: t.id,
           day: day,
           present: t.present,
+          status: t.status,
         },
       });
     });
@@ -210,7 +230,9 @@ const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
                       size="small"
                       imgSrc={
                         trainee.user?.imgSrc &&
-                        `${process.env.REACT_APP_HOST}/images/${trainee.user?.imgSrc}`
+                        (process.env.NODE_ENV === "development"
+                          ? `${process.env.REACT_APP_HOST}/images/${trainee.user?.imgSrc}`
+                          : `${process.env.REACT_APP_HOST}/public/images/${trainee.user?.imgSrc}`)
                       }
                     />
                   </ListItemAvatar>
