@@ -43,7 +43,7 @@ export class AttendanceListResolver {
   trainee(@Parent() attendance: Attendance): Promise<Trainee> {
     return this.attendanceListService.getTrainee(attendance.traineeId);
   }
-
+  
   @Query(() => GetMonthlyCostResponse)
   @Roles(Role.USER)
   getMonthlyCost(

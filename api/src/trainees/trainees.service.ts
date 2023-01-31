@@ -18,6 +18,7 @@ import { AcceptToGroupInput } from './dto/accept-to-group.input';
 import { LostTraineesService } from 'src/lost_trainees/lost_trainees.service';
 import { DeleteTraineeWithMessageInput } from './dto/delete-trainee-with-message.input';
 import { v4 as uuidv4 } from 'uuid';
+import { ConfirmContractReceiptInput } from './dto/confirm-contract-receipt.input';
 
 @Injectable()
 export class TraineesService {
@@ -203,6 +204,17 @@ export class TraineesService {
     return this.changeStatus(
       joinGroupInput.traineeId,
       Status.ACCEPTED_WITHOUT_CONTRACT,
+    );
+  }
+
+  async confirmContractReceipt(confirmContractReceiptInput:ConfirmContractReceiptInput){
+    const { email, traineeId } = confirmContractReceiptInput;
+
+    await this.mailService.sendAllDoneMessage(email);
+
+    return this.changeStatus(
+      traineeId,
+      Status.ACCEPTED,
     );
   }
 }

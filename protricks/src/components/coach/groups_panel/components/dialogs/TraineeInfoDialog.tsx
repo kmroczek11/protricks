@@ -25,6 +25,7 @@ interface TraineeInfoDialogProps {
 
 const TraineeInfoDialog: React.FC<TraineeInfoDialogProps> = (props) => {
   const { trainee, open, handleClose, onClose } = props;
+  console.log(trainee)
   const { firstName, lastName } = trainee.user;
   const { birthDate, traineeName, parentPhone, parentEmail, feedback } = trainee;
 

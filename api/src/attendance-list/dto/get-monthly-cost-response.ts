@@ -4,15 +4,15 @@ import { Exercise } from 'src/exercises/entities/exercise.entity';
 
 @ObjectType()
 export class GetMonthlyCostResponse {
-  @Field(() => [Exercise])
-  actualExercises: Exercise[];
-
   @Field(() => Number)
   amount: number;
 
-  @Field(() => Number)
-  groupPrice: number;
+  @Field(() => [Exercise], { nullable: true })
+  actualExercises?: Exercise[];
 
-  @Field(() => Boolean)
-  firstTimeDiscountApplied: boolean;
+  @Field(() => Number, { nullable: true })
+  groupPrice?: number;
+
+  @Field(() => Boolean, { nullable: true })
+  firstTimeDiscountApplied?: boolean;
 }

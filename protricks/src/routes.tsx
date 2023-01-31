@@ -13,6 +13,7 @@ import Meetings from "./components/meetings";
 import Lost from "./components/lost";
 import TraineePaymentsPanel from "./components/trainee/trainee_payments_panel";
 import MultistepForm from "./components/exercises/components/MultistepForm";
+// import SuccessfullPayment from "./components/successfull_payment";
 
 export interface NavItemsObject {
   id: number;
@@ -98,11 +99,7 @@ export const routes: RouteObject[] = [
       },
       {
         path: "/uczen/platnosci",
-        element: (
-          <Protected allowedRoles={[Role.Trainee]}>
-            <TraineePaymentsPanel />
-          </Protected>
-        ),
+        element: <TraineePaymentsPanel />,
       },
       { path: "*", element: <Lost /> },
     ],

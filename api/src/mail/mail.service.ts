@@ -64,4 +64,12 @@ export class MailService {
       template: './leaveMessage',
     });
   }
+
+  async sendAllDoneMessage(to: string) {
+    await this.mailerService.sendMail({
+      to,
+      subject: 'WSZYSTKO GOTOWE!',
+      template: './allDoneMessage',
+    });
+  }
 }

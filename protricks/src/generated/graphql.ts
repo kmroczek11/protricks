@@ -114,7 +114,8 @@ export type Coach = {
 };
 
 export type ConfirmContractReceiptInput = {
-  id: Scalars['String'];
+  email: Scalars['String'];
+  traineeId: Scalars['String'];
 };
 
 export type ConfirmContractReceiptResponse = {
@@ -181,13 +182,21 @@ export type CreateLostTraineeResponse = {
   msg: Scalars['String'];
 };
 
-export type CreatePaymentInput = {
+export type CreatePaymentIntentInput = {
   amount: Scalars['Float'];
-  paymentMethodId: Scalars['String'];
 };
 
-export type CreatePaymentResponse = {
-  __typename?: 'CreatePaymentResponse';
+export type CreatePaymentIntentResponse = {
+  __typename?: 'CreatePaymentIntentResponse';
+  clientSecret: Scalars['String'];
+};
+
+export type CreatePaymentItemInput = {
+  amount: Scalars['Float'];
+};
+
+export type CreatePaymentItemResponse = {
+  __typename?: 'CreatePaymentItemResponse';
   msg: Scalars['String'];
 };
 
@@ -292,10 +301,10 @@ export type GetMonthlyCostInput = {
 
 export type GetMonthlyCostResponse = {
   __typename?: 'GetMonthlyCostResponse';
-  actualExercises: Array<Exercise>;
+  actualExercises?: Maybe<Array<Exercise>>;
   amount: Scalars['Float'];
-  firstTimeDiscountApplied: Scalars['Boolean'];
-  groupPrice: Scalars['Float'];
+  firstTimeDiscountApplied?: Maybe<Scalars['Boolean']>;
+  groupPrice?: Maybe<Scalars['Float']>;
 };
 
 export type Group = {
@@ -352,7 +361,8 @@ export type Mutation = {
   createExercise: CreateExerciseResponse;
   createGroup: CreateGroupResponse;
   createLostTrainee: CreateLostTraineeResponse;
-  createPayment: CreatePaymentResponse;
+  createPaymentIntent: CreatePaymentIntentResponse;
+  createPaymentItem: CreatePaymentItemResponse;
   createTrainee: CreateTraineeResponse;
   createUser: User;
   deleteCity: City;
@@ -432,8 +442,13 @@ export type MutationCreateLostTraineeArgs = {
 };
 
 
-export type MutationCreatePaymentArgs = {
-  createPaymentInput: CreatePaymentInput;
+export type MutationCreatePaymentIntentArgs = {
+  createPaymentIntentInput: CreatePaymentIntentInput;
+};
+
+
+export type MutationCreatePaymentItemArgs = {
+  createPaymentIntentInput: CreatePaymentItemInput;
 };
 
 
@@ -773,12 +788,19 @@ export type CreateLostTraineeMutationVariables = Exact<{
 
 export type CreateLostTraineeMutation = { __typename?: 'Mutation', createLostTrainee: { __typename?: 'CreateLostTraineeResponse', msg: string } };
 
-export type CreatePaymentMutationVariables = Exact<{
-  input: CreatePaymentInput;
+export type CreatePaymentIntentMutationVariables = Exact<{
+  input: CreatePaymentIntentInput;
 }>;
 
 
-export type CreatePaymentMutation = { __typename?: 'Mutation', createPayment: { __typename?: 'CreatePaymentResponse', msg: string } };
+export type CreatePaymentIntentMutation = { __typename?: 'Mutation', createPaymentIntent: { __typename?: 'CreatePaymentIntentResponse', clientSecret: string } };
+
+export type CreatePaymentItemMutationVariables = Exact<{
+  input: CreatePaymentItemInput;
+}>;
+
+
+export type CreatePaymentItemMutation = { __typename?: 'Mutation', createPaymentItem: { __typename?: 'CreatePaymentItemResponse', msg: string } };
 
 export type DeleteTraineeWithMessageMutationVariables = Exact<{
   input: DeleteTraineeWithMessageInput;
@@ -792,7 +814,7 @@ export type GetMonthlyCostQueryVariables = Exact<{
 }>;
 
 
-export type GetMonthlyCostQuery = { __typename?: 'Query', getMonthlyCost: { __typename?: 'GetMonthlyCostResponse', amount: number, groupPrice: number, firstTimeDiscountApplied: boolean, actualExercises: Array<{ __typename?: 'Exercise', id: string, day: any }> } };
+export type GetMonthlyCostQuery = { __typename?: 'Query', getMonthlyCost: { __typename?: 'GetMonthlyCostResponse', amount: number, groupPrice?: number | null, firstTimeDiscountApplied?: boolean | null, actualExercises?: Array<{ __typename?: 'Exercise', id: string, day: any }> | null } };
 
 export type GetTraineeQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1417,27 +1439,48 @@ export const useCreateLostTraineeMutation = <
       options
     );
 useCreateLostTraineeMutation.fetcher = (client: GraphQLClient, variables: CreateLostTraineeMutationVariables, headers?: RequestInit['headers']) => fetcher<CreateLostTraineeMutation, CreateLostTraineeMutationVariables>(client, CreateLostTraineeDocument, variables, headers);
-export const CreatePaymentDocument = `
-    mutation createPayment($input: CreatePaymentInput!) {
-  createPayment(createPaymentInput: $input) {
-    msg
+export const CreatePaymentIntentDocument = `
+    mutation createPaymentIntent($input: CreatePaymentIntentInput!) {
+  createPaymentIntent(createPaymentIntentInput: $input) {
+    clientSecret
   }
 }
     `;
-export const useCreatePaymentMutation = <
+export const useCreatePaymentIntentMutation = <
       TError = unknown,
       TContext = unknown
     >(
       client: GraphQLClient,
-      options?: UseMutationOptions<CreatePaymentMutation, TError, CreatePaymentMutationVariables, TContext>,
+      options?: UseMutationOptions<CreatePaymentIntentMutation, TError, CreatePaymentIntentMutationVariables, TContext>,
       headers?: RequestInit['headers']
     ) =>
-    useMutation<CreatePaymentMutation, TError, CreatePaymentMutationVariables, TContext>(
-      ['createPayment'],
-      (variables?: CreatePaymentMutationVariables) => fetcher<CreatePaymentMutation, CreatePaymentMutationVariables>(client, CreatePaymentDocument, variables, headers)(),
+    useMutation<CreatePaymentIntentMutation, TError, CreatePaymentIntentMutationVariables, TContext>(
+      ['createPaymentIntent'],
+      (variables?: CreatePaymentIntentMutationVariables) => fetcher<CreatePaymentIntentMutation, CreatePaymentIntentMutationVariables>(client, CreatePaymentIntentDocument, variables, headers)(),
       options
     );
-useCreatePaymentMutation.fetcher = (client: GraphQLClient, variables: CreatePaymentMutationVariables, headers?: RequestInit['headers']) => fetcher<CreatePaymentMutation, CreatePaymentMutationVariables>(client, CreatePaymentDocument, variables, headers);
+useCreatePaymentIntentMutation.fetcher = (client: GraphQLClient, variables: CreatePaymentIntentMutationVariables, headers?: RequestInit['headers']) => fetcher<CreatePaymentIntentMutation, CreatePaymentIntentMutationVariables>(client, CreatePaymentIntentDocument, variables, headers);
+export const CreatePaymentItemDocument = `
+    mutation createPaymentItem($input: CreatePaymentItemInput!) {
+  createPaymentItem(createPaymentIntentInput: $input) {
+    msg
+  }
+}
+    `;
+export const useCreatePaymentItemMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<CreatePaymentItemMutation, TError, CreatePaymentItemMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<CreatePaymentItemMutation, TError, CreatePaymentItemMutationVariables, TContext>(
+      ['createPaymentItem'],
+      (variables?: CreatePaymentItemMutationVariables) => fetcher<CreatePaymentItemMutation, CreatePaymentItemMutationVariables>(client, CreatePaymentItemDocument, variables, headers)(),
+      options
+    );
+useCreatePaymentItemMutation.fetcher = (client: GraphQLClient, variables: CreatePaymentItemMutationVariables, headers?: RequestInit['headers']) => fetcher<CreatePaymentItemMutation, CreatePaymentItemMutationVariables>(client, CreatePaymentItemDocument, variables, headers);
 export const DeleteTraineeWithMessageDocument = `
     mutation DeleteTraineeWithMessage($input: DeleteTraineeWithMessageInput!) {
   deleteTraineeWithMessage(deleteTraineeWithMessageInput: $input) {

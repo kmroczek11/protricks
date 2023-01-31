@@ -6,12 +6,10 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { useAuth } from "../../../auth";
-import createAccessClient from "../../../../graphql/clients/accessClient";
 import { convertToPlDate } from "../../../coach/groups_panel/components/helpers";
 
 interface ExercisesTableProps {
-  data: Array<{ id: string; day: any; price: number }>;
+  data?: Array<{ id: string; day: any; price: number | null | undefined; }>;
 }
 
 const ExercisesTable: React.FC<ExercisesTableProps> = (props) => {

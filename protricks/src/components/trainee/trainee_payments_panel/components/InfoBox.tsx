@@ -11,7 +11,7 @@ const InfoBox: React.FC<InfoBoxProps> = (props) => {
 
   return (
     <Box>
-      <Typography gutterBottom variant="h1" component="div">
+      <Typography gutterBottom variant="h1" component="div" align="center">
         Do zapłaty: {amount} zł
       </Typography>
     </Box>

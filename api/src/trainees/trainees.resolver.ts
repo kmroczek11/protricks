@@ -15,7 +15,7 @@ import { User } from 'src/users/entities/user.entity';
 import { AcceptToGroupResponse } from './dto/accept-to-group-response';
 import { AcceptToGroupInput } from './dto/accept-to-group.input';
 import { ConfirmContractReceiptResponse } from './dto/confirm-contract-receipt-response';
-import { ConfirmContractReceiptInput } from './dto/confirm-contract-receipt.input copy';
+import { ConfirmContractReceiptInput } from './dto/confirm-contract-receipt.input';
 import { CreateTraineeResponse } from './dto/create-trainee-response';
 import { CreateTraineeInput } from './dto/create-trainee.input';
 import { DeleteTraineeResponse } from './dto/delete-trainee-response';
@@ -103,9 +103,6 @@ export class TraineesResolver {
     @Args('confirmContractReceiptInput')
     confirmContractReceiptInput: ConfirmContractReceiptInput,
   ): Promise<ConfirmContractReceiptResponse> {
-    return this.traineesService.changeStatus(
-      confirmContractReceiptInput.id,
-      Status.ACCEPTED,
-    );
+    return this.traineesService.confirmContractReceipt(confirmContractReceiptInput)
   }
 }

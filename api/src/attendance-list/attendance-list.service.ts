@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GroupsService } from 'src/groups/groups.service';
 import { PaymentsService } from 'src/payments/payments.service';
-import { Status } from 'src/trainees/entities/status.enum';
 import { TraineesService } from 'src/trainees/trainees.service';
 import { Repository } from 'typeorm';
 import { AttendanceByDayInput } from './dto/attendance-by-day.input';
@@ -15,10 +14,9 @@ export class AttendanceListService {
   constructor(
     @InjectRepository(Attendance)
     private readonly attendanceListRepository: Repository<Attendance>,
-    private paymentsService: PaymentsService,
-
     private traineesService: TraineesService,
     private groupsService: GroupsService,
+    private paymentsService: PaymentsService,
   ) {}
 
   async createAttendance(createAttendanceInput: CreateAttendanceInput) {
@@ -104,6 +102,12 @@ export class AttendanceListService {
     const actualExercises = currentMonthExercises.filter((m) =>
       this.isRelevant(trainee.dateJoined, m.day),
     );
+
+    actualExercises.sort(
+      (a, b) => new Date(a.day).getTime() - new Date(b.day).getTime(),
+    );
+
+    console.log(actualExercises)
 
     let actualExercisesCount = actualExercises.length;
 

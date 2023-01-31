@@ -1,8 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AttendanceListService } from 'src/attendance-list/attendance-list.service';
+import { GroupsService } from 'src/groups/groups.service';
+import { TraineesService } from 'src/trainees/trainees.service';
 import Stripe from 'stripe';
 import { Repository } from 'typeorm';
-import CreateChargeInput from './dto/create-payment.input';
+import { CreatePaymentIntentInput } from './dto/create-payment-intent.input';
+import { CreatePaymentItemResponse } from './dto/create-payment-item-response';
 import { Payment } from './entities/payment.entity';
 
 @Injectable()
@@ -18,6 +22,10 @@ export class PaymentsService {
     });
   }
 
+  async findOneByMonth(month: string) {
+    return this.paymentsRepository.findOne({ where: { month } });
+  }
+
   public async createCustomer(name: string, email: string) {
     return this.stripe.customers.create({
       name,
@@ -25,8 +33,11 @@ export class PaymentsService {
     });
   }
 
-  async charge(createChargeInput: CreateChargeInput, customerId: string) {
-    const { amount, paymentMethodId } = createChargeInput;
+  async createPaymentItem(
+    createPaymentItemInput,
+    customerId: string,
+  ): Promise<CreatePaymentItemResponse> {
+    const { amount } = createPaymentItemInput;
 
     const months = [
       'styczeń',
@@ -57,8 +68,18 @@ export class PaymentsService {
 
     await this.paymentsRepository.save(newPayment);
 
+    return {
+      msg: 'Success',
+    };
+  }
+
+  async createPaymentIntent(
+    createPaymentIntentInput: CreatePaymentIntentInput
+  ) {
+    const { amount } = createPaymentIntentInput;
+
     const paymentIntent = await this.stripe.paymentIntents.create({
-      amount,
+      amount: amount * 100,
       currency: process.env.STRIPE_CURRENCY,
       automatic_payment_methods: {
         enabled: true,
@@ -68,9 +89,5 @@ export class PaymentsService {
     return {
       clientSecret: paymentIntent.client_secret,
     };
-  }
-
-  async findOneByMonth(month: string) {
-    return this.paymentsRepository.findOne({ where: { month } });
   }
 }
