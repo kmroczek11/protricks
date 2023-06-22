@@ -8,21 +8,15 @@ export class AutoLoginStrategy extends PassportStrategy(Strategy, 'autoLogin') {
   constructor(private readonly usersService: UsersService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: process.env.REFRESH_TOKEN_SECRET,
+      secretOrKey: process.env.ACCESS_TOKEN_SECRET,
     });
   }
 
-  async validate({ iat, exp, email }: TokenPayload, done) {
-    const timeDiff = exp - iat;
-
-    if (timeDiff <= 0) {
-      throw new UnauthorizedException('Refresh token expired');
-    }
-
-    const user = await this.usersService.findOneByEmail(email);
+  async validate({ sub, email }: TokenPayload, done) {
+    const user = await this.usersService.findOneById(sub);
 
     if (!user) {
-      throw new UnauthorizedException('User from refresh token doesn\'t exists');
+      throw new UnauthorizedException('User from access token doesn\'t exists');
     }
 
     done(null, user);

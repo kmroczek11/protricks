@@ -1,7 +1,4 @@
-const invalidTokenMessage =
-  "Błąd autoryzacji. Odśwież stronę. Skontaktuj się z administratorem strony.";
-
-const unexpectedErrorMessage =
+const sessionHasExpiredMessage =
   "Zaloguj się ponownie.";
 
 const resetPasswordSuccessMessage =
@@ -23,8 +20,7 @@ const amountToSmall = "Podana kwota jest za niska."
 const accountNumberInvalid = "Nieprawidłowy numer konta."
 
 export {
-  invalidTokenMessage,
-  unexpectedErrorMessage,
+  sessionHasExpiredMessage,
   resetPasswordSuccessMessage,
   invalidEmailOrPasswordMessage,
   logInMessage,

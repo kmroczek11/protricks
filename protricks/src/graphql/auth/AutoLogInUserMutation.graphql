@@ -1,6 +1,5 @@
 mutation AutoLogInUser($input: AutoLogInUserInput!) {
   autoLogInUser(autoLogInUserInput: $input) {
-    expiresIn
     accessToken
     user {
       id

@@ -3,21 +3,16 @@ import { Theme, SxProps, styled } from "@mui/material/styles";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 
-interface ImageBlockRootProps {
-  desktopHeight?: number;
-  mobileHeight?: number;
-}
-
-const ImageBlockRoot = styled("section")<ImageBlockRootProps>(
-  ({ theme, desktopHeight, mobileHeight }) => ({
+const ImageBlockRoot = styled("section")(
+  ({ theme }) => ({
     color: theme.palette.primary.contrastText,
     position: "relative",
     display: "flex",
     alignItems: "center",
-    height: desktopHeight || 700,
+    height: 800,
 
     [theme.breakpoints.down("sm")]: {
-      height: mobileHeight || 360,
+      height: 400,
     },
   })
 );
@@ -35,11 +30,7 @@ const Background = styled("img")({
 
 interface ImageBlockProps {
   imgSrc: string;
-  desktopHeight?: number;
-  mobileHeight?: number;
-
   secondImgSrc?: string;
-
   sxImgBg?: SxProps<Theme>;
 }
 
@@ -49,14 +40,12 @@ const ImageBlock: React.FC<
   const {
     imgSrc,
     secondImgSrc,
-    desktopHeight,
-    mobileHeight,
     sxImgBg,
     children,
   } = props;
 
   return (
-    <ImageBlockRoot mobileHeight={mobileHeight!}>
+    <ImageBlockRoot>
       <Container
         sx={{
           display: "flex",

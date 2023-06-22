@@ -42,10 +42,6 @@ const RegisterDialog: React.FC<RegisterDialogProps> = (props) => {
     setRegisterError,
     (data) => {
       localStorage.setItem(
-        process.env.REACT_APP_REFRESH_TOKEN_SECRET!,
-        data.registerUser.refreshToken
-      );
-      localStorage.setItem(
         process.env.REACT_APP_ACCESS_TOKEN_SECRET!,
         data.registerUser.accessToken
       );
@@ -197,7 +193,7 @@ const RegisterDialog: React.FC<RegisterDialogProps> = (props) => {
                       align="center"
                       gutterBottom
                     >
-                      * Hasło musi się składać z min. 8 znaków, 
+                      * Hasło musi się składać z min. 8 znaków,
                       zawierać dużą literę oraz znak specjalny (!@# itp.)
                     </Typography>
                   </Grid>
@@ -230,8 +226,7 @@ const RegisterDialog: React.FC<RegisterDialogProps> = (props) => {
                   </ColorButton>
                   <Button
                     variant="text"
-                    color="secondary"
-                    sx={{ textTransform: "none" }}
+                    sx={{ color: "#000", textTransform: "none" }}
                     onClick={() => setActive("login")}
                   >
                     Masz już konto? Zaloguj się

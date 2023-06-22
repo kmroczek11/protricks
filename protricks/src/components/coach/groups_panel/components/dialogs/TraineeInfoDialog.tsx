@@ -15,7 +15,7 @@ interface TraineeInfoDialogProps {
     parentPhone: any;
     parentEmail: any;
     feedback: string;
-    dateJoined:string;
+    dateJoined: string;
     user: { id: string; firstName: string; lastName: string; imgSrc?: string };
   };
   open: boolean;
@@ -27,7 +27,7 @@ const TraineeInfoDialog: React.FC<TraineeInfoDialogProps> = (props) => {
   const { trainee, open, handleClose, onClose } = props;
   console.log(trainee)
   const { firstName, lastName } = trainee.user;
-  const { birthDate, traineeName, parentPhone, parentEmail, feedback } = trainee;
+  const { birthDate, traineeName, parentPhone, parentEmail, feedback, dateJoined } = trainee;
 
   const convertToPlDate = (d: string) =>
     new Date(d).toLocaleDateString("pl-pl");
@@ -46,7 +46,7 @@ const TraineeInfoDialog: React.FC<TraineeInfoDialogProps> = (props) => {
     },
     {
       name: "Data dołączenia",
-      value: convertToPlDate(birthDate),
+      value: convertToPlDate(dateJoined),
     },
   ];
 

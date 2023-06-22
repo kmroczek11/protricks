@@ -14,18 +14,18 @@ import { ChangePasswordInput } from './inputs/change-password.input';
 import { FileUpload } from 'graphql-upload';
 import { ChangeProfilePicInput } from './inputs/change-profile-pic.input';
 import { removeFile, saveImage } from './helpers/image-storage';
-import { TokensService } from 'src/tokens/tokens.service';
 import { ForgotPasswordInput } from './inputs/forgot-password.input';
 import { MailService } from 'src/mail/mail.service';
 import * as generator from 'generate-password';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
-    private readonly tokensService: TokensService,
     private readonly mailService: MailService,
-  ) {}
+    private readonly jwtService: JwtService,
+  ) { }
 
   async validateUser(email: string, password: string): Promise<any> {
     const user = await this.usersService.findOneByEmail(email, {
@@ -69,22 +69,15 @@ export class AuthService {
   }
 
   async logIn(user: User) {
-    const refreshToken = await this.tokensService.generateRefreshToken(
-      user.email,
-    );
-
-    const accessToken = await this.tokensService.generateAccessToken(user.id);
+    const payload = { sub: user.id, email: user.email };
 
     return {
-      ...refreshToken,
-      ...accessToken,
-      user,
+      accessToken: await this.jwtService.signAsync(payload),
+      user
     };
   }
 
   async logOut(user: User) {
-    await this.tokensService.removeRefreshToken(user.email);
-
     return {
       msg: 'Success',
     };

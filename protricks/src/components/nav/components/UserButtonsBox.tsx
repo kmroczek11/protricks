@@ -63,7 +63,6 @@ const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
         _context: unknown
       ) => {
         // queryClient.invalidateQueries('GetAllAuthors');
-        localStorage.removeItem(process.env.REACT_APP_REFRESH_TOKEN_SECRET!);
         localStorage.removeItem(process.env.REACT_APP_ACCESS_TOKEN_SECRET!);
         setUser(null);
       },

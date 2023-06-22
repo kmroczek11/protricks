@@ -332,8 +332,6 @@ export type JoinGroupResponse = {
 export type LogInResponse = {
   __typename?: 'LogInResponse';
   accessToken: Scalars['String'];
-  expiresIn: Scalars['Float'];
-  refreshToken: Scalars['String'];
   user: User;
 };
 
@@ -376,7 +374,6 @@ export type Mutation = {
   joinGroup: JoinGroupResponse;
   logInUser: LogInResponse;
   logOutUser: LogOutResponse;
-  refreshToken: RefreshTokenResponse;
   registerUser: LogInResponse;
   sendEmailToGroup: SendEmailToGroupResponse;
 };
@@ -512,11 +509,6 @@ export type MutationLogInUserArgs = {
 };
 
 
-export type MutationRefreshTokenArgs = {
-  refreshTokenInput: RefreshTokenInput;
-};
-
-
 export type MutationRegisterUserArgs = {
   registerUserInput: RegisterUserInput;
 };
@@ -563,16 +555,6 @@ export type QueryGetMonthlyCostArgs = {
 
 export type QueryGetTraineeArgs = {
   id: Scalars['String'];
-};
-
-export type RefreshTokenInput = {
-  refreshToken: Scalars['String'];
-};
-
-export type RefreshTokenResponse = {
-  __typename?: 'RefreshTokenResponse';
-  accessToken: Scalars['String'];
-  expiresIn: Scalars['Float'];
 };
 
 export type RegisterUserInput = {
@@ -643,7 +625,7 @@ export type AutoLogInUserMutationVariables = Exact<{
 }>;
 
 
-export type AutoLogInUserMutation = { __typename?: 'Mutation', autoLogInUser: { __typename?: 'LogInResponse', expiresIn: number, accessToken: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
+export type AutoLogInUserMutation = { __typename?: 'Mutation', autoLogInUser: { __typename?: 'LogInResponse', accessToken: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
 
 export type ForgotPasswordMutationVariables = Exact<{
   input: ForgotPasswordInput;
@@ -657,26 +639,19 @@ export type LogInUserMutationVariables = Exact<{
 }>;
 
 
-export type LogInUserMutation = { __typename?: 'Mutation', logInUser: { __typename?: 'LogInResponse', expiresIn: number, accessToken: string, refreshToken: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
+export type LogInUserMutation = { __typename?: 'Mutation', logInUser: { __typename?: 'LogInResponse', accessToken: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
 
 export type LogOutUserMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type LogOutUserMutation = { __typename?: 'Mutation', logOutUser: { __typename?: 'LogOutResponse', msg: string } };
 
-export type RefreshTokenMutationVariables = Exact<{
-  input: RefreshTokenInput;
-}>;
-
-
-export type RefreshTokenMutation = { __typename?: 'Mutation', refreshToken: { __typename?: 'RefreshTokenResponse', expiresIn: number, accessToken: string } };
-
 export type RegisterUserMutationVariables = Exact<{
   input: RegisterUserInput;
 }>;
 
 
-export type RegisterUserMutation = { __typename?: 'Mutation', registerUser: { __typename?: 'LogInResponse', expiresIn: number, accessToken: string, refreshToken: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
+export type RegisterUserMutation = { __typename?: 'Mutation', registerUser: { __typename?: 'LogInResponse', accessToken: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
 
 export type AcceptToGroupMutationVariables = Exact<{
   input: AcceptToGroupInput;
@@ -855,7 +830,6 @@ export type ChangeProfilePicMutation = { __typename?: 'Mutation', changeProfileP
 export const AutoLogInUserDocument = `
     mutation AutoLogInUser($input: AutoLogInUserInput!) {
   autoLogInUser(autoLogInUserInput: $input) {
-    expiresIn
     accessToken
     user {
       id
@@ -906,9 +880,7 @@ useForgotPasswordMutation.fetcher = (client: GraphQLClient, variables: ForgotPas
 export const LogInUserDocument = `
     mutation LogInUser($input: LogInUserInput!) {
   logInUser(logInUserInput: $input) {
-    expiresIn
     accessToken
-    refreshToken
     user {
       id
       firstName
@@ -955,34 +927,10 @@ export const useLogOutUserMutation = <
       options
     );
 useLogOutUserMutation.fetcher = (client: GraphQLClient, variables?: LogOutUserMutationVariables, headers?: RequestInit['headers']) => fetcher<LogOutUserMutation, LogOutUserMutationVariables>(client, LogOutUserDocument, variables, headers);
-export const RefreshTokenDocument = `
-    mutation RefreshToken($input: RefreshTokenInput!) {
-  refreshToken(refreshTokenInput: $input) {
-    expiresIn
-    accessToken
-  }
-}
-    `;
-export const useRefreshTokenMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<RefreshTokenMutation, TError, RefreshTokenMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<RefreshTokenMutation, TError, RefreshTokenMutationVariables, TContext>(
-      ['RefreshToken'],
-      (variables?: RefreshTokenMutationVariables) => fetcher<RefreshTokenMutation, RefreshTokenMutationVariables>(client, RefreshTokenDocument, variables, headers)(),
-      options
-    );
-useRefreshTokenMutation.fetcher = (client: GraphQLClient, variables: RefreshTokenMutationVariables, headers?: RequestInit['headers']) => fetcher<RefreshTokenMutation, RefreshTokenMutationVariables>(client, RefreshTokenDocument, variables, headers);
 export const RegisterUserDocument = `
     mutation RegisterUser($input: RegisterUserInput!) {
   registerUser(registerUserInput: $input) {
-    expiresIn
     accessToken
-    refreshToken
     user {
       id
       firstName

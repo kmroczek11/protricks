@@ -12,7 +12,8 @@ import { join } from 'path';
           transport: {
             host: process.env.MAIL_HOST,
             port: parseInt(<string>process.env.MAIL_PORT),
-            secure: false,
+            ignoreTLS: true,
+            secure: true,
             auth: {
               user: process.env.MAIL_USER,
               pass: process.env.MAIL_PASSWORD,
@@ -25,7 +26,7 @@ import { join } from 'path';
           defaults: {
             from: '"Protricks" <noreply@protricks.pl>',
           },
-          preview: true,
+          preview: false,
           template: {
             dir: join(__dirname, 'templates'),
             adapter: new HandlebarsAdapter({
@@ -42,4 +43,4 @@ import { join } from 'path';
   providers: [MailService],
   exports: [MailService],
 })
-export class MailModule {}
+export class MailModule { }

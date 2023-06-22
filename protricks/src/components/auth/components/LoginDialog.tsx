@@ -39,10 +39,6 @@ const LogInDialog: React.FC<LogInDialogProps> = (props) => {
     setLogInError,
     (data) => {
       localStorage.setItem(
-        process.env.REACT_APP_REFRESH_TOKEN_SECRET!,
-        data.logInUser.refreshToken
-      );
-      localStorage.setItem(
         process.env.REACT_APP_ACCESS_TOKEN_SECRET!,
         data.logInUser.accessToken
       );
@@ -162,16 +158,14 @@ const LogInDialog: React.FC<LogInDialogProps> = (props) => {
                   </ColorButton>
                   <Button
                     variant="text"
-                    color="secondary"
-                    sx={{ textTransform: "none" }}
+                    sx={{ color: "#000", textTransform: "none" }}
                     onClick={() => setOpenForgotPasswordDialog(true)}
                   >
                     Nie pamiętam hasła
                   </Button>
                   <Button
                     variant="text"
-                    color="secondary"
-                    sx={{ textTransform: "none" }}
+                    sx={{ color: "#000", textTransform: "none" }}
                     onClick={() => setActive("register")}
                   >
                     Nie masz jeszcze konta? Zarejestruj się

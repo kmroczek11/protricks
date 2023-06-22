@@ -17,7 +17,6 @@ import { AllExceptionsFilter } from './core/all-exceptions.filter';
 import * as Joi from 'joi';
 import { RolesGuard } from './auth/guards/roles.guard';
 import { GqlAuthGuard } from './auth/guards/gql-auth.guard';
-import { TokensModule } from './tokens/tokens.module';
 import { MailModule } from './mail/mail.module';
 import {
   GraphQLError,
@@ -56,8 +55,6 @@ import { ScheduleModule } from '@nestjs/schedule';
         POSTGRES_USER: Joi.string().required(),
         POSTGRES_PASSWORD: Joi.string().required(),
         POSTGRES_DATABASE: Joi.string().required(),
-        REFRESH_TOKEN_SECRET: Joi.string().required(),
-        REFRESH_TOKEN_EXPIRATION: Joi.number().required(),
         ACCESS_TOKEN_SECRET: Joi.string().required(),
         ACCESS_TOKEN_EXPIRATION: Joi.number().required(),
         MAIL_PORT: Joi.number().required().default(465),
@@ -72,7 +69,6 @@ import { ScheduleModule } from '@nestjs/schedule';
     TypeOrmModule.forRoot({
       type: 'postgres',
       port: parseInt(<string>process.env.POSTGRES_PORT),
-
       host: process.env.POSTGRES_HOST,
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
@@ -93,7 +89,6 @@ import { ScheduleModule } from '@nestjs/schedule';
     ExercisesModule,
     TraineesModule,
     ConfigModule,
-    TokensModule,
     MailModule,
     AttendanceListModule,
     PaymentsModule,

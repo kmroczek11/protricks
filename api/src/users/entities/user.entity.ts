@@ -48,10 +48,6 @@ export class User {
   @Column()
   stripeCustomerId: string;
 
-  @Column({ nullable: true })
-  @Exclude()
-  refreshToken?: string;
-
   @OneToOne(() => Coach, (coach) => coach.user)
   coach: Coach;
 

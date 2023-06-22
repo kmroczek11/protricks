@@ -4,13 +4,9 @@ import useAutoLogInUser from "./hooks/useAutoLogInUser";
 import { CustomDialog } from "../lib";
 import jwt from "jwt-decode";
 import TokenPayload from "./models/tokenPayload";
-import useRefreshUserToken from "./hooks/useRefreshUserToken";
 import {
-  invalidTokenMessage,
-  unexpectedErrorMessage,
+  sessionHasExpiredMessage
 } from "../../translations/pl/errorMessages";
-import useInterval from "./hooks/useInterval";
-import createAccessClient from "../../graphql/clients/accessClient";
 import createAutoLoginUserClient from "../../graphql/clients/autoLoginUserClient";
 
 const AuthContext = createContext<{
@@ -28,7 +24,6 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [autoLoginUserError, setAutoLoginError] = useState<string>("");
-  const [refreshError, setRefreshError] = useState<string>("");
 
   const { isAutoLogInUserLoading, autoLogin } = useAutoLogInUser(
     createAutoLoginUserClient(),
@@ -42,29 +37,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   );
 
-  const { isRefreshTokenLoading, refresh } = useRefreshUserToken(
-    createAccessClient(),
-    setRefreshError,
-    (data) => {
-      localStorage.setItem(
-        process.env.REACT_APP_ACCESS_TOKEN_SECRET!,
-        data.refreshToken.accessToken
-      );
-    }
-  );
-
   useEffect(() => {
     const accessToken = localStorage.getItem(
       process.env.REACT_APP_ACCESS_TOKEN_SECRET!
     )!;
 
     const userId: string | null = accessToken
-      ? (jwt(accessToken!) as TokenPayload).id
+      ? (jwt(accessToken!) as TokenPayload).sub
       : null;
 
     if (
-      !userId ||
-      !localStorage.getItem(process.env.REACT_APP_REFRESH_TOKEN_SECRET!)
+      !userId
     )
       return;
 
@@ -77,31 +60,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     });
   }, []);
 
-  const refreshToken = () => {
-    if (
-      !user ||
-      !localStorage.getItem(process.env.REACT_APP_REFRESH_TOKEN_SECRET!)
-    )
-      return;
-
-    console.log("refreshing token");
-
-    refresh({
-      input: {
-        refreshToken: localStorage.getItem(
-          process.env.REACT_APP_REFRESH_TOKEN_SECRET!
-        )!,
-      },
-    });
-  };
-
-  //TODO:CHECK IF WORKS ON A TAB CHANGE
-
-  useInterval(
-    () => refreshToken,
-    parseInt(process.env.REACT_APP_ACCESS_TOKEN_EXPIRATION!) - 1000
-  );
-
   return (
     <AuthContext.Provider
       value={{
@@ -110,25 +68,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }}
     >
       {children}
-      {refreshError === "Invalid token" ? (
-        <CustomDialog
-          title="Błąd"
-          content={invalidTokenMessage}
-          onClose={() => setRefreshError("")}
-        />
-      ) : (
-        refreshError && (
-          <CustomDialog
-            title="Nieoczekiwany błąd"
-            content={unexpectedErrorMessage}
-            onClose={() => setRefreshError("")}
-          />
-        )
-      )}
-      {autoLoginUserError && (
+      {autoLoginUserError === "Unauthorized" ?(
         <CustomDialog
           title="Twoja sesja wygasła"
-          content={unexpectedErrorMessage}
+          content={sessionHasExpiredMessage}
+          onClose={() => setAutoLoginError("")}
+        />
+      ):
+      autoLoginUserError && (
+        <CustomDialog
+          title="Nieoczekiwany błąd"
+          content={autoLoginUserError}
           onClose={() => setAutoLoginError("")}
         />
       )}

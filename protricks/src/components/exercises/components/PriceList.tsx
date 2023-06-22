@@ -15,7 +15,7 @@ const PriceList: React.FC<PriceListProps> = (props) => {
     <Container
       maxWidth={useMediaQuery(theme.breakpoints.down("sm")) ? "xs" : "sm"}
     >
-      <ImageBlock imgSrc={imgSrc} sxImgBg={{ zIndex: 0 }} mobileHeight={460} />
+      <ImageBlock imgSrc={imgSrc} sxImgBg={{ zIndex: 0 }}/>
     </Container>
   );
 };

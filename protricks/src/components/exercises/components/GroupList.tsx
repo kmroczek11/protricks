@@ -49,7 +49,6 @@ const GroupList: React.FC<GroupListProps> = (props) => {
                 onChange={handleToggle(id)}
                 checked={selectedGroup === id}
                 inputProps={{ "aria-labelledby": labelId }}
-                color="secondary"
               />
             }
             sx={{
@@ -59,6 +58,7 @@ const GroupList: React.FC<GroupListProps> = (props) => {
                 m: 2,
               },
               "& .MuiSvgIcon-root": {
+                color: "#000",
                 fontSize: 40,
               },
             }}

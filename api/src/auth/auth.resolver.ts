@@ -15,12 +15,12 @@ import { LogOutResponse } from './responses/logOut-response';
 import { LogInUserInput } from './inputs/logIn-user.input';
 import { LogInAuthGuard } from './guards/logIn-auth.guard';
 import { UseGuards } from '@nestjs/common';
-import { AutoLogInGuard } from './guards/autoLogIn-auth.guard';
 import { AutoLogInUserInput } from './inputs/autoLogIn-user.input';
 import { CurrentUser } from './decorators/user.decorator';
 import { User } from 'src/users/entities/user.entity';
 import { ForgotPasswordInput } from './inputs/forgot-password.input';
 import { ForgotPasswordResponse } from './responses/forgot-password-response';
+import { AutoLogInGuard } from './guards/autoLogIn-auth.guard';
 
 @Resolver()
 export class AuthResolver {

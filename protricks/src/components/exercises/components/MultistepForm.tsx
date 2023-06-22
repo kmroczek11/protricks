@@ -139,7 +139,7 @@ const MultistepForm: () => JSX.Element | null = () => {
   };
 
   return (
-    <Box sx={{ backgroundColor: "secondary.main", py: 10 }}>
+    <Box sx={{ backgroundColor: "#000", py: 10 }}>
       <Container>
         <Box
           sx={{

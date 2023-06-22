@@ -6,12 +6,19 @@ import { AuthResolver } from './auth.resolver';
 import { Upload } from 'src/auth/helpers/upload.scalar';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LoginStrategy } from './strategies/login.strategy';
-import { AutoLoginStrategy } from './strategies/autoLogin.strategy';
-import { TokensModule } from 'src/tokens/tokens.module';
 import { MailModule } from 'src/mail/mail.module';
+import { JwtModule } from '@nestjs/jwt';
+import * as dotenv from 'dotenv';
+import { AutoLoginStrategy } from './strategies/autoLogin.strategy';
+
+dotenv.config();
 
 @Module({
-  imports: [UsersModule, PassportModule, Upload, TokensModule, MailModule],
+  imports: [UsersModule, PassportModule, Upload, MailModule, JwtModule.register({
+    secret: process.env.ACCESS_TOKEN_SECRET,
+    signOptions: { expiresIn: process.env.ACCESS_TOKEN_EXPIRATION },
+  }),
+  ],
   providers: [
     AuthService,
     AuthResolver,
@@ -20,4 +27,4 @@ import { MailModule } from 'src/mail/mail.module';
     JwtStrategy,
   ],
 })
-export class AuthModule {}
+export class AuthModule { }
