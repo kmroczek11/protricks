@@ -5,8 +5,8 @@ import { Repository } from 'typeorm';
 import { CreateCoachInput } from './dto/create-coach.input';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
-import { City } from 'src/cities/entities/city.entity';
-import { CitiesService } from 'src/cities/cities.service';
+import { Gym } from 'src/gyms/entities/gym.entity';
+import { GymsService } from 'src/gyms/gyms.service';
 
 @Injectable()
 export class CoachesService {
@@ -14,7 +14,7 @@ export class CoachesService {
     @InjectRepository(Coach)
     private readonly coachesRepository: Repository<Coach>,
     private readonly usersService: UsersService,
-    private readonly citiesService: CitiesService
+    private readonly gymsService: GymsService
   ) {}
 
   createCoach(createCoachInput: CreateCoachInput) {
@@ -39,7 +39,7 @@ export class CoachesService {
     return this.usersService.findOneById(userId);
   }
 
-  getCity(cityId: string): Promise<City> {
-    return this.citiesService.findOne(cityId);
+  getGym(gymId: string): Promise<Gym> {
+    return this.gymsService.findOne(gymId);
   }
 }

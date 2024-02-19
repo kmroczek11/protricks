@@ -1,5 +1,0 @@
-mutation CreateExercise($input: CreateExerciseInput!) {
-  createExercise(createExerciseInput: $input){
-    msg
-  }
-}

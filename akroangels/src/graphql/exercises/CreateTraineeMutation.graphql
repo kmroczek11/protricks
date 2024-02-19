@@ -1,0 +1,12 @@
+mutation CreateTrainee($input: CreateTraineeInput!) {
+  createTrainee(createTraineeInput: $input) {
+    user {
+      id
+      firstName
+      lastName
+      email
+      imgSrc
+      roles
+    }
+  }
+}

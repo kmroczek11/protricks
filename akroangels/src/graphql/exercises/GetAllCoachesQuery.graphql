@@ -1,0 +1,29 @@
+query GetAllCoaches {
+  coaches {
+    facebookUrl
+    instagramUrl
+    user {
+      id
+      firstName
+      lastName
+      imgSrc
+    }
+    gym {
+      id
+      name
+      room
+      gymSrc
+      roomSrc
+      mapSrc
+      priceListSrc
+    }
+    groups {
+      id
+      name
+      limit
+      trainees {
+        id
+      }
+    }
+  }
+}

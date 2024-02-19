@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { City } from 'src/cities/entities/city.entity';
+import { Gym } from 'src/gyms/entities/gym.entity';
 import { Group } from 'src/groups/entities/group.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
@@ -39,11 +39,11 @@ export class Coach {
   user: User;
 
   @Column({ nullable: true })
-  cityId?: string;
+  gymId?: string;
 
-  @OneToOne(() => City, (city) => city.coach)
-  @Field(() => City)
-  city: City;
+  @OneToOne(() => Gym, (gym) => gym.coach)
+  @Field(() => Gym)
+  gym: Gym;
 
   @OneToMany(() => Group, (group) => group.coach, { eager: true })
   @Field(() => [Group], { nullable: true })

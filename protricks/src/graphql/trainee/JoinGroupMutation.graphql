@@ -1,5 +1,0 @@
-mutation JoinGroup($input: JoinGroupInput!) {
-  joinGroup(joinGroupInput: $input) {
-    msg
-  }
-}

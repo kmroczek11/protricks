@@ -1,5 +1,0 @@
-mutation createPaymentIntent($input: CreatePaymentIntentInput!) {
-  createPaymentIntent(createPaymentIntentInput: $input) {
-    clientSecret
-  }
-}

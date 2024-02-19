@@ -1,0 +1,14 @@
+query GetAttendanceByDay($attendanceByDayInput: AttendanceByDayInput!) {
+  getAttendanceByDay(attendanceByDayInput: $attendanceByDayInput) {
+    day
+    present
+    status
+    trainee {
+      status
+      user {
+        firstName
+        lastName
+      }
+    }
+  }
+}

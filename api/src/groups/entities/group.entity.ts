@@ -1,5 +1,4 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { City } from 'src/cities/entities/city.entity';
 import { Coach } from 'src/coaches/entities/coach.entity';
 import { Exercise } from 'src/exercises/entities/exercise.entity';
 import { Trainee } from 'src/trainees/entities/trainee.entity';
@@ -41,7 +40,7 @@ export class Group {
   coachId: string;
 
   @ManyToOne(() => Coach, (coach) => coach.groups)
-  coach: City;
+  coach: Coach;
 
   @OneToMany(() => Exercise, (exercise) => exercise.group, { eager: true })
   @Field(() => [Exercise], { nullable: true })

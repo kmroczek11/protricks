@@ -1,0 +1,8 @@
+RewriteBase /
+Options -MultiViews
+RewriteEngine On
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} !graphql
+RewriteRule ^ index.html [QSA,L]
