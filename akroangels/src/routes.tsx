@@ -12,7 +12,7 @@ import Shows from "./components/shows";
 import Meetings from "./components/meetings";
 import Lost from "./components/lost";
 import TraineePaymentsPanel from "./components/trainee/trainee_payments_panel";
-import MultistepForm from "./components/exercises/components/MultistepForm";
+import MultistepForm from "./components/home/components/registration/MultistepForm";
 // import SuccessfullPayment from "./components/successfull_payment";
 
 export interface NavItemsObject {
@@ -52,10 +52,6 @@ export const routes: RouteObject[] = [
         //   { index: true, element: <Cities /> },
         //   { path: '/zajecia/:id', element: <City /> },
         // ],
-      },
-      {
-        path: "/zajecia/zarejestruj",
-        element: <MultistepForm />,
       },
       {
         path: "/zloty",

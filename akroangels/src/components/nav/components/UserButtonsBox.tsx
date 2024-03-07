@@ -109,7 +109,7 @@ const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
           color="secondary"
           variant="contained"
           sx={{ display: { xs: "none", md: "block" } }}
-          onClick={() => navigate("/zajecia/zarejestruj")}
+          onClick={() => navigate("/")}
         >
           Zapisz się na zajęcia
         </ColorButton>
@@ -125,7 +125,7 @@ const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
         </React.Fragment>
       ) : (
         <React.Fragment>
-          <Tooltip title="Otwórz ustawienia">
+          <Tooltip title="Otwórz panel użytkownika">
             <IconButton onClick={handleOpenUserMenu}>
               <CustomAvatar
                 name={`${user.firstName} ${user.lastName}`}

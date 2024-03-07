@@ -3,9 +3,9 @@ import { Coach } from 'src/coaches/entities/coach.entity';
 import { Entity, PrimaryColumn, Column, OneToOne, BeforeInsert } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
-@Entity('gyms')
+@Entity('cities')
 @ObjectType()
-export class Gym {
+export class City {
   @PrimaryColumn()
   @Field()
   id: string;
@@ -25,7 +25,7 @@ export class Gym {
 
   @Column({ default: '' })
   @Field()
-  gymSrc: string;
+  citySrc: string;
 
   @Column({ default: '' })
   @Field()
@@ -39,7 +39,7 @@ export class Gym {
   @Field()
   priceListSrc: string;
 
-  @OneToOne(() => Coach, (coach) => coach.gym)
+  @OneToOne(() => Coach, (coach) => coach.city)
   @Field(() => Coach)
   coach: Coach;
 }

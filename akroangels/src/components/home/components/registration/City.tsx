@@ -1,9 +1,9 @@
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../../auth";
-import { Role } from "../../../generated/graphql";
-import { ColorButton, PhotoCard, CustomAvatar, ButtonBox } from "../../lib";
+import { useAuth } from "../../../auth";
+import { Role } from "../../../../generated/graphql";
+import { ColorButton, PhotoCard, CustomAvatar, ButtonBox } from "../../../lib";
 import GroupList from "./GroupList";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
@@ -12,7 +12,7 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import PriceList from "./PriceList";
 import { useTheme, useMediaQuery } from "@mui/material";
 
-interface GymProps {
+interface CityProps {
   visible: boolean;
   selectedGroup: string | undefined;
   item: {
@@ -24,11 +24,11 @@ interface GymProps {
       lastName: string;
       imgSrc: string;
     };
-    gym: {
+    city: {
       id: string;
       name: string;
       room: string;
-      gymSrc: string;
+      citySrc: string;
       roomSrc: string;
       mapSrc: string;
       priceListSrc: string;
@@ -45,12 +45,12 @@ interface GymProps {
   selectGroup: (id: string) => void;
 }
 
-const Gym: React.FC<GymProps> = (props) => {
+const City: React.FC<CityProps> = (props) => {
   const { visible, selectedGroup, item, nextStep, prevStep, selectGroup } =
     props;
-  const { facebookUrl, instagramUrl, user: coach, gym, groups } = item;
+  const { facebookUrl, instagramUrl, user: coach, city, groups } = item;
   const { firstName, lastName, imgSrc } = coach;
-  const { name, room, roomSrc, mapSrc, priceListSrc } = gym;
+  const { name, room, roomSrc, mapSrc, priceListSrc } = city;
   const { user } = useAuth();
   const [selected, setSelected] = useState<boolean>(false);
   const theme = useTheme();
@@ -241,4 +241,4 @@ const Gym: React.FC<GymProps> = (props) => {
   ) : null;
 };
 
-export default Gym;
+export default City;

@@ -2,7 +2,7 @@ import React from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import { useEffect, useState } from "react";
-import { ColorButton, StyledTextField } from "../../lib";
+import { ColorButton, StyledTextField } from "../../../lib";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/material.css";
 import { Formik, Form, useFormikContext } from "formik";

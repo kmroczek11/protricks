@@ -73,7 +73,7 @@ const CoachExercisesPanel: React.FC = () => {
           color="secondary.main"
           component="div"
         >
-          Miasto:
+          Miejsce:
         </Typography>
         <Typography
           gutterBottom
@@ -81,7 +81,7 @@ const CoachExercisesPanel: React.FC = () => {
           color="primary.dark"
           component="div"
         >
-          {data?.getCoach.gym.name}
+          {data?.getCoach.city.name}
         </Typography>
       </Grid>
       <Grid item>

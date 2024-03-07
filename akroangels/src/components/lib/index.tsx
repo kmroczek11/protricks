@@ -14,8 +14,8 @@ export const ColorButton = styled(Button)`
 `;
 
 export const Logo = styled("img")`
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   object-fit: cover;
 `;
 

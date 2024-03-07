@@ -1,29 +1,29 @@
 import React, { useEffect, useRef } from "react";
 import { useState } from "react";
-import Cities from "./Gyms";
-import Gym from "./Gym";
+import Cities from "./Cities";
+import City from "./City";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import {
   GetAllCoachesQuery,
   useGetAllCoachesQuery,
-} from "../../../generated/graphql";
-import accessClient from "../../../graphql/clients/accessClient";
+} from "../../../../generated/graphql";
+import accessClient from "../../../../graphql/clients/accessClient";
 import TraineeForm from "./TraineeForm";
 import Paperwork from "./Paperwork";
 import {
   CreateTraineeMutation,
   CreateTraineeMutationVariables,
   useCreateTraineeMutation,
-} from "../../../generated/graphql";
-import { useAuth } from "../../auth";
+} from "../../../../generated/graphql";
+import { useAuth } from "../../../auth";
 import { useLocation } from "react-router-dom";
-import { CustomDialog, PhotoCardsLoader } from "../../lib";
+import { CustomDialog, PhotoCardsLoader } from "../../../lib";
 import {
   limitReachedMessage,
   logInMessage,
   joinGroupSuccessMessage,
-} from "../../../translations/pl/errorMessages";
+} from "../../../../translations/pl/errorMessages";
 import LinearProgress from "@mui/material/LinearProgress";
 import Typography from "@mui/material/Typography";
 
@@ -100,13 +100,13 @@ const MultistepForm: () => JSX.Element | null = () => {
           <Cities
             visible={step == 0 ? true : false}
             items={
-              data?.coaches?.map(({ gym }) => ({
-                id: gym.id,
-                name: gym.name,
+              data?.coaches?.map(({ city }) => ({
+                id: city.id,
+                name: city.name,
                 imgSrc:
                   process.env.NODE_ENV === "development"
-                    ? `${process.env.REACT_APP_HOST}/images/${gym.gymSrc}`
-                    : `${process.env.REACT_APP_HOST}/public/images/${gym.gymSrc}`,
+                    ? `${process.env.REACT_APP_HOST}/images/${city.citySrc}`
+                    : `${process.env.REACT_APP_HOST}/public/images/${city.citySrc}`,
               }))!
             }
             onClick={setName}
@@ -114,10 +114,10 @@ const MultistepForm: () => JSX.Element | null = () => {
           />
         )}
         {data?.coaches && name && (
-          <Gym
+          <City
             visible={step == 1 ? true : false}
             selectedGroup={selectedGroup}
-            item={data?.coaches?.find(({ gym }) => gym.name === name)!}
+            item={data?.coaches?.find(({ city }) => city.name === name)!}
             nextStep={nextStep}
             prevStep={prevStep}
             selectGroup={setSelectedGroup}

@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 import { Document, Page } from 'react-pdf/dist/esm/entry.webpack5';
 import ButtonGroup from "@mui/material/ButtonGroup";
-import { ColorButton } from "../../lib";
+import { ColorButton } from "../../../lib";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 

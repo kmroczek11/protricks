@@ -1,7 +1,7 @@
 query GetCoach($id: String!) {
   getCoach(id: $id) {
     id
-    gym {
+    city {
       id
       name
     }

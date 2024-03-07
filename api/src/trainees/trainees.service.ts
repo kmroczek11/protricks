@@ -49,7 +49,7 @@ export class TraineesService {
 
     const user = await this.usersService.findOneById(createTraineeInput.userId);
 
-    await this.mailService.sendFirstTimeMessage(user.email);
+    // await this.mailService.sendFirstTimeMessage(user.email);
 
     return {
       user: user,

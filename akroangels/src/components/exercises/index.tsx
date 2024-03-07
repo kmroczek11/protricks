@@ -1,7 +1,7 @@
 import React from "react";
 import About from "./components/About";
 import Hero from "./components/Hero";
-import MultistepForm from "./components/MultistepForm";
+import MultistepForm from "../home/components/registration/MultistepForm";
 
 const Exercises: React.FC = () => {
   return (

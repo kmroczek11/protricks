@@ -8,11 +8,11 @@ query GetAllCoaches {
       lastName
       imgSrc
     }
-    gym {
+    city {
       id
       name
       room
-      gymSrc
+      citySrc
       roomSrc
       mapSrc
       priceListSrc

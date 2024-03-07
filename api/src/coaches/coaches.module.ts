@@ -4,10 +4,10 @@ import { CoachesResolver } from './coaches.resolver';
 import { Coach } from './entities/coach.entity';
 import { UsersModule } from 'src/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { GymsModule } from 'src/gyms/gyms.module';
+import { CitiesModule } from 'src/cities/cities.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Coach]), UsersModule, GymsModule],
+  imports: [TypeOrmModule.forFeature([Coach]), UsersModule, CitiesModule],
   providers: [CoachesService, CoachesResolver],
   exports: [CoachesService],
 })

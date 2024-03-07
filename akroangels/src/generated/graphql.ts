@@ -91,11 +91,23 @@ export type ChangeProfilePicResponse = {
   user: User;
 };
 
+export type City = {
+  __typename?: 'City';
+  citySrc: Scalars['String'];
+  coach: Coach;
+  id: Scalars['String'];
+  mapSrc: Scalars['String'];
+  name: Scalars['String'];
+  priceListSrc: Scalars['String'];
+  room: Scalars['String'];
+  roomSrc: Scalars['String'];
+};
+
 export type Coach = {
   __typename?: 'Coach';
+  city: City;
   facebookUrl: Scalars['String'];
   groups?: Maybe<Array<Group>>;
-  gym: Gym;
   id: Scalars['String'];
   instagramUrl: Scalars['String'];
   user: User;
@@ -121,6 +133,15 @@ export type CreateAttendanceInput = {
 export type CreateAttendanceResponse = {
   __typename?: 'CreateAttendanceResponse';
   msg: Scalars['String'];
+};
+
+export type CreateCityInput = {
+  citySrc: Scalars['String'];
+  mapSrc: Scalars['String'];
+  name: Scalars['String'];
+  priceListSrc: Scalars['String'];
+  room: Scalars['String'];
+  roomSrc: Scalars['String'];
 };
 
 export type CreateCoachInput = {
@@ -150,15 +171,6 @@ export type CreateGroupInput = {
 export type CreateGroupResponse = {
   __typename?: 'CreateGroupResponse';
   msg: Scalars['String'];
-};
-
-export type CreateGymInput = {
-  gymSrc: Scalars['String'];
-  mapSrc: Scalars['String'];
-  name: Scalars['String'];
-  priceListSrc: Scalars['String'];
-  room: Scalars['String'];
-  roomSrc: Scalars['String'];
 };
 
 export type CreateLostTraineeInput = {
@@ -306,18 +318,6 @@ export type Group = {
   trainees?: Maybe<Array<Trainee>>;
 };
 
-export type Gym = {
-  __typename?: 'Gym';
-  coach: Coach;
-  gymSrc: Scalars['String'];
-  id: Scalars['String'];
-  mapSrc: Scalars['String'];
-  name: Scalars['String'];
-  priceListSrc: Scalars['String'];
-  room: Scalars['String'];
-  roomSrc: Scalars['String'];
-};
-
 export type JoinGroupInput = {
   email: Scalars['String'];
   traineeId: Scalars['String'];
@@ -354,18 +354,18 @@ export type Mutation = {
   changeProfilePic: ChangeProfilePicResponse;
   confirmContractReceipt: ConfirmContractReceiptResponse;
   createAttendance: CreateAttendanceResponse;
+  createCity: City;
   createCoach: Coach;
   createExercise: CreateExerciseResponse;
   createGroup: CreateGroupResponse;
-  createGym: Gym;
   createLostTrainee: CreateLostTraineeResponse;
   createPaymentIntent: CreatePaymentIntentResponse;
   createPaymentItem: CreatePaymentItemResponse;
   createTrainee: CreateTraineeResponse;
   createUser: User;
+  deleteCity: City;
   deleteExercise: DeleteExerciseResponse;
   deleteGroup: DeleteGroupResponse;
-  deleteGym: Gym;
   deleteTrainee: DeleteTraineeResponse;
   deleteTraineeWithMessage: DeleteTraineeWithMessageResponse;
   editExercise: EditExerciseResponse;
@@ -414,6 +414,11 @@ export type MutationCreateAttendanceArgs = {
 };
 
 
+export type MutationCreateCityArgs = {
+  createCityInput: CreateCityInput;
+};
+
+
 export type MutationCreateCoachArgs = {
   createCoachInput: CreateCoachInput;
 };
@@ -426,11 +431,6 @@ export type MutationCreateExerciseArgs = {
 
 export type MutationCreateGroupArgs = {
   createGroupInput: CreateGroupInput;
-};
-
-
-export type MutationCreateGymArgs = {
-  createGymInput: CreateGymInput;
 };
 
 
@@ -459,17 +459,17 @@ export type MutationCreateUserArgs = {
 };
 
 
+export type MutationDeleteCityArgs = {
+  id: Scalars['String'];
+};
+
+
 export type MutationDeleteExerciseArgs = {
   id: Scalars['String'];
 };
 
 
 export type MutationDeleteGroupArgs = {
-  id: Scalars['String'];
-};
-
-
-export type MutationDeleteGymArgs = {
   id: Scalars['String'];
 };
 
@@ -735,7 +735,7 @@ export type GetCoachQueryVariables = Exact<{
 }>;
 
 
-export type GetCoachQuery = { __typename?: 'Query', getCoach: { __typename?: 'Coach', id: string, gym: { __typename?: 'Gym', id: string, name: string }, groups?: Array<{ __typename?: 'Group', id: string, name: string, limit: number, price: number, exercises?: Array<{ __typename?: 'Exercise', id: string, day: any, start: any, end: any }> | null, trainees?: Array<{ __typename?: 'Trainee', id: string, birthDate: any, traineeName: string, parentPhone: any, parentEmail: any, feedback: string, status: Status, dateJoined: any, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string } }> | null }> | null } };
+export type GetCoachQuery = { __typename?: 'Query', getCoach: { __typename?: 'Coach', id: string, city: { __typename?: 'City', id: string, name: string }, groups?: Array<{ __typename?: 'Group', id: string, name: string, limit: number, price: number, exercises?: Array<{ __typename?: 'Exercise', id: string, day: any, start: any, end: any }> | null, trainees?: Array<{ __typename?: 'Trainee', id: string, birthDate: any, traineeName: string, parentPhone: any, parentEmail: any, feedback: string, status: Status, dateJoined: any, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string } }> | null }> | null } };
 
 export type SendEmailToGroupMutationVariables = Exact<{
   input: SendEmailToGroupInput;
@@ -754,7 +754,7 @@ export type CreateTraineeMutation = { __typename?: 'Mutation', createTrainee: { 
 export type GetAllCoachesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllCoachesQuery = { __typename?: 'Query', coaches: Array<{ __typename?: 'Coach', facebookUrl: string, instagramUrl: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, imgSrc: string }, gym: { __typename?: 'Gym', id: string, name: string, room: string, gymSrc: string, roomSrc: string, mapSrc: string, priceListSrc: string }, groups?: Array<{ __typename?: 'Group', id: string, name: string, limit: number, trainees?: Array<{ __typename?: 'Trainee', id: string }> | null }> | null }> };
+export type GetAllCoachesQuery = { __typename?: 'Query', coaches: Array<{ __typename?: 'Coach', facebookUrl: string, instagramUrl: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, imgSrc: string }, city: { __typename?: 'City', id: string, name: string, room: string, citySrc: string, roomSrc: string, mapSrc: string, priceListSrc: string }, groups?: Array<{ __typename?: 'Group', id: string, name: string, limit: number, trainees?: Array<{ __typename?: 'Trainee', id: string }> | null }> | null }> };
 
 export type CreateLostTraineeMutationVariables = Exact<{
   input: CreateLostTraineeInput;
@@ -1212,7 +1212,7 @@ export const GetCoachDocument = `
     query GetCoach($id: String!) {
   getCoach(id: $id) {
     id
-    gym {
+    city {
       id
       name
     }
@@ -1327,11 +1327,11 @@ export const GetAllCoachesDocument = `
       lastName
       imgSrc
     }
-    gym {
+    city {
       id
       name
       room
-      gymSrc
+      citySrc
       roomSrc
       mapSrc
       priceListSrc

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Hero from "./components/Hero";
 import TextBlock from "./components/TextBlock";
 import IconCards from "./components/IconCards";
@@ -11,6 +11,8 @@ import { CustomList, PhotoCards } from "../lib";
 import Box from "@mui/material/Box";
 import CustomPhotoCards from "./components/CustomPhotoCards";
 import { useMediaQuery, useTheme } from "@mui/material";
+import MultistepForm from "./components/registration/MultistepForm";
+import useEnhancedEffect from "@mui/material/utils/useEnhancedEffect";
 
 const txt1 = {
   title: "Z CZYM TO SIĘ JE?",
@@ -70,10 +72,14 @@ const txt3 = [
 const Home: React.FC = () => {
   const theme = useTheme();
   const smScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const multistepFormRef = useRef<HTMLDivElement | null>(null);
 
   return (
     <React.Fragment>
-      <Hero />
+      <Hero ref={multistepFormRef} />
+      <Box ref={multistepFormRef}>
+        <MultistepForm />
+      </Box>
       <Container
         sx={{
           backgroundColor: "primary",
@@ -114,12 +120,13 @@ const Home: React.FC = () => {
           align="center"
         />
       </Box>
-      <Container sx={{ backgroundColor: "primary", py: 15 }}>
+      {/* <Container sx={{ backgroundColor: "primary", py: 15 }}>
         <IconCards data={data2} />
-      </Container>
+      </Container> */}
       <Container
         maxWidth={false}
         sx={{
+          pt: 15,
           pb: 15,
         }}
       >

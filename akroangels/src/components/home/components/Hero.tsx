@@ -1,14 +1,17 @@
-import React from "react";
+import React, { RefObject } from "react";
 import Typography from "@mui/material/Typography";
-import { ColorButton, VideoBlock } from "../../lib";
+import { ColorButton } from "../../lib";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import { useNavigate } from "react-router-dom";
-import Box from "@mui/material/Box";
 import CustomVideoBlock from "./CustomVideoBlock";
+
 const videoUrl = "/static/videos/home.mp4";
 
-const Hero: React.FC = () => {
-  const navigate = useNavigate();
+interface HeroProps {
+  ref: RefObject<HTMLDivElement> | null
+}
+
+const Hero: React.FC<HeroProps> = (props) => {
+  const { ref } = props;
 
   return (
     <CustomVideoBlock url={videoUrl}>
@@ -19,15 +22,15 @@ const Hero: React.FC = () => {
         </Typography>
         W POLSCE
       </Typography>
-        <ColorButton
-          color="secondary"
-          variant="contained"
-          sx={{ width: 300, height: 50, borderWidth: 2, fontSize: 20 }}
-          endIcon={<ArrowRightIcon />}
-          onClick={() => navigate("/zajecia/zarejestruj")}
-        >
-          Dołącz do nas
-        </ColorButton>
+      <ColorButton
+        color="secondary"
+        variant="contained"
+        sx={{ width: 300, height: 50, borderWidth: 2, fontSize: 20 }}
+        endIcon={<ArrowRightIcon />}
+        onClick={() => ref!.current?.scrollIntoView({ behavior: 'smooth' })}
+      >
+        Dołącz do nas
+      </ColorButton>
     </CustomVideoBlock>
   );
 };

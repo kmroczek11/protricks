@@ -9,7 +9,7 @@ import {
 } from '@nestjs/graphql';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Public } from 'src/auth/decorators/public.decorator';
-import { Gym } from 'src/gyms/entities/gym.entity';
+import { City } from 'src/cities/entities/city.entity';
 import { Role } from 'src/users/entities/role.enum';
 import { User } from 'src/users/entities/user.entity';
 import { CoachesService } from './coaches.service';
@@ -39,9 +39,9 @@ export class CoachesResolver {
     return this.coachesService.getUser(coach.userId);
   }
 
-  @ResolveField(() => Gym)
-  gym(@Parent() coach: Coach): Promise<Gym> {
-    return this.coachesService.getGym(coach.gymId);
+  @ResolveField(() => City)
+  city(@Parent() coach: Coach): Promise<City> {
+    return this.coachesService.getCity(coach.cityId);
   }
 
   @Query(() => Coach)

@@ -2,14 +2,14 @@ import React from "react";
 import Typography from "@mui/material/Typography";
 import CustomPhotoCards, { PhotoCardObject } from "./CustomPhotoCards";
 
-interface GymsProps {
+interface CitiesProps {
   visible: boolean;
   items: PhotoCardObject[];
   onClick: (name: string) => void;
   nextStep: () => void;
 }
 
-const Gyms: React.FC<GymsProps> = (props) => {
+const Cities: React.FC<CitiesProps> = (props) => {
   const { visible, items, onClick, nextStep } = props;
 
   return visible ? (
@@ -38,4 +38,4 @@ const Gyms: React.FC<GymsProps> = (props) => {
   ) : null;
 };
 
-export default Gyms;
+export default Cities;

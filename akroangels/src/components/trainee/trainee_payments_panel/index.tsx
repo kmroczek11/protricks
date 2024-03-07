@@ -65,10 +65,7 @@ const TraineePaymentsPanel: React.FC = () => {
 
     const e = data?.getMonthlyCost.actualExercises!.map((a, i) => ({
       ...a,
-      price:
-        i == 0 && data.getMonthlyCost.firstTimeDiscountApplied
-          ? 0
-          : data.getMonthlyCost.groupPrice,
+      price: data.getMonthlyCost.groupPrice,
     }))!;
 
     console.log(e);

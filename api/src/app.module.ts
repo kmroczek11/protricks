@@ -5,7 +5,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { GymsModule } from './gyms/gyms.module';
+import { CitiesModule } from './cities/cities.module';
 import { GroupsModule } from './groups/groups.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
@@ -81,7 +81,7 @@ import { ScheduleModule } from '@nestjs/schedule';
       rootPath: join(__dirname, '..', 'public'),
     }),
     ScheduleModule.forRoot(),
-    GymsModule,
+    CitiesModule,
     GroupsModule,
     AuthModule,
     UsersModule,
