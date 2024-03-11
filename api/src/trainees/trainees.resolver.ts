@@ -31,8 +31,7 @@ import { TraineesService } from './trainees.service';
 @Resolver(() => Trainee)
 export class TraineesResolver {
   constructor(
-    private traineesService: TraineesService,
-    private mailService: MailService,
+    private traineesService: TraineesService
   ) {}
 
   @Mutation(() => CreateTraineeResponse)

@@ -1,46 +1,66 @@
 import * as React from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { convertToPlDate } from "../../../coach/groups_panel/components/helpers";
+import Row from "./Row";
+import { styled } from '@mui/material/styles';
+import { SelectedItem } from "./CheckoutForm";
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
 
 interface ExercisesTableProps {
-  data?: Array<{ id: string; day: any; price: number | null | undefined; }>;
+  price: number;
+  monthObjects: Array<{
+    month: string,
+    payed: boolean,
+    exercises:
+    Array<{
+      id: string,
+      day: any
+    }>
+  }>
+  selectedItems: SelectedItem[]
+  setSelectedItems: React.Dispatch<React.SetStateAction<SelectedItem[]>>
 }
-
 const ExercisesTable: React.FC<ExercisesTableProps> = (props) => {
-  const { data } = props;
+  const { price, monthObjects, selectedItems, setSelectedItems } = props;
+  console.log(monthObjects)
 
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="exercises-table">
+      <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
-            <TableCell align="center">Dzień</TableCell>
-            <TableCell align="center">Cena</TableCell>
+            <StyledTableCell />
+            <StyledTableCell>Miesiąc</StyledTableCell>
+            <StyledTableCell align="right">Suma</StyledTableCell>
+            <StyledTableCell align="right">Zapłacono</StyledTableCell>
+            <StyledTableCell />
           </TableRow>
         </TableHead>
         <TableBody>
-          {data?.map(
-            (e, i) =>
-              (
-                <TableRow
-                  key={e.day}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row" align="center">
-                    {convertToPlDate(e.day)}
-                  </TableCell>
-                  <TableCell component="th" scope="row" align="center">
-                    {e.price}
-                  </TableCell>
-                </TableRow>
-              )!
-          )}
+          {monthObjects.map((mo, index) => (
+            <Row
+              id={index}
+              price={price}
+              monthObject={mo}
+              selectedItems={selectedItems}
+              setSelectedItems={setSelectedItems}
+            />
+          ))}
         </TableBody>
       </Table>
     </TableContainer>

@@ -7,11 +7,11 @@ import CustomVideoBlock from "./CustomVideoBlock";
 const videoUrl = "/static/videos/home.mp4";
 
 interface HeroProps {
-  ref: RefObject<HTMLDivElement> | null
+  multistepFormBox: HTMLDivElement | null
 }
 
 const Hero: React.FC<HeroProps> = (props) => {
-  const { ref } = props;
+  const { multistepFormBox } = props;
 
   return (
     <CustomVideoBlock url={videoUrl}>
@@ -27,9 +27,9 @@ const Hero: React.FC<HeroProps> = (props) => {
         variant="contained"
         sx={{ width: 300, height: 50, borderWidth: 2, fontSize: 20 }}
         endIcon={<ArrowRightIcon />}
-        onClick={() => ref!.current?.scrollIntoView({ behavior: 'smooth' })}
+        onClick={() => multistepFormBox?.scrollIntoView({ behavior: 'smooth' })}
       >
-        Dołącz do nas
+        Zapisz się na zajęcia
       </ColorButton>
     </CustomVideoBlock>
   );

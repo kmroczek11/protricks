@@ -1,15 +1,11 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Status } from 'src/trainees/entities/status.enum';
-import { Exercise } from '../entities/exercise.entity';
+import { MonthObject } from './month-object';
 
 @ObjectType()
 export class GetMonthlyExercisesResponse {
-  @Field(() => [Exercise])
-  exercises: Exercise[];
+    @Field(() => [MonthObject])
+    monthObjects: MonthObject[]
 
-  @Field()
-  price: Number;
-
-  @Field()
-  status: Status;
+    @Field(() => Number)
+    price: number
 }

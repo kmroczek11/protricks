@@ -5,5 +5,3 @@ export class GetMonthlyExercisesInput {
   @Field()
   userId: string;
 }
-
-export default GetMonthlyExercisesInput;

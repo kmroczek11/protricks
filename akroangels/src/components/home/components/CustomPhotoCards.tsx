@@ -33,9 +33,7 @@ const CustomPhotoCards: React.FC<CustomPhotoCardObjectProps> = (props) => {
           onClick={onClick}
           sxBackground={{
             position: "absolute",
-            top: -i * 100,
-            left: (i + 1) * 100,
-            zIndex: i == 1 ? 1 : 0,
+            left: (i + 1) * 130
           }}
         />
       ))}

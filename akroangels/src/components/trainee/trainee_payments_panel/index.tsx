@@ -1,37 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
 import CheckoutForm from "./components/CheckoutForm";
 import {
   CreatePaymentIntentMutation,
   CreatePaymentIntentMutationVariables,
-  GetMonthlyCostQuery,
+  GetMonthlyExercisesQuery,
   useCreatePaymentIntentMutation,
-  useGetMonthlyCostQuery,
+  useGetMonthlyExercisesQuery,
 } from "../../../generated/graphql";
 import createAccessClient from "../../../graphql/clients/accessClient";
 import { useAuth } from "../../auth";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
+import { LoadingScreen } from "../../lib";
+import { loadStripe } from "@stripe/stripe-js";
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY!);
 
 const TraineePaymentsPanel: React.FC = () => {
-  const [clientSecret, setClientSecret] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [clientSecret, setClientSecret] = useState("");
   const { user } = useAuth();
 
-  const [exercisesWithPrice, setExercisesWithPrice] = useState<
-    {
-      id: string;
-      day: any;
-      price: number | null | undefined;
-    }[]
-  >([]);
-
-  const { isLoading, mutate: createPaymentIntent } =
+  const { isLoading: isCreatePaymentIntentLoading, mutate: createPaymentIntent } =
     useCreatePaymentIntentMutation<Error>(createAccessClient(), {
       onError: (error: Error) => {
         let err: any = {};
@@ -47,47 +38,22 @@ const TraineePaymentsPanel: React.FC = () => {
 
   const {
     data,
-    isLoading: getMonthlyCostLoading,
+    isLoading: getMonthlyExercisesLoading,
     error,
     refetch,
-  } = useGetMonthlyCostQuery<GetMonthlyCostQuery, Error>(
+  } = useGetMonthlyExercisesQuery<GetMonthlyExercisesQuery, Error>(
     createAccessClient(),
     {
-      getMonthlyCostInput: {
+      input: {
         userId: user?.id!,
       },
     },
     { refetchInterval: 1000 }
   );
 
-  useEffect(() => {
-    if (!data?.getMonthlyCost.actualExercises) return;
-
-    const e = data?.getMonthlyCost.actualExercises!.map((a, i) => ({
-      ...a,
-      price: data.getMonthlyCost.groupPrice,
-    }))!;
-
-    console.log(e);
-
-    setExercisesWithPrice(e);
-  }, [data]);
-
-  console.log(data?.getMonthlyCost);
-
-  useEffect(() => {
-    if (!data?.getMonthlyCost.amount) return;
-
-    createPaymentIntent({
-      input: {
-        amount: data?.getMonthlyCost.amount!,
-      },
-    });
-  }, [data?.getMonthlyCost.amount]);
-
-  // const appearance = {
-  //   theme: "stripe",
-  // };
+  const appearance = {
+    theme: "stripe",
+  };
 
   const options = {
     clientSecret,
@@ -95,16 +61,18 @@ const TraineePaymentsPanel: React.FC = () => {
   };
 
   return (
-    <div className="App">
+    <React.Fragment>
       {clientSecret && stripePromise && (
         <Elements options={options} stripe={stripePromise}>
-          <CheckoutForm
-            amount={data?.getMonthlyCost.amount!}
-            exercisesWithPrice={exercisesWithPrice!}
-          />
+          {getMonthlyExercisesLoading ?
+            <LoadingScreen /> :
+            <CheckoutForm
+              price={data?.getMonthlyExercises.price!}
+              monthObjects={data?.getMonthlyExercises.monthObjects!}
+            />}
         </Elements>
       )}
-    </div>
+    </React.Fragment>
   );
 };
 

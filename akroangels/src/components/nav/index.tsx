@@ -27,7 +27,7 @@ const Navbar: React.FC<NavProps> = (props) => {
           background: "black",
         }}
       >
-        <Box sx={{ px: smScreen ? 10 : 30 }}>
+        <Box sx={{ px: 10 }}>
           <Toolbar
             sx={{
               justifyContent: "space-between",
@@ -39,7 +39,7 @@ const Navbar: React.FC<NavProps> = (props) => {
             <Link href="/">
               <Logo src={logo} alt="logo" />
             </Link>
-            <Box
+            {/* <Box
               sx={{
                 flexGrow: 1,
                 justifyContent: "right",
@@ -66,7 +66,7 @@ const Navbar: React.FC<NavProps> = (props) => {
                   {name}
                 </Link>
               ))}
-            </Box>
+            </Box> */}
             <UserButtonsBox items={items} />
           </Toolbar>
         </Box>

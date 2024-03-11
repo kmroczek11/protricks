@@ -45,22 +45,22 @@ export const routes: RouteObject[] = [
     element: <Layout />,
     children: [
       { index: true, element: <Home /> },
-      {
-        path: "/zajecia",
-        element: <Exercises />,
-        // children: [
-        //   { index: true, element: <Cities /> },
-        //   { path: '/zajecia/:id', element: <City /> },
-        // ],
-      },
-      {
-        path: "/zloty",
-        element: <Meetings />,
-      },
-      {
-        path: "/pokazy",
-        element: <Shows />,
-      },
+      // {
+      //   path: "/zajecia",
+      //   element: <Exercises />,
+      //   // children: [
+      //   //   { index: true, element: <Cities /> },
+      //   //   { path: '/zajecia/:id', element: <City /> },
+      //   // ],
+      // },
+      // {
+      //   path: "/zloty",
+      //   element: <Meetings />,
+      // },
+      // {
+      //   path: "/pokazy",
+      //   element: <Shows />,
+      // },
       {
         path: "/ustawienia",
         element: (
@@ -95,7 +95,11 @@ export const routes: RouteObject[] = [
       },
       {
         path: "/uczen/platnosci",
-        element: <TraineePaymentsPanel />,
+        element: (
+          <Protected allowedRoles={[Role.Trainee]}>
+            <TraineePaymentsPanel />
+          </Protected>
+        ),
       },
       { path: "*", element: <Lost /> },
     ],

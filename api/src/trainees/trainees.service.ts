@@ -29,7 +29,7 @@ export class TraineesService {
     private readonly groupsService: GroupsService,
     private readonly mailService: MailService,
     private readonly schedulerRegistry: SchedulerRegistry,
-    private readonly lostTraineesService: LostTraineesService,
+    private readonly lostTraineesService: LostTraineesService
   ) {}
 
   async createTrainee(createTraineeInput: CreateTraineeInput) {

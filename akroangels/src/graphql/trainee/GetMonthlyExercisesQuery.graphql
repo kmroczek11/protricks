@@ -1,0 +1,13 @@
+query GetMonthlyExercises($input:GetMonthlyExercisesInput!){
+  getMonthlyExercises(getMonthlyExercisesInput: $input){
+    monthObjects{
+      month
+      exercises{
+        id
+        day
+      }
+      payed
+    }
+    price
+  }
+}

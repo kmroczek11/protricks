@@ -30,7 +30,7 @@ const Cities: React.FC<CitiesProps> = (props) => {
         gutterBottom
       >
         Aby zapisać się na pierwsze zajęcia zaloguj się lub zarejestruj,
-        klikając ikonę w prawym górnym rogu ekranu. Następnie wybierz miejsce,
+        klikając ikonę w prawym górnym rogu ekranu. Następnie wybierz miasto,
         klikając w jego zdjęcie.
       </Typography>
       <CustomPhotoCards items={items} onClick={onClick} nextStep={nextStep} />

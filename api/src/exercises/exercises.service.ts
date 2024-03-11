@@ -6,8 +6,9 @@ import { GroupsService } from 'src/groups/groups.service';
 import { CreateExerciseInput } from './dto/create-exercise.input';
 import { Exercise } from './entities/exercise.entity';
 import { EditExerciseInput } from './dto/edit-exercise.input';
+import { GetMonthlyExercisesInput } from './dto/get-monthly-exercises.input';
 import { TraineesService } from 'src/trainees/trainees.service';
-import GetMonthlyExercisesInput from './dto/get-monthly-exercises.input';
+import { PaymentsService } from 'src/payments/payments.service';
 
 @Injectable()
 export class ExercisesService {
@@ -16,7 +17,8 @@ export class ExercisesService {
     private exercisesRepository: Repository<Exercise>,
     private groupsService: GroupsService,
     private traineesService: TraineesService,
-  ) {}
+    private paymentsService: PaymentsService
+  ) { }
 
   async createExercise(createExerciseInput: CreateExerciseInput) {
     const newExercise = this.exercisesRepository.create(createExerciseInput);
@@ -50,5 +52,52 @@ export class ExercisesService {
     return {
       msg: 'success',
     };
+  }
+
+  async getMonthlyExercises(getMonthlyExercisesInput: GetMonthlyExercisesInput) {
+    const { userId } = getMonthlyExercisesInput;
+
+    const trainee = await this.traineesService.findOneByUserId(userId);
+
+    const group = await this.groupsService.findOne(trainee.groupId);
+
+    const exercises = await this.exercisesRepository.find({ where: { groupId: group.id } })
+
+    const price = group.price
+
+    const months = [
+      'styczeń',
+      'luty',
+      'marzec',
+      'kwiecień',
+      'maj',
+      'czerwiec',
+      'lipiec',
+      'sierpień',
+      'wrzesień',
+      'październik',
+      'listopad',
+      'grudzień',
+    ];
+
+    const monthObjects = months.map((m) => ({
+      month: m,
+      exercises: [],
+      payed: false
+    }))
+
+    exercises.forEach((e) => {
+      const mo = monthObjects.find((m) => m.month === months[new Date(e.day).getMonth()])
+
+      mo.exercises.push(e)
+    })
+    
+    monthObjects.forEach(async (mo) => {
+      mo.payed = await this.paymentsService.findOneByMonth(mo.month) ? true : false
+    })
+
+    console.log(monthObjects)
+    
+    return { monthObjects, price }
   }
 }

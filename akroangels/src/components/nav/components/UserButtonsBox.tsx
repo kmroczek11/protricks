@@ -103,17 +103,16 @@ const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
         display: "flex",
       }}
     >
-      {(!user ||
+      {/* {(!user ||
         JSON.stringify(user?.roles) == JSON.stringify([Role.User])) && (
         <ColorButton
           color="secondary"
           variant="contained"
-          sx={{ display: { xs: "none", md: "block" } }}
           onClick={() => navigate("/")}
         >
           Zapisz się na zajęcia
         </ColorButton>
-      )}
+      )} */}
       {!user ? (
         <React.Fragment>
           <Tooltip title="Kliknij, aby się zalogować">
@@ -145,6 +144,14 @@ const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
             sx={{ display: { xs: "none", md: "block" } }}
           >
             {user.firstName}
+          </Typography>
+          &nbsp;
+          <Typography
+            variant="body2"
+            color="primary"
+            sx={{ display: { xs: "none", md: "block" } }}
+          >
+            {user.lastName}
           </Typography>
           <Menu
             sx={{ mt: "45px" }}
@@ -221,7 +228,7 @@ const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
           )}
         </React.Fragment>
       )}
-      <IconButton
+      {/* <IconButton
         color="inherit"
         aria-label="open drawer"
         edge="end"
@@ -258,7 +265,7 @@ const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
             ))}
           </MenuList>
         </Paper>
-      </Drawer>
+      </Drawer> */}
     </Box>
   );
 };

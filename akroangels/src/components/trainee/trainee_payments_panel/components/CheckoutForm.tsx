@@ -3,7 +3,7 @@ import {
   useStripe,
   useElements,
   PaymentElement,
-  LinkAuthenticationElement,
+  Elements,
 } from "@stripe/react-stripe-js";
 import { ColorButton, CustomAlert } from "../../../lib";
 import Box from "@mui/material/Box";
@@ -16,19 +16,27 @@ import ExercisesTable from "./ExercisesTable";
 import InfoBox from "./InfoBox";
 import { useCreatePaymentItemMutation } from "../../../../generated/graphql";
 import createAccessClient from "../../../../graphql/clients/accessClient";
-import Typography from "@mui/material/Typography";
 
 interface CheckoutFormProps {
-  exercisesWithPrice: Array<{
-    id: string;
-    day: any;
-    price: number | null | undefined;
-  }>;
-  amount: number;
+  price: number,
+  monthObjects: Array<{
+    month: string,
+    payed: boolean,
+    exercises: Array<{
+      id: string,
+      day: any
+    }>
+  }>
+}
+
+export type SelectedItem = {
+  month: string;
+  amount: number
 }
 
 const CheckoutForm: React.FC<CheckoutFormProps> = (props) => {
-  const { exercisesWithPrice, amount } = props;
+  const { price, monthObjects } = props;
+  console.log(monthObjects)
   const stripe = useStripe();
   const elements = useElements();
 
@@ -37,45 +45,18 @@ const CheckoutForm: React.FC<CheckoutFormProps> = (props) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const { isLoading: isCreatePaymentItemLoading, mutate: createPaymentItem } =
-    useCreatePaymentItemMutation<Error>(createAccessClient(), {});
+  const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([])
+  const [totalAmount, setTotalAmount] = useState<number>()
 
   useEffect(() => {
-    if (!stripe) {
-      return;
-    }
+    let sum = 0
 
-    const clientSecret = new URLSearchParams(window.location.search).get(
-      "payment_intent_client_secret"
-    );
-
-    if (!clientSecret) {
-      return;
-    }
-
-    stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
-      switch (paymentIntent!.status) {
-        case "succeeded":
-          setMessage("Payment succeeded!");
-
-          createPaymentItem({
-            input: {
-              amount,
-            },
-          });
-          break;
-        case "processing":
-          setMessage("Your payment is processing.");
-          break;
-        case "requires_payment_method":
-          setMessage("Your payment was not successful, please try again.");
-          break;
-        default:
-          setMessage("Something went wrong.");
-          break;
-      }
-    });
-  }, [stripe]);
+    selectedItems.forEach((s) => sum += s.amount)
+    setTotalAmount(sum)
+  }, [selectedItems])
+  
+  const { isLoading: isCreatePaymentItemLoading, mutate: createPaymentItem } =
+    useCreatePaymentItemMutation<Error>(createAccessClient(), {});
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -119,37 +100,25 @@ const CheckoutForm: React.FC<CheckoutFormProps> = (props) => {
         flexDirection: "column",
       }}
     >
-      {amount != 0 ? (
-        <React.Fragment>
-          <ExercisesTable data={exercisesWithPrice} />
-          <InfoBox amount={amount} />
-          <Form onSubmit={handleSubmit}>
-            <LinkAuthenticationElement
-              id="link-authentication-element"
-              // onChange={(e) => setEmail(e.value.email)}
-            />
-            <PaymentElement id="payment-element" />
-            <Button id="submit" disabled={isLoading || !stripe || !elements}>
-              <span id="button-text">{isLoading ? <Spinner /> : "Zapłać"}</span>
-            </Button>
-          </Form>
-          {errorMessage === "account_number_invalid" && (
-            <CustomAlert severity="error" msg={accountNumberInvalid} />
-          )}
-          {errorMessage === "amount_to_small" && (
-            <CustomAlert severity="error" msg={amountToSmall} />
-          )}
-        </React.Fragment>
-      ) : (
-        <Typography
-          variant="h1"
-          color="secondary"
-          gutterBottom
-          sx={{ textAlign: "center" }}
-        >
-          Wszystko zapłacone!
-        </Typography>
-      )}
+        <ExercisesTable
+          price={price}
+          monthObjects={monthObjects}
+          selectedItems={selectedItems}
+          setSelectedItems={setSelectedItems}
+        />
+        <InfoBox amount={totalAmount!} />
+            <Form onSubmit={handleSubmit}>
+              <PaymentElement id="payment-element" />
+              <Button id="submit" disabled={isLoading || !stripe || !elements}>
+                <span id="button-text">{isLoading ? <Spinner /> : "Zapłać"}</span>
+              </Button>
+            </Form>
+        {errorMessage === "account_number_invalid" && (
+          <CustomAlert severity="error" msg={accountNumberInvalid} />
+        )}
+        {errorMessage === "amount_to_small" && (
+          <CustomAlert severity="error" msg={amountToSmall} />
+        )}
     </Box>
   );
 };

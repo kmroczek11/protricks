@@ -14,8 +14,6 @@ import { AttendanceListService } from './attendance-list.service';
 import { AttendanceByDayInput } from './dto/attendance-by-day.input';
 import { CreateAttendanceResponse } from './dto/create-attendance-response.ts';
 import { CreateAttendanceInput } from './dto/create-attendance.input';
-import { GetMonthlyCostResponse } from './dto/get-monthly-cost-response';
-import GetMonthlyCostInput from './dto/get-monthly-cost.input';
 import { Attendance } from './entities/attendance';
 
 @Resolver(() => Attendance)
@@ -42,13 +40,5 @@ export class AttendanceListResolver {
   @ResolveField(() => Attendance)
   trainee(@Parent() attendance: Attendance): Promise<Trainee> {
     return this.attendanceListService.getTrainee(attendance.traineeId);
-  }
-  
-  @Query(() => GetMonthlyCostResponse)
-  @Roles(Role.USER)
-  getMonthlyCost(
-    @Args('getMonthlyCostInput') getMonthlyCostInput: GetMonthlyCostInput,
-  ) {
-    return this.attendanceListService.getMonthlyCost(getMonthlyCostInput);
   }
 }

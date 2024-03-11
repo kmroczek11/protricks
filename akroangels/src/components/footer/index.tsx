@@ -31,7 +31,7 @@ const Footer: React.FC = () => {
 
   return (
     <Box sx={{ backgroundColor: "#000" }}>
-      <Grid container p={5} spacing={5}>
+      <Grid container p={5}>
         <Grid item xs={12} md={4} textAlign="center">
           <Logo src={logo} alt="logo" />
           <Typography
@@ -43,70 +43,79 @@ const Footer: React.FC = () => {
             Masz pytania? Napisz do nas na
             <br />
             <a href="mailto:kontakt@akroangels.pl">kontakt@akroangels.pl</a>
-            <br />
-            <br />
-            Nasze social media
+            <Box pt={5}>
+              <Typography
+                variant="body1"
+                color="primary.dark"
+                align="center"
+                gutterBottom
+              >
+                Nasze social media
+              </Typography>
+              <ButtonBox justifyContent="center" alignItems="center">
+                <Tooltip title="Kliknij, aby otworzyć Facebook">
+                  <IconButton
+                    onClick={() => {
+                      window.open(
+                        "https://www.facebook.com/Protricks-academy-103440185814054",
+                        "_blank"
+                      );
+                      window.open(
+                        "https://www.facebook.com/profile.php?id=100063594550165",
+                        "_blank"
+                      );
+                    }}
+                  >
+                    <FacebookIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Kliknij, aby otworzyć Instagram">
+                  <IconButton
+                    onClick={() => {
+                      window.open(
+                        "https://www.instagram.com/protricks.official/?hl=pl",
+                        "_blank"
+                      );
+                      window.open(
+                        "https://www.instagram.com/protricks.academy/",
+                        "_blank"
+                      );
+                    }}
+                  >
+                    <InstagramIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Kliknij, aby otworzyć YouTube">
+                  <IconButton
+                    onClick={() =>
+                      window.open(
+                        "https://www.youtube.com/channel/UCTKSiKl9yPRPlBoPckPfYMQ",
+                        "_blank"
+                      )
+                    }
+                  >
+                    <YouTubeIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Kliknij, aby otworzyć TikTok">
+                  <IconButton
+                    onClick={() =>
+                      window.open(
+                        "https://www.tiktok.com/@protricks.academy",
+                        "_blank"
+                      )
+                    }
+                  >
+                    <SvgIcon>
+                      <TikTokIcon />
+                    </SvgIcon>
+                  </IconButton>
+                </Tooltip>
+              </ButtonBox>
+            </Box>
+
           </Typography>
-          <ButtonBox justifyContent="center" alignItems="center">
-            <Tooltip title="Kliknij, aby otworzyć Facebook">
-              <IconButton
-                onClick={() => {
-                  window.open(
-                    "https://www.facebook.com/Protricks-academy-103440185814054",
-                    "_blank"
-                  );
-                  window.open(
-                    "https://www.facebook.com/profile.php?id=100063594550165",
-                    "_blank"
-                  );
-                }}
-              >
-                <FacebookIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Kliknij, aby otworzyć Instagram">
-              <IconButton
-                onClick={() => {
-                  window.open(
-                    "https://www.instagram.com/protricks.official/?hl=pl",
-                    "_blank"
-                  );
-                  window.open(
-                    "https://www.instagram.com/protricks.academy/",
-                    "_blank"
-                  );
-                }}
-              >
-                <InstagramIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Kliknij, aby otworzyć YouTube">
-              <IconButton
-                onClick={() =>
-                  window.open(
-                    "https://www.youtube.com/channel/UCTKSiKl9yPRPlBoPckPfYMQ",
-                    "_blank"
-                  )
-                }
-              >
-                <YouTubeIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Kliknij, aby otworzyć TikTok">
-              <IconButton
-                onClick={() =>
-                  window.open(
-                    "https://www.tiktok.com/@protricks.academy",
-                    "_blank"
-                  )
-                }
-              >
-                <SvgIcon>
-                  <TikTokIcon />
-                </SvgIcon>
-              </IconButton>
-            </Tooltip>
-          </ButtonBox>
+
         </Grid>
         <Grid
           item

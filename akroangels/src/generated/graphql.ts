@@ -295,16 +295,14 @@ export type ForgotPasswordResponse = {
   msg: Scalars['String'];
 };
 
-export type GetMonthlyCostInput = {
+export type GetMonthlyExercisesInput = {
   userId: Scalars['String'];
 };
 
-export type GetMonthlyCostResponse = {
-  __typename?: 'GetMonthlyCostResponse';
-  actualExercises?: Maybe<Array<Exercise>>;
-  amount: Scalars['Float'];
-  firstTimeDiscountApplied?: Maybe<Scalars['Boolean']>;
-  groupPrice?: Maybe<Scalars['Float']>;
+export type GetMonthlyExercisesResponse = {
+  __typename?: 'GetMonthlyExercisesResponse';
+  monthObjects: Array<MonthObject>;
+  price: Scalars['Float'];
 };
 
 export type Group = {
@@ -343,6 +341,13 @@ export type LogInUserInput = {
 export type LogOutResponse = {
   __typename?: 'LogOutResponse';
   msg: Scalars['String'];
+};
+
+export type MonthObject = {
+  __typename?: 'MonthObject';
+  exercises: Array<Exercise>;
+  month: Scalars['String'];
+  payed: Scalars['Boolean'];
 };
 
 export type Mutation = {
@@ -525,7 +530,7 @@ export type Query = {
   findOne: User;
   getAttendanceByDay: Array<Attendance>;
   getCoach: Coach;
-  getMonthlyCost: GetMonthlyCostResponse;
+  getMonthlyExercises: GetMonthlyExercisesResponse;
   getTrainee: Trainee;
   groups: Array<Group>;
   trainees: Array<Trainee>;
@@ -548,8 +553,8 @@ export type QueryGetCoachArgs = {
 };
 
 
-export type QueryGetMonthlyCostArgs = {
-  getMonthlyCostInput: GetMonthlyCostInput;
+export type QueryGetMonthlyExercisesArgs = {
+  getMonthlyExercisesInput: GetMonthlyExercisesInput;
 };
 
 
@@ -784,12 +789,12 @@ export type DeleteTraineeWithMessageMutationVariables = Exact<{
 
 export type DeleteTraineeWithMessageMutation = { __typename?: 'Mutation', deleteTraineeWithMessage: { __typename?: 'DeleteTraineeWithMessageResponse', user?: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } | null } };
 
-export type GetMonthlyCostQueryVariables = Exact<{
-  getMonthlyCostInput: GetMonthlyCostInput;
+export type GetMonthlyExercisesQueryVariables = Exact<{
+  input: GetMonthlyExercisesInput;
 }>;
 
 
-export type GetMonthlyCostQuery = { __typename?: 'Query', getMonthlyCost: { __typename?: 'GetMonthlyCostResponse', amount: number, groupPrice?: number | null, firstTimeDiscountApplied?: boolean | null, actualExercises?: Array<{ __typename?: 'Exercise', id: string, day: any }> | null } };
+export type GetMonthlyExercisesQuery = { __typename?: 'Query', getMonthlyExercises: { __typename?: 'GetMonthlyExercisesResponse', price: number, monthObjects: Array<{ __typename?: 'MonthObject', month: string, payed: boolean, exercises: Array<{ __typename?: 'Exercise', id: string, day: any }> }> } };
 
 export type GetTraineeQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1457,38 +1462,40 @@ export const useDeleteTraineeWithMessageMutation = <
       options
     );
 useDeleteTraineeWithMessageMutation.fetcher = (client: GraphQLClient, variables: DeleteTraineeWithMessageMutationVariables, headers?: RequestInit['headers']) => fetcher<DeleteTraineeWithMessageMutation, DeleteTraineeWithMessageMutationVariables>(client, DeleteTraineeWithMessageDocument, variables, headers);
-export const GetMonthlyCostDocument = `
-    query GetMonthlyCost($getMonthlyCostInput: GetMonthlyCostInput!) {
-  getMonthlyCost(getMonthlyCostInput: $getMonthlyCostInput) {
-    actualExercises {
-      id
-      day
+export const GetMonthlyExercisesDocument = `
+    query GetMonthlyExercises($input: GetMonthlyExercisesInput!) {
+  getMonthlyExercises(getMonthlyExercisesInput: $input) {
+    monthObjects {
+      month
+      exercises {
+        id
+        day
+      }
+      payed
     }
-    amount
-    groupPrice
-    firstTimeDiscountApplied
+    price
   }
 }
     `;
-export const useGetMonthlyCostQuery = <
-      TData = GetMonthlyCostQuery,
+export const useGetMonthlyExercisesQuery = <
+      TData = GetMonthlyExercisesQuery,
       TError = unknown
     >(
       client: GraphQLClient,
-      variables: GetMonthlyCostQueryVariables,
-      options?: UseQueryOptions<GetMonthlyCostQuery, TError, TData>,
+      variables: GetMonthlyExercisesQueryVariables,
+      options?: UseQueryOptions<GetMonthlyExercisesQuery, TError, TData>,
       headers?: RequestInit['headers']
     ) =>
-    useQuery<GetMonthlyCostQuery, TError, TData>(
-      ['GetMonthlyCost', variables],
-      fetcher<GetMonthlyCostQuery, GetMonthlyCostQueryVariables>(client, GetMonthlyCostDocument, variables, headers),
+    useQuery<GetMonthlyExercisesQuery, TError, TData>(
+      ['GetMonthlyExercises', variables],
+      fetcher<GetMonthlyExercisesQuery, GetMonthlyExercisesQueryVariables>(client, GetMonthlyExercisesDocument, variables, headers),
       options
     );
 
-useGetMonthlyCostQuery.getKey = (variables: GetMonthlyCostQueryVariables) => ['GetMonthlyCost', variables];
+useGetMonthlyExercisesQuery.getKey = (variables: GetMonthlyExercisesQueryVariables) => ['GetMonthlyExercises', variables];
 ;
 
-useGetMonthlyCostQuery.fetcher = (client: GraphQLClient, variables: GetMonthlyCostQueryVariables, headers?: RequestInit['headers']) => fetcher<GetMonthlyCostQuery, GetMonthlyCostQueryVariables>(client, GetMonthlyCostDocument, variables, headers);
+useGetMonthlyExercisesQuery.fetcher = (client: GraphQLClient, variables: GetMonthlyExercisesQueryVariables, headers?: RequestInit['headers']) => fetcher<GetMonthlyExercisesQuery, GetMonthlyExercisesQueryVariables>(client, GetMonthlyExercisesDocument, variables, headers);
 export const GetTraineeDocument = `
     query GetTrainee($id: String!) {
   getTrainee(id: $id) {

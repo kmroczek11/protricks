@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Hero from "./components/Hero";
 import TextBlock from "./components/TextBlock";
 import IconCards from "./components/IconCards";
@@ -12,7 +12,6 @@ import Box from "@mui/material/Box";
 import CustomPhotoCards from "./components/CustomPhotoCards";
 import { useMediaQuery, useTheme } from "@mui/material";
 import MultistepForm from "./components/registration/MultistepForm";
-import useEnhancedEffect from "@mui/material/utils/useEnhancedEffect";
 
 const txt1 = {
   title: "Z CZYM TO SIĘ JE?",
@@ -35,9 +34,11 @@ const txt2 = {
   title: `DLACZEGO AKROBATYKA?`,
   content: `Wierzymy, że jest ona wyjątkowym sportem kształtującym
   nie tylko ciało ale i umysł, pozwala przełamywać granice,
-  pokonywać strach a to kształtuje charakter, nie tylko w sporcie
-  ale i w życiu. Naszą misją jest pokazanie piękna akrobatyki
-  i zainspirowanie nią jak największego grona osób w Polsce.`,
+  pokonywać strach a to kształtuje charakter,
+  nie tylko w sporcie, ale i w życiu.
+  Naszą misją jest pokazanie piękna akrobatyki
+  i zainspirowanie nią jak największego
+  grona osób w Polsce.`,
 };
 
 const data2 = [
@@ -72,11 +73,16 @@ const txt3 = [
 const Home: React.FC = () => {
   const theme = useTheme();
   const smScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const multistepFormRef = useRef<HTMLDivElement | null>(null);
+  const multistepFormRef = useRef(null);
+  const [multistepFormBox, setMultistepFormBox] = useState<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    setMultistepFormBox(multistepFormRef.current)
+  }, [])
 
   return (
     <React.Fragment>
-      <Hero ref={multistepFormRef} />
+      <Hero multistepFormBox={multistepFormBox} />
       <Box ref={multistepFormRef}>
         <MultistepForm />
       </Box>
@@ -112,7 +118,10 @@ const Home: React.FC = () => {
           )}
         </Container>
       </Container>
-      <Box sx={{ backgroundColor: "secondary.main", py: 10 }}>
+      <Box
+        sx={{ backgroundColor: "secondary.main" }}
+        py={18}
+      >
         <TextBlock
           texts={txt2}
           headColor="primary.main"
@@ -122,7 +131,7 @@ const Home: React.FC = () => {
       </Box>
       {/* <Container sx={{ backgroundColor: "primary", py: 15 }}>
         <IconCards data={data2} />
-      </Container> */}
+      </Container>
       <Container
         maxWidth={false}
         sx={{
@@ -144,7 +153,7 @@ const Home: React.FC = () => {
             center
           />
         </Container>
-      </Container>
+      </Container> */}
     </React.Fragment>
   );
 };
