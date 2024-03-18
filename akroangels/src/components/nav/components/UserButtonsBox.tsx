@@ -32,6 +32,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Link from "@mui/material/Link";
 import createAccessClient from "../../../graphql/clients/accessClient";
 import PaymentIcon from "@mui/icons-material/Payment";
+import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 
 interface UserButtonsBoxProps {
   items: NavItemsObject[];
@@ -199,6 +200,14 @@ const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
                   <ListAltIcon fontSize="small" />
                 </ListItemIcon>
                 Moje zajęcia
+              </MenuItem>
+            )}
+            {user.roles.includes(Role.Trainee) && (
+              <MenuItem onClick={() => navigate("/uczen/obecnosci")}>
+                <ListItemIcon>
+                  <EventAvailableIcon fontSize="small" />
+                </ListItemIcon>
+                Obecności
               </MenuItem>
             )}
             {user.roles.includes(Role.Trainee) && (

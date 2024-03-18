@@ -4,6 +4,9 @@ import { LocalDateResolver } from 'graphql-scalars';
 @InputType()
 export class CreateAttendanceInput {
   @Field()
+  groupId: string;
+
+  @Field()
   traineeId: string;
 
   @Field(() => LocalDateResolver)

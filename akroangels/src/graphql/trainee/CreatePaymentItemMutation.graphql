@@ -1,5 +1,5 @@
 mutation createPaymentItem($input: CreatePaymentItemInput!) {
-  createPaymentItem(createPaymentIntentInput: $input) {
+  createPaymentItem(createPaymentItemInput: $input) {
     msg
   }
 }

@@ -8,8 +8,10 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { CurrentUser } from 'src/auth/decorators/user.decorator';
 import { Group } from 'src/groups/entities/group.entity';
 import { Role } from 'src/users/entities/role.enum';
+import { User } from 'src/users/entities/user.entity';
 import { CreateExerciseResponse } from './dto/create-exercise-response';
 import { CreateExerciseInput } from './dto/create-exercise.input';
 import { DeleteExerciseResponse } from './dto/delete-exercise-response';
@@ -22,7 +24,7 @@ import { ExercisesService } from './exercises.service';
 
 @Resolver(() => Exercise)
 export class ExercisesResolver {
-  constructor(private readonly exercisesService: ExercisesService) {}
+  constructor(private readonly exercisesService: ExercisesService) { }
 
   @Mutation(() => CreateExerciseResponse)
   @Roles(Role.COACH)
@@ -56,12 +58,13 @@ export class ExercisesResolver {
   deleteExercise(@Args('id') id: string): Promise<DeleteExerciseResponse> {
     return this.exercisesService.deleteExercise(id);
   }
-  
+
   @Query(() => GetMonthlyExercisesResponse)
   @Roles(Role.TRAINEE)
   getMonthlyExercises(
     @Args('getMonthlyExercisesInput') getMonthlyExercisesInput: GetMonthlyExercisesInput,
+    @CurrentUser() user: User,
   ) {
-    return this.exercisesService.getMonthlyExercises(getMonthlyExercisesInput);
+    return this.exercisesService.getMonthlyExercises(getMonthlyExercisesInput, user.stripeCustomerId);
   }
 }

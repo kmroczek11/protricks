@@ -12,49 +12,24 @@ import {
   accountNumberInvalid,
   amountToSmall,
 } from "../../../../translations/pl/errorMessages";
-import ExercisesTable from "./ExercisesTable";
-import InfoBox from "./InfoBox";
 import { useCreatePaymentItemMutation } from "../../../../generated/graphql";
 import createAccessClient from "../../../../graphql/clients/accessClient";
+import { SelectedItem } from "../types/SelectedItem.type";
 
 interface CheckoutFormProps {
-  price: number,
-  monthObjects: Array<{
-    month: string,
-    payed: boolean,
-    exercises: Array<{
-      id: string,
-      day: any
-    }>
-  }>
-}
-
-export type SelectedItem = {
-  month: string;
-  amount: number
+  selectedItems: SelectedItem[],
+  setSelectedItems: React.Dispatch<React.SetStateAction<SelectedItem[]>>
 }
 
 const CheckoutForm: React.FC<CheckoutFormProps> = (props) => {
-  const { price, monthObjects } = props;
-  console.log(monthObjects)
+  const { selectedItems, setSelectedItems } = props;
+
   const stripe = useStripe();
   const elements = useElements();
 
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([])
-  const [totalAmount, setTotalAmount] = useState<number>()
-
-  useEffect(() => {
-    let sum = 0
-
-    selectedItems.forEach((s) => sum += s.amount)
-    setTotalAmount(sum)
-  }, [selectedItems])
-  
   const { isLoading: isCreatePaymentItemLoading, mutate: createPaymentItem } =
     useCreatePaymentItemMutation<Error>(createAccessClient(), {});
 
@@ -69,56 +44,58 @@ const CheckoutForm: React.FC<CheckoutFormProps> = (props) => {
 
     setIsLoading(true);
 
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        // Make sure to change this to your payment completion page
-        return_url: `${window.location.origin}/uczen/platnosci`,
-      }
-    });
+    try {
+      const { error, paymentIntent } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          // Make sure to change this to your payment completion page
+          return_url: `${window.location.origin}/uczen/platnosc_powiodla_sie`,
+        },
+        redirect: "if_required"
+      });
 
-    // This point will only be reached if there is an immediate error when
-    // confirming the payment. Otherwise, your customer will be redirected to
-    // your `return_url`. For some payment methods like iDEAL, your customer will
-    // be redirected to an intermediate site first to authorize the payment, then
-    // redirected to the `return_url`.
-    if (error!.type === "card_error" || error!.type === "validation_error") {
-      setErrorMessage(error!.message!);
-    } else {
-      setErrorMessage("An unexpected error occurred.");
+      if (error) {
+        console.error(error);
+      } else if (paymentIntent && paymentIntent.status === "succeeded") {
+        console.log("Payment succeeded");
+        selectedItems.forEach((s) => {
+          createPaymentItem({
+            input: {
+              month: s.month,
+              amount: s.amount,
+            },
+          });
+        })
+
+        setSelectedItems([])
+      } else {
+        console.log("Payment failed");
+      }
+    } catch (error) {
+      console.log(error)
     }
 
     setIsLoading(false);
   };
 
   return (
-    <Box
-      sx={{
-        p: { xs: 10, md: 30 },
-        display: "flex",
-        justifyContent: "center",
-        flexDirection: "column",
-      }}
-    >
-        <ExercisesTable
-          price={price}
-          monthObjects={monthObjects}
-          selectedItems={selectedItems}
-          setSelectedItems={setSelectedItems}
-        />
-        <InfoBox amount={totalAmount!} />
-            <Form onSubmit={handleSubmit}>
-              <PaymentElement id="payment-element" />
-              <Button id="submit" disabled={isLoading || !stripe || !elements}>
-                <span id="button-text">{isLoading ? <Spinner /> : "Zapłać"}</span>
-              </Button>
-            </Form>
-        {errorMessage === "account_number_invalid" && (
-          <CustomAlert severity="error" msg={accountNumberInvalid} />
-        )}
-        {errorMessage === "amount_to_small" && (
-          <CustomAlert severity="error" msg={amountToSmall} />
-        )}
+    <Box sx={{
+      pb: 5,
+      display: "flex",
+      justifyContent: "center"
+    }}>
+      <Form onSubmit={handleSubmit}>
+        <PaymentElement id="payment-element" />
+        <Button id="submit" disabled={isLoading || !stripe || !elements}>
+          <span id="button-text">{isLoading ? <Spinner /> : "Zapłać"}</span>
+        </Button>
+      </Form>
+      {errorMessage === "account_number_invalid" && (
+        <CustomAlert severity="error" msg={accountNumberInvalid} />
+      )}
+      {errorMessage === "amount_to_small" && (
+        <CustomAlert severity="error" msg={amountToSmall} />
+      )}
     </Box>
   );
 };

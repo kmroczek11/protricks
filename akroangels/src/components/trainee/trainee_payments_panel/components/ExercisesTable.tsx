@@ -9,7 +9,7 @@ import Paper from "@mui/material/Paper";
 import { convertToPlDate } from "../../../coach/groups_panel/components/helpers";
 import Row from "./Row";
 import { styled } from '@mui/material/styles';
-import { SelectedItem } from "./CheckoutForm";
+import { SelectedItem } from "../types/SelectedItem.type";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -35,9 +35,9 @@ interface ExercisesTableProps {
   selectedItems: SelectedItem[]
   setSelectedItems: React.Dispatch<React.SetStateAction<SelectedItem[]>>
 }
+
 const ExercisesTable: React.FC<ExercisesTableProps> = (props) => {
   const { price, monthObjects, selectedItems, setSelectedItems } = props;
-  console.log(monthObjects)
 
   return (
     <TableContainer component={Paper}>

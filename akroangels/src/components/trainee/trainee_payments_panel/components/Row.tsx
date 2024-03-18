@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Checkbox from '@mui/material/Checkbox';
-import { SelectedItem } from './CheckoutForm';
+import { SelectedItem } from '../types/SelectedItem.type';
 
 interface RowProps {
   id: number,
@@ -71,7 +71,13 @@ const Row: React.FC<RowProps> = (props) => {
       <TableRow
         sx={{
           '& > *': { borderBottom: 'unset' },
-          cursor: 'pointer',
+          cursor: payed ? 'default' : 'pointer',
+          backgroundColor: payed ? 'success.dark' : undefined,
+
+          '&.MuiTableRow-root:hover': {
+            backgroundColor: payed ? 'success.dark' : undefined,
+          },
+
           "&.Mui-selected": {
             backgroundColor: "success.main",
 
@@ -81,7 +87,7 @@ const Row: React.FC<RowProps> = (props) => {
           }
         }}
         hover
-        onClick={(event) => handleClick(event, id)}
+        onClick={(event) => !payed ? handleClick(event, id) : null}
         role="checkbox"
         aria-checked={isItemSelected}
         tabIndex={-1}

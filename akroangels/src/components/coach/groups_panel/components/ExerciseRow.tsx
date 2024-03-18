@@ -6,10 +6,10 @@ import EditExerciseForm from "./forms/EditExerciseForm";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
 import {
-  GetAttendanceByDayQuery,
+  GetAttendanceByGroupIdAndDayQuery,
   Status,
   useDeleteExerciseMutation,
-  useGetAttendanceByDayQuery,
+  useGetAttendanceByGroupIdAndDayQuery,
 } from "../../../../generated/graphql";
 import Tooltip from "@mui/material/Tooltip";
 import { useAuth } from "../../../auth";
@@ -32,6 +32,7 @@ const StyledIconButton = styled(IconButton)({
 
 interface RowProps {
   i: number;
+  groupId: string;
   groupName: string;
   item: {
     id: string;
@@ -47,7 +48,7 @@ interface RowProps {
 }
 
 const ExerciseRow: React.FC<RowProps> = (props) => {
-  const { i, item, groupName, trainees } = props;
+  const { i, item, groupId, groupName, trainees } = props;
   const { id, day, start, end } = item;
   const [openEditExercise, setOpenEditExercise] = useState(false);
   const [openDeleteExercise, setOpenDeleteExercise] = useState(false);
@@ -60,10 +61,11 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
     isLoading: attendanceLoading,
     error,
     refetch,
-  } = useGetAttendanceByDayQuery<GetAttendanceByDayQuery, Error>(
+  } = useGetAttendanceByGroupIdAndDayQuery<GetAttendanceByGroupIdAndDayQuery, Error>(
     accessClient(),
     {
-      attendanceByDayInput: {
+      attendanceByGroupIdAndDayInput: {
+        groupId,
         day,
       },
     },
@@ -76,30 +78,30 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
   );
 
   const sheetData = [
-    data?.getAttendanceByDay.map((attendance, i) =>
+    data?.getAttendanceByGroupIdAndDay.map((attendance, i) =>
       i == 0
         ? {
-            Dzień: convertToPlDate(day),
-            Godzina: `${getTimeWithoutMiliseconds(
-              start
-            )} - ${getTimeWithoutMiliseconds(end)}`,
-            "Lp.": ++i,
-            Imię: attendance.trainee.user.firstName,
-            Nazwisko: attendance.trainee.user.lastName,
-            Obecny: attendance.present ? "tak" : "nie",
-            "Pierwszy raz":
-              attendance.status === Status.FirstTime ? "tak" : "nie",
-          }
+          Dzień: convertToPlDate(day),
+          Godzina: `${getTimeWithoutMiliseconds(
+            start
+          )} - ${getTimeWithoutMiliseconds(end)}`,
+          "Lp.": ++i,
+          Imię: attendance.trainee.user.firstName,
+          Nazwisko: attendance.trainee.user.lastName,
+          Obecny: attendance.present ? "tak" : "nie",
+          "Pierwszy raz":
+            attendance.status === Status.FirstTime ? "tak" : "nie",
+        }
         : {
-            Dzień: "",
-            Godzina: "",
-            "Lp.": ++i,
-            Imię: attendance.trainee.user.firstName,
-            Nazwisko: attendance.trainee.user.lastName,
-            Obecny: attendance.present ? "tak" : "nie",
-            "Pierwszy raz":
-              attendance.status === Status.FirstTime ? "tak" : "nie",
-          }
+          Dzień: "",
+          Godzina: "",
+          "Lp.": ++i,
+          Imię: attendance.trainee.user.firstName,
+          Nazwisko: attendance.trainee.user.lastName,
+          Obecny: attendance.present ? "tak" : "nie",
+          "Pierwszy raz":
+            attendance.status === Status.FirstTime ? "tak" : "nie",
+        }
     )!,
   ].flat();
 
@@ -151,7 +153,7 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
               <DeleteIcon />
             </StyledIconButton>
           </Tooltip>
-          {data?.getAttendanceByDay.length ? (
+          {data?.getAttendanceByGroupIdAndDay.length ? (
             <Tooltip title="Eksportuj listę obecności">
               <StyledIconButton
                 aria-label="export-attendance-list"
@@ -200,6 +202,7 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
       )}
       {openAttendanceList && (
         <AttendanceListDialog
+          groupId={groupId}
           groupName={groupName}
           day={day}
           trainees={trainees}

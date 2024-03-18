@@ -92,7 +92,6 @@ const TraineeExercisesPanel: React.FC = () => {
         <Typography
           gutterBottom
           variant="h1"
-          color="secondary.main"
           component="div"
         >
           Twoja grupa:
@@ -110,7 +109,6 @@ const TraineeExercisesPanel: React.FC = () => {
         <Typography
           gutterBottom
           variant="h1"
-          color="secondary.main"
           component="div"
           sx={{
             display: "flex",
@@ -131,7 +129,6 @@ const TraineeExercisesPanel: React.FC = () => {
         <Typography
           gutterBottom
           variant="h1"
-          color="secondary.main"
           component="div"
           sx={{
             display: "flex",

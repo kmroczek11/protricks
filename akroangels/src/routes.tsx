@@ -13,6 +13,8 @@ import Meetings from "./components/meetings";
 import Lost from "./components/lost";
 import TraineePaymentsPanel from "./components/trainee/trainee_payments_panel";
 import MultistepForm from "./components/home/components/registration/MultistepForm";
+import PaymentSuccessfull from "./components/trainee/payment_successfull";
+import TraineeAttendancesPanel from "./components/trainee/trainee_attendances_panel";
 // import SuccessfullPayment from "./components/successfull_payment";
 
 export interface NavItemsObject {
@@ -94,11 +96,25 @@ export const routes: RouteObject[] = [
         ),
       },
       {
+        path: "/uczen/obecnosci",
+        element: (
+          <Protected allowedRoles={[Role.Trainee]}>
+            <TraineeAttendancesPanel />
+          </Protected>
+        ),
+      },
+      {
         path: "/uczen/platnosci",
         element: (
           <Protected allowedRoles={[Role.Trainee]}>
             <TraineePaymentsPanel />
           </Protected>
+        ),
+      },
+      {
+        path: "/uczen/platnosc_powiodla_sie",
+        element: (
+          <PaymentSuccessfull />
         ),
       },
       { path: "*", element: <Lost /> },

@@ -22,7 +22,7 @@ import {
   GraphQLError,
   GraphQLFormattedError,
 } from 'graphql/error/GraphQLError';
-import { AttendanceListModule } from './attendance-list/attendance-list.module';
+import { AttendancesModule } from './attendances/attendances.module';
 import { PaymentsModule } from './payments/payments.module';
 import { LostTraineesModule } from './lost_trainees/lost_trainees.module';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -91,7 +91,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     TraineesModule,
     ConfigModule,
     MailModule,
-    AttendanceListModule,
+    AttendancesModule,
     PaymentsModule,
     LostTraineesModule,
   ],

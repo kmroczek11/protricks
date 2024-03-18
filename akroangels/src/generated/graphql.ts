@@ -43,14 +43,16 @@ export type AcceptToGroupResponse = {
 export type Attendance = {
   __typename?: 'Attendance';
   day: Scalars['LocalDate'];
+  group: Group;
   id: Scalars['String'];
   present: Scalars['Boolean'];
   status: Scalars['String'];
   trainee: Trainee;
 };
 
-export type AttendanceByDayInput = {
+export type AttendanceByGroupIdAndDayInput = {
   day: Scalars['LocalDate'];
+  groupId: Scalars['String'];
 };
 
 export type AutoLogInUserInput = {
@@ -125,6 +127,7 @@ export type ConfirmContractReceiptResponse = {
 
 export type CreateAttendanceInput = {
   day: Scalars['LocalDate'];
+  groupId: Scalars['String'];
   present: Scalars['Boolean'];
   status: Scalars['String'];
   traineeId: Scalars['String'];
@@ -193,6 +196,7 @@ export type CreatePaymentIntentResponse = {
 
 export type CreatePaymentItemInput = {
   amount: Scalars['Float'];
+  month: Scalars['String'];
 };
 
 export type CreatePaymentItemResponse = {
@@ -307,6 +311,7 @@ export type GetMonthlyExercisesResponse = {
 
 export type Group = {
   __typename?: 'Group';
+  attendances?: Maybe<Array<Attendance>>;
   coach: Coach;
   exercises?: Maybe<Array<Exercise>>;
   id: Scalars['String'];
@@ -450,7 +455,7 @@ export type MutationCreatePaymentIntentArgs = {
 
 
 export type MutationCreatePaymentItemArgs = {
-  createPaymentIntentInput: CreatePaymentItemInput;
+  createPaymentItemInput: CreatePaymentItemInput;
 };
 
 
@@ -528,7 +533,8 @@ export type Query = {
   coaches: Array<Coach>;
   exercises: Array<Exercise>;
   findOne: User;
-  getAttendanceByDay: Array<Attendance>;
+  getAttendanceByGroupIdAndDay: Array<Attendance>;
+  getAttendanceByUserId: Array<Attendance>;
   getCoach: Coach;
   getMonthlyExercises: GetMonthlyExercisesResponse;
   getTrainee: Trainee;
@@ -543,8 +549,13 @@ export type QueryFindOneArgs = {
 };
 
 
-export type QueryGetAttendanceByDayArgs = {
-  attendanceByDayInput: AttendanceByDayInput;
+export type QueryGetAttendanceByGroupIdAndDayArgs = {
+  attendanceByGroupIdAndDayInput: AttendanceByGroupIdAndDayInput;
+};
+
+
+export type QueryGetAttendanceByUserIdArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -728,12 +739,12 @@ export type EditGroupMutationVariables = Exact<{
 
 export type EditGroupMutation = { __typename?: 'Mutation', editGroup: { __typename?: 'EditGroupResponse', msg: string } };
 
-export type GetAttendanceByDayQueryVariables = Exact<{
-  attendanceByDayInput: AttendanceByDayInput;
+export type GetAttendanceByGroupIdAndDayQueryVariables = Exact<{
+  attendanceByGroupIdAndDayInput: AttendanceByGroupIdAndDayInput;
 }>;
 
 
-export type GetAttendanceByDayQuery = { __typename?: 'Query', getAttendanceByDay: Array<{ __typename?: 'Attendance', day: any, present: boolean, status: string, trainee: { __typename?: 'Trainee', status: Status, user: { __typename?: 'User', firstName: string, lastName: string } } }> };
+export type GetAttendanceByGroupIdAndDayQuery = { __typename?: 'Query', getAttendanceByGroupIdAndDay: Array<{ __typename?: 'Attendance', day: any, present: boolean, status: string, trainee: { __typename?: 'Trainee', status: Status, user: { __typename?: 'User', firstName: string, lastName: string } } }> };
 
 export type GetCoachQueryVariables = Exact<{
   id: Scalars['String'];
@@ -788,6 +799,13 @@ export type DeleteTraineeWithMessageMutationVariables = Exact<{
 
 
 export type DeleteTraineeWithMessageMutation = { __typename?: 'Mutation', deleteTraineeWithMessage: { __typename?: 'DeleteTraineeWithMessageResponse', user?: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } | null } };
+
+export type GetAttendanceByUserIdQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetAttendanceByUserIdQuery = { __typename?: 'Query', getAttendanceByUserId: Array<{ __typename?: 'Attendance', day: any, present: boolean }> };
 
 export type GetMonthlyExercisesQueryVariables = Exact<{
   input: GetMonthlyExercisesInput;
@@ -1178,9 +1196,11 @@ export const useEditGroupMutation = <
       options
     );
 useEditGroupMutation.fetcher = (client: GraphQLClient, variables: EditGroupMutationVariables, headers?: RequestInit['headers']) => fetcher<EditGroupMutation, EditGroupMutationVariables>(client, EditGroupDocument, variables, headers);
-export const GetAttendanceByDayDocument = `
-    query GetAttendanceByDay($attendanceByDayInput: AttendanceByDayInput!) {
-  getAttendanceByDay(attendanceByDayInput: $attendanceByDayInput) {
+export const GetAttendanceByGroupIdAndDayDocument = `
+    query GetAttendanceByGroupIdAndDay($attendanceByGroupIdAndDayInput: AttendanceByGroupIdAndDayInput!) {
+  getAttendanceByGroupIdAndDay(
+    attendanceByGroupIdAndDayInput: $attendanceByGroupIdAndDayInput
+  ) {
     day
     present
     status
@@ -1194,25 +1214,25 @@ export const GetAttendanceByDayDocument = `
   }
 }
     `;
-export const useGetAttendanceByDayQuery = <
-      TData = GetAttendanceByDayQuery,
+export const useGetAttendanceByGroupIdAndDayQuery = <
+      TData = GetAttendanceByGroupIdAndDayQuery,
       TError = unknown
     >(
       client: GraphQLClient,
-      variables: GetAttendanceByDayQueryVariables,
-      options?: UseQueryOptions<GetAttendanceByDayQuery, TError, TData>,
+      variables: GetAttendanceByGroupIdAndDayQueryVariables,
+      options?: UseQueryOptions<GetAttendanceByGroupIdAndDayQuery, TError, TData>,
       headers?: RequestInit['headers']
     ) =>
-    useQuery<GetAttendanceByDayQuery, TError, TData>(
-      ['GetAttendanceByDay', variables],
-      fetcher<GetAttendanceByDayQuery, GetAttendanceByDayQueryVariables>(client, GetAttendanceByDayDocument, variables, headers),
+    useQuery<GetAttendanceByGroupIdAndDayQuery, TError, TData>(
+      ['GetAttendanceByGroupIdAndDay', variables],
+      fetcher<GetAttendanceByGroupIdAndDayQuery, GetAttendanceByGroupIdAndDayQueryVariables>(client, GetAttendanceByGroupIdAndDayDocument, variables, headers),
       options
     );
 
-useGetAttendanceByDayQuery.getKey = (variables: GetAttendanceByDayQueryVariables) => ['GetAttendanceByDay', variables];
+useGetAttendanceByGroupIdAndDayQuery.getKey = (variables: GetAttendanceByGroupIdAndDayQueryVariables) => ['GetAttendanceByGroupIdAndDay', variables];
 ;
 
-useGetAttendanceByDayQuery.fetcher = (client: GraphQLClient, variables: GetAttendanceByDayQueryVariables, headers?: RequestInit['headers']) => fetcher<GetAttendanceByDayQuery, GetAttendanceByDayQueryVariables>(client, GetAttendanceByDayDocument, variables, headers);
+useGetAttendanceByGroupIdAndDayQuery.fetcher = (client: GraphQLClient, variables: GetAttendanceByGroupIdAndDayQueryVariables, headers?: RequestInit['headers']) => fetcher<GetAttendanceByGroupIdAndDayQuery, GetAttendanceByGroupIdAndDayQueryVariables>(client, GetAttendanceByGroupIdAndDayDocument, variables, headers);
 export const GetCoachDocument = `
     query GetCoach($id: String!) {
   getCoach(id: $id) {
@@ -1415,7 +1435,7 @@ export const useCreatePaymentIntentMutation = <
 useCreatePaymentIntentMutation.fetcher = (client: GraphQLClient, variables: CreatePaymentIntentMutationVariables, headers?: RequestInit['headers']) => fetcher<CreatePaymentIntentMutation, CreatePaymentIntentMutationVariables>(client, CreatePaymentIntentDocument, variables, headers);
 export const CreatePaymentItemDocument = `
     mutation createPaymentItem($input: CreatePaymentItemInput!) {
-  createPaymentItem(createPaymentIntentInput: $input) {
+  createPaymentItem(createPaymentItemInput: $input) {
     msg
   }
 }
@@ -1462,6 +1482,33 @@ export const useDeleteTraineeWithMessageMutation = <
       options
     );
 useDeleteTraineeWithMessageMutation.fetcher = (client: GraphQLClient, variables: DeleteTraineeWithMessageMutationVariables, headers?: RequestInit['headers']) => fetcher<DeleteTraineeWithMessageMutation, DeleteTraineeWithMessageMutationVariables>(client, DeleteTraineeWithMessageDocument, variables, headers);
+export const GetAttendanceByUserIdDocument = `
+    query GetAttendanceByUserId($id: String!) {
+  getAttendanceByUserId(id: $id) {
+    day
+    present
+  }
+}
+    `;
+export const useGetAttendanceByUserIdQuery = <
+      TData = GetAttendanceByUserIdQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: GetAttendanceByUserIdQueryVariables,
+      options?: UseQueryOptions<GetAttendanceByUserIdQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<GetAttendanceByUserIdQuery, TError, TData>(
+      ['GetAttendanceByUserId', variables],
+      fetcher<GetAttendanceByUserIdQuery, GetAttendanceByUserIdQueryVariables>(client, GetAttendanceByUserIdDocument, variables, headers),
+      options
+    );
+
+useGetAttendanceByUserIdQuery.getKey = (variables: GetAttendanceByUserIdQueryVariables) => ['GetAttendanceByUserId', variables];
+;
+
+useGetAttendanceByUserIdQuery.fetcher = (client: GraphQLClient, variables: GetAttendanceByUserIdQueryVariables, headers?: RequestInit['headers']) => fetcher<GetAttendanceByUserIdQuery, GetAttendanceByUserIdQueryVariables>(client, GetAttendanceByUserIdDocument, variables, headers);
 export const GetMonthlyExercisesDocument = `
     query GetMonthlyExercises($input: GetMonthlyExercisesInput!) {
   getMonthlyExercises(getMonthlyExercisesInput: $input) {

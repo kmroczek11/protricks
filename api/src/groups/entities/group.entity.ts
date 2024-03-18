@@ -1,4 +1,5 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { Attendance } from 'src/attendances/entities/attendance';
 import { Coach } from 'src/coaches/entities/coach.entity';
 import { Exercise } from 'src/exercises/entities/exercise.entity';
 import { Trainee } from 'src/trainees/entities/trainee.entity';
@@ -49,4 +50,11 @@ export class Group {
   @OneToMany(() => Trainee, (trainee) => trainee.group, { eager: true })
   @Field(() => [Trainee], { nullable: true })
   trainees?: Trainee[];
+
+  @OneToMany(() => Attendance, (attendance) => attendance.group, {
+    eager: true,
+    cascade: true,
+  })
+  @Field(() => [Attendance], { nullable: true })
+  attendances?: Attendance[];
 }

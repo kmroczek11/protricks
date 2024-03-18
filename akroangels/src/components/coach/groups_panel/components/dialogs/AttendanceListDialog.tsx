@@ -34,6 +34,7 @@ import createAccessClient from "../../../../../graphql/clients/accessClient";
 import StatusBox from "./StatusBox";
 
 interface AttendanceListDialogProps {
+  groupId:string;
   groupName: string;
   day: any;
   trainees?: Array<{
@@ -78,6 +79,7 @@ const acceptToGroupSuccessMessage = "Pomyślnie wysłano zaproszenia do uczniów
 
 const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
   const {
+    groupId,
     groupName,
     day,
     open,
@@ -166,6 +168,7 @@ const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
 
       createAttendance({
         input: {
+          groupId,
           traineeId: t.id,
           day: day,
           present: t.present,

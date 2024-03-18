@@ -60,7 +60,7 @@ export class TraineesService {
     return this.traineesRepository.find();
   }
 
-  findOneByTraineeId(id: string) {
+  findOne(id: string) {
     return this.traineesRepository.findOne({ where: { id } });
   }
 

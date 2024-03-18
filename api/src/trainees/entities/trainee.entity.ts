@@ -14,7 +14,7 @@ import {
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { Status } from './status.enum';
-import { Attendance } from 'src/attendance-list/entities/attendance';
+import { Attendance } from 'src/attendances/entities/attendance';
 
 @Entity('trainees')
 @ObjectType()

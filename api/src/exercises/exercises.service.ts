@@ -54,7 +54,7 @@ export class ExercisesService {
     };
   }
 
-  async getMonthlyExercises(getMonthlyExercisesInput: GetMonthlyExercisesInput) {
+  async getMonthlyExercises(getMonthlyExercisesInput: GetMonthlyExercisesInput, customerId: string,) {
     const { userId } = getMonthlyExercisesInput;
 
     const trainee = await this.traineesService.findOneByUserId(userId);
@@ -80,10 +80,15 @@ export class ExercisesService {
       'grudzień',
     ];
 
-    const monthObjects = months.map((m) => ({
-      month: m,
-      exercises: [],
-      payed: false
+    const monthObjects = await Promise.all(months.map(async (m) => {
+      const payment = await this.paymentsService.findOneByMonthAndCustomerId(m, customerId)
+      const payed = payment != null ? true : false
+
+      return ({
+        month: m,
+        exercises: [],
+        payed
+      })
     }))
 
     exercises.forEach((e) => {
@@ -91,13 +96,9 @@ export class ExercisesService {
 
       mo.exercises.push(e)
     })
-    
-    monthObjects.forEach(async (mo) => {
-      mo.payed = await this.paymentsService.findOneByMonth(mo.month) ? true : false
-    })
 
     console.log(monthObjects)
-    
+
     return { monthObjects, price }
   }
 }

@@ -1,8 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AttendanceListService } from 'src/attendance-list/attendance-list.service';
-import { GroupsService } from 'src/groups/groups.service';
-import { TraineesService } from 'src/trainees/trainees.service';
 import Stripe from 'stripe';
 import { Repository } from 'typeorm';
 import { CreatePaymentIntentInput } from './dto/create-payment-intent.input';
@@ -22,8 +19,8 @@ export class PaymentsService {
     });
   }
 
-  async findOneByMonth(month: string) {
-    return this.paymentsRepository.findOne({ where: { month } });
+  async findOneByMonthAndCustomerId(month: string, customerId: string) {
+    return this.paymentsRepository.findOne({ where: { customerId, month } });
   }
 
   public async createCustomer(name: string, email: string) {
@@ -31,46 +28,6 @@ export class PaymentsService {
       name,
       email,
     });
-  }
-
-  async createPaymentItem(
-    createPaymentItemInput,
-    customerId: string,
-  ): Promise<CreatePaymentItemResponse> {
-    const { amount } = createPaymentItemInput;
-
-    const months = [
-      'styczeń',
-      'luty',
-      'marzec',
-      'kwiecień',
-      'maj',
-      'czerwiec',
-      'lipiec',
-      'sierpień',
-      'wrzesień',
-      'październik',
-      'listopad',
-      'grudzień',
-    ];
-
-    const d = new Date();
-
-    const month = months[d.getMonth()];
-
-    const createPaymentInput = {
-      customerId,
-      amount,
-      month,
-    };
-
-    const newPayment = await this.paymentsRepository.create(createPaymentInput);
-
-    await this.paymentsRepository.save(newPayment);
-
-    return {
-      msg: 'Success',
-    };
   }
 
   async createPaymentIntent(
@@ -88,6 +45,27 @@ export class PaymentsService {
 
     return {
       clientSecret: paymentIntent.client_secret,
+    };
+  }
+
+  async createPaymentItem(
+    createPaymentItemInput,
+    customerId: string,
+  ): Promise<CreatePaymentItemResponse> {
+    const { month, amount } = createPaymentItemInput;
+
+    const createPaymentInput = {
+      customerId,
+      amount,
+      month,
+    };
+
+    const newPayment = await this.paymentsRepository.create(createPaymentInput);
+
+    await this.paymentsRepository.save(newPayment);
+
+    return {
+      msg: 'Success',
     };
   }
 }

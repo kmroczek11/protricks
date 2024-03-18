@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { LocalDateResolver } from 'graphql-scalars';
+import { Group } from 'src/groups/entities/group.entity';
 import { Status } from 'src/trainees/entities/status.enum';
 import { Trainee } from 'src/trainees/entities/trainee.entity';
 import { User } from 'src/users/entities/user.entity';
@@ -13,7 +14,7 @@ import {
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
-@Entity('attendance')
+@Entity('attendances')
 @ObjectType()
 export class Attendance {
   @PrimaryColumn()
@@ -24,6 +25,15 @@ export class Attendance {
   setId() {
     this.id = uuidv4();
   }
+
+  @Column()
+  groupId: string;
+
+  @ManyToOne(() => Group, (group) => group.attendances, {
+    onDelete: 'CASCADE',
+  })
+  @Field(() => Group)
+  group: Group;
 
   @Column()
   traineeId: string;

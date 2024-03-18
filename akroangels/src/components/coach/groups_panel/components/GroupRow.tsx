@@ -218,6 +218,7 @@ const GroupRow: React.FC<RowProps> = (props) => {
                       i={++i}
                       item={exercise}
                       trainees={trainees}
+                      groupId={id}
                       groupName={name}
                     />
                   ))}

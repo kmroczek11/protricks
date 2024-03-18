@@ -11,20 +11,7 @@ import { PaymentsService } from './payments.service';
 
 @Resolver()
 export class PaymentsResolver {
-  constructor(private readonly paymentsService: PaymentsService) {}
-
-  @Mutation(() => CreatePaymentItemResponse)
-  @Roles(Role.TRAINEE)
-  createPaymentItem(
-    @Args('createPaymentIntentInput')
-    createPaymentItemInput: CreatePaymentItemInput,
-    @CurrentUser() user: User,
-  ): Promise<CreatePaymentItemResponse> {
-    return this.paymentsService.createPaymentItem(
-      createPaymentItemInput,
-      user.stripeCustomerId,
-    );
-  }
+  constructor(private readonly paymentsService: PaymentsService) { }
 
   @Mutation(() => CreatePaymentIntentResponse)
   @Roles(Role.TRAINEE)
@@ -33,5 +20,15 @@ export class PaymentsResolver {
     createPaymentIntentInput: CreatePaymentIntentInput,
   ): Promise<CreatePaymentIntentResponse> {
     return this.paymentsService.createPaymentIntent(createPaymentIntentInput);
+  }
+
+  @Mutation(() => CreatePaymentItemResponse)
+  @Roles(Role.TRAINEE)
+  createPaymentItem(
+    @Args('createPaymentItemInput')
+    createPaymentItemInput: CreatePaymentItemInput,
+    @CurrentUser() user: User,
+  ): Promise<CreatePaymentItemResponse> {
+    return this.paymentsService.createPaymentItem(createPaymentItemInput, user.stripeCustomerId);
   }
 }
