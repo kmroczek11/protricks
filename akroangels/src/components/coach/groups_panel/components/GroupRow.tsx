@@ -56,10 +56,11 @@ interface RowProps {
       user: { id: string; firstName: string; lastName: string; email: string };
     }> | null;
   };
+  groups: Array<{ id: string, name: string }> | null
 }
 
 const GroupRow: React.FC<RowProps> = (props) => {
-  const { i, item } = props;
+  const { i, item, groups } = props;
   const { id, name, limit, price, exercises, trainees } = item;
   const [openExercises, setOpenExercises] = useState(false);
   const [openEditGroup, setOpenEditGroup] = useState(false);
@@ -145,6 +146,7 @@ const GroupRow: React.FC<RowProps> = (props) => {
           <ManageMembersDialog
             groupName={name}
             trainees={trainees}
+            groups={groups}
             open={openManageMembersDialog}
             handleClose={handleManageMembersDialogClose}
           />

@@ -14,6 +14,8 @@ import { Role } from 'src/users/entities/role.enum';
 import { User } from 'src/users/entities/user.entity';
 import { AcceptToGroupResponse } from './dto/accept-to-group-response';
 import { AcceptToGroupInput } from './dto/accept-to-group.input';
+import { ChangeGroupResponse } from './dto/change-group-response';
+import { ChangeGroupInput } from './dto/change-group.input';
 import { ConfirmContractReceiptResponse } from './dto/confirm-contract-receipt-response';
 import { ConfirmContractReceiptInput } from './dto/confirm-contract-receipt.input';
 import { CreateTraineeResponse } from './dto/create-trainee-response';
@@ -103,5 +105,13 @@ export class TraineesResolver {
     confirmContractReceiptInput: ConfirmContractReceiptInput,
   ): Promise<ConfirmContractReceiptResponse> {
     return this.traineesService.confirmContractReceipt(confirmContractReceiptInput)
+  }
+
+  @Mutation(() => ChangeGroupResponse)
+  @Roles(Role.COACH)
+  changeGroup(
+    @Args('changeGroupInput') changeGroupInput: ChangeGroupInput,
+  ): Promise<ChangeGroupResponse> {
+    return this.traineesService.changeGroup(changeGroupInput);
   }
 }

@@ -49,7 +49,7 @@ export const StyledExerciseTableRow = styled(StyledTableRow)(({ theme }) => ({
 }));
 
 const GroupsPanel: React.FC = () => {
-  const { user} = useAuth();
+  const { user } = useAuth();
   const [openCreateGroup, setOpenCreateGroup] = useState(false);
 
   const { data, isLoading, error, refetch } = useGetCoachQuery<
@@ -83,7 +83,7 @@ const GroupsPanel: React.FC = () => {
         <TableBody>
           {
             data?.getCoach?.groups?.map((group, i) => (
-              <GroupRow i={++i} item={group} />
+              <GroupRow i={++i} item={group} groups={data?.getCoach?.groups!} />
             ))!
           }
           <StyledTableRow>

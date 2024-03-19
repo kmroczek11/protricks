@@ -21,6 +21,8 @@ import IconButton from "@mui/material/IconButton";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material";
 import Typography from "@mui/material/Typography";
+import MoveDownIcon from '@mui/icons-material/MoveDown';
+import ChangeGroupDialog from "./ChangeGroupDialog";
 
 interface ManageMembersItemProps {
   groupName: string;
@@ -41,12 +43,15 @@ interface ManageMembersItemProps {
       imgSrc?: string;
     };
   };
+  groups:Array<{ id: string, name: string}>|null
 }
 
 const ManageMembersItem: React.FC<ManageMembersItemProps> = (props) => {
-  const [openDeleteTrainee, setOpenDeleteTrainee] = useState(false);
   const [openDetailedInfo, setOpenDetailedInfo] = useState(false);
-  const { groupName, trainee } = props;
+  const [openChangeGroup, setOpenChangeGroup] = useState(false);
+  const [openDeleteTrainee, setOpenDeleteTrainee] = useState(false);
+
+  const { groupName, trainee,groups } = props;
   const theme = useTheme();
   const smScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -58,8 +63,12 @@ const ManageMembersItem: React.FC<ManageMembersItemProps> = (props) => {
   const { isLoading: isDeleteTraineeLoading, mutate: deleteTrainee } =
     useDeleteTraineeMutation<Error>(createAccessClient(), {});
 
-  const handleDialogClose = () => {
+  const handleDetailedInfoDialogClose = () => {
     setOpenDetailedInfo(false);
+  };
+
+  const handleChangeGroupDialogClose = () => {
+    setOpenChangeGroup(false);
   };
 
   return isDeleteTraineeLoading ? (
@@ -76,6 +85,14 @@ const ManageMembersItem: React.FC<ManageMembersItemProps> = (props) => {
                 onClick={() => setOpenDetailedInfo(true)}
               >
                 <InfoIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Zmień grupę">
+              <IconButton
+                aria-label="change-group"
+                onClick={() => setOpenChangeGroup(true)}
+              >
+                <MoveDownIcon />
               </IconButton>
             </Tooltip>
             <Tooltip title="Usuń z grupy">
@@ -165,7 +182,15 @@ const ManageMembersItem: React.FC<ManageMembersItemProps> = (props) => {
         <TraineeInfoDialog
           trainee={trainee}
           open={openDetailedInfo}
-          handleClose={handleDialogClose}
+          handleClose={handleDetailedInfoDialogClose}
+        />
+      )}
+      {openChangeGroup && (
+        <ChangeGroupDialog
+          traineeId={trainee.id}
+          groups={groups}
+          open={openChangeGroup}
+          handleClose={handleChangeGroupDialogClose}
         />
       )}
     </React.Fragment>

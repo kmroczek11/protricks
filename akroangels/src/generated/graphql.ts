@@ -70,6 +70,16 @@ export type ChangeEmailResponse = {
   user: User;
 };
 
+export type ChangeGroupInput = {
+  groupId: Scalars['String'];
+  traineeId: Scalars['String'];
+};
+
+export type ChangeGroupResponse = {
+  __typename?: 'ChangeGroupResponse';
+  msg: Scalars['String'];
+};
+
 export type ChangePasswordInput = {
   id: Scalars['String'];
   newPassword: Scalars['String'];
@@ -360,6 +370,7 @@ export type Mutation = {
   acceptToGroup: AcceptToGroupResponse;
   autoLogInUser: LogInResponse;
   changeEmail: ChangeEmailResponse;
+  changeGroup: ChangeGroupResponse;
   changePassword: ChangePasswordResponse;
   changeProfilePic: ChangeProfilePicResponse;
   confirmContractReceipt: ConfirmContractReceiptResponse;
@@ -401,6 +412,11 @@ export type MutationAutoLogInUserArgs = {
 
 export type MutationChangeEmailArgs = {
   changeEmailInput: ChangeEmailInput;
+};
+
+
+export type MutationChangeGroupArgs = {
+  changeGroupInput: ChangeGroupInput;
 };
 
 
@@ -675,6 +691,13 @@ export type AcceptToGroupMutationVariables = Exact<{
 
 
 export type AcceptToGroupMutation = { __typename?: 'Mutation', acceptToGroup: { __typename?: 'AcceptToGroupResponse', msg: string } };
+
+export type ChangeGroupMutationVariables = Exact<{
+  input: ChangeGroupInput;
+}>;
+
+
+export type ChangeGroupMutation = { __typename?: 'Mutation', changeGroup: { __typename?: 'ChangeGroupResponse', msg: string } };
 
 export type ConfirmContractReceiptMutationVariables = Exact<{
   input: ConfirmContractReceiptInput;
@@ -1000,6 +1023,27 @@ export const useAcceptToGroupMutation = <
       options
     );
 useAcceptToGroupMutation.fetcher = (client: GraphQLClient, variables: AcceptToGroupMutationVariables, headers?: RequestInit['headers']) => fetcher<AcceptToGroupMutation, AcceptToGroupMutationVariables>(client, AcceptToGroupDocument, variables, headers);
+export const ChangeGroupDocument = `
+    mutation ChangeGroup($input: ChangeGroupInput!) {
+  changeGroup(changeGroupInput: $input) {
+    msg
+  }
+}
+    `;
+export const useChangeGroupMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<ChangeGroupMutation, TError, ChangeGroupMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<ChangeGroupMutation, TError, ChangeGroupMutationVariables, TContext>(
+      ['ChangeGroup'],
+      (variables?: ChangeGroupMutationVariables) => fetcher<ChangeGroupMutation, ChangeGroupMutationVariables>(client, ChangeGroupDocument, variables, headers)(),
+      options
+    );
+useChangeGroupMutation.fetcher = (client: GraphQLClient, variables: ChangeGroupMutationVariables, headers?: RequestInit['headers']) => fetcher<ChangeGroupMutation, ChangeGroupMutationVariables>(client, ChangeGroupDocument, variables, headers);
 export const ConfirmContractReceiptDocument = `
     mutation ConfirmContractReceipt($input: ConfirmContractReceiptInput!) {
   confirmContractReceipt(confirmContractReceiptInput: $input) {

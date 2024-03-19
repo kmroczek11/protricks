@@ -19,6 +19,7 @@ import { LostTraineesService } from 'src/lost_trainees/lost_trainees.service';
 import { DeleteTraineeWithMessageInput } from './dto/delete-trainee-with-message.input';
 import { v4 as uuidv4 } from 'uuid';
 import { ConfirmContractReceiptInput } from './dto/confirm-contract-receipt.input';
+import { ChangeGroupInput } from './dto/change-group.input';
 
 @Injectable()
 export class TraineesService {
@@ -30,7 +31,7 @@ export class TraineesService {
     private readonly mailService: MailService,
     private readonly schedulerRegistry: SchedulerRegistry,
     private readonly lostTraineesService: LostTraineesService
-  ) {}
+  ) { }
 
   async createTrainee(createTraineeInput: CreateTraineeInput) {
     const group = await this.groupsService.findOne(createTraineeInput.groupId);
@@ -207,7 +208,7 @@ export class TraineesService {
     );
   }
 
-  async confirmContractReceipt(confirmContractReceiptInput:ConfirmContractReceiptInput){
+  async confirmContractReceipt(confirmContractReceiptInput: ConfirmContractReceiptInput) {
     const { email, traineeId } = confirmContractReceiptInput;
 
     await this.mailService.sendAllDoneMessage(email);
@@ -216,5 +217,15 @@ export class TraineesService {
       traineeId,
       Status.ACCEPTED,
     );
+  }
+
+  async changeGroup(changeGroupInput: ChangeGroupInput) {
+    const { traineeId, groupId } = changeGroupInput;
+
+    await this.traineesRepository.update({ id: traineeId }, { groupId })
+
+    return {
+      msg: 'Success',
+    };
   }
 }

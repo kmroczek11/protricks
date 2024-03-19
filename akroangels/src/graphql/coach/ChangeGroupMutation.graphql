@@ -1,0 +1,5 @@
+mutation ChangeGroup($input: ChangeGroupInput!) {
+  changeGroup(changeGroupInput: $input){
+    msg
+  }
+}

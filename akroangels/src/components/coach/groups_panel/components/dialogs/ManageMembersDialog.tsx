@@ -30,13 +30,14 @@ interface ManageMembersDialogProps {
       imgSrc?: string;
     };
   }> | null;
+  groups: Array<{ id: string, name: string }> | null;
   open: boolean;
   handleClose: () => void;
   onClose?: () => void;
 }
 
 const ManageMembersDialog: React.FC<ManageMembersDialogProps> = (props) => {
-  const { groupName, open, trainees, handleClose, onClose } = props;
+  const { groupName, open, trainees, groups, handleClose, onClose } = props;
   const theme = useTheme();
   const smScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -67,7 +68,7 @@ const ManageMembersDialog: React.FC<ManageMembersDialogProps> = (props) => {
         {trainees?.length != 0 ? (
           <List sx={{ pt: 0 }}>
             {trainees?.map((trainee, i) => (
-              <ManageMembersItem groupName={groupName} trainee={trainee} />
+              <ManageMembersItem groupName={groupName} trainee={trainee} groups={groups} />
             ))}
           </List>
         ) : (
