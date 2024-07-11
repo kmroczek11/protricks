@@ -2,7 +2,6 @@ import { Args, Int, Mutation, Resolver } from '@nestjs/graphql';
 import { CitiesService } from './cities.service';
 import { City } from './entities/city.entity';
 import { CreateCityInput } from './dto/create-city.input';
-import { Public } from 'src/auth/decorators/public.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/users/entities/role.enum';
 

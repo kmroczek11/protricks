@@ -37,7 +37,7 @@ import { ScheduleModule } from '@nestjs/schedule';
           ? 'src/schema.gql'
           : 'dist/schema.gql',
       ),
-      playground: process.env.NODE_ENV === 'development' ? true : false,
+      playground: true,
       uploads: false,
       formatError: (error: GraphQLError) => {
         const graphQLFormattedError: GraphQLFormattedError = {

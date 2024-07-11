@@ -12,6 +12,7 @@ import Box from "@mui/material/Box";
 import CustomPhotoCards from "./components/CustomPhotoCards";
 import { useMediaQuery, useTheme } from "@mui/material";
 import MultistepForm from "./components/registration/MultistepForm";
+import StaticCities from "./components/StaticCities";
 
 const txt1 = {
   title: "Z CZYM TO SIĘ JE?",
@@ -85,6 +86,7 @@ const Home: React.FC = () => {
       <Hero multistepFormBox={multistepFormBox} />
       <Box ref={multistepFormRef}>
         <MultistepForm />
+        {/* <StaticCities /> */}
       </Box>
       <Container
         sx={{

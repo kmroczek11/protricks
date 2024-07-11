@@ -15,7 +15,7 @@ export class CoachesService {
     private readonly coachesRepository: Repository<Coach>,
     private readonly usersService: UsersService,
     private readonly citiesService: CitiesService
-  ) {}
+  ) { }
 
   createCoach(createCoachInput: CreateCoachInput) {
     const newCoach = this.coachesRepository.create(createCoachInput);
@@ -31,8 +31,14 @@ export class CoachesService {
     return this.coachesRepository.findOne({ where: { id } });
   }
 
-  getCoach(userId: string) {
-    return this.coachesRepository.findOne({ where: { userId } });
+  async getCoach(userId: string) {
+    const coach = await this.coachesRepository.findOne({ where: { userId } });
+
+    coach.groups.sort((a, b) => a.name.localeCompare(b.name));
+
+    coach.groups.forEach((group) => group.exercises.sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime()))
+
+    return coach;
   }
 
   getUser(userId: string): Promise<User> {

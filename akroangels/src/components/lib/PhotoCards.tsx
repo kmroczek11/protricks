@@ -28,7 +28,7 @@ const PhotoCards: React.FC<PhotoCardsProps> = (props) => {
       sx={sxRoot}
     >
       {items.map((item, i) => (
-        <Grid item xs={12} md={12 / items.length} key={i}>
+        <Grid item xs={12} md={6} key={i}>
           <PhotoCard item={item} onClick={onClick} />
         </Grid>
       ))}

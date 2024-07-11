@@ -70,7 +70,6 @@ const CoachExercisesPanel: React.FC = () => {
         <Typography
           gutterBottom
           variant="h1"
-          color="secondary.main"
           component="div"
         >
           Miejsce:
@@ -88,7 +87,6 @@ const CoachExercisesPanel: React.FC = () => {
         <Typography
           gutterBottom
           variant="h1"
-          color="secondary.main"
           component="div"
           sx={{
             display: "flex",
@@ -115,7 +113,6 @@ const CoachExercisesPanel: React.FC = () => {
               <Typography
                 gutterBottom
                 variant="h1"
-                color="secondary.main"
                 component="div"
               >
                 Grupa:
@@ -139,7 +136,6 @@ const CoachExercisesPanel: React.FC = () => {
               <Typography
                 gutterBottom
                 variant="h1"
-                color="secondary.main"
                 component="div"
                 sx={{
                   display: "flex",
@@ -156,7 +152,6 @@ const CoachExercisesPanel: React.FC = () => {
         <Typography
           gutterBottom
           variant="h1"
-          color="secondary.main"
           component="div"
           sx={{
             display: "flex",

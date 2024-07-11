@@ -106,7 +106,7 @@ export class TraineesService {
 
     const user = await this.usersService.findOneById(userId);
 
-    await this.mailService.sendLeaveMessage(email);
+    // await this.mailService.sendLeaveMessage(email);
 
     return {
       user,
@@ -159,7 +159,7 @@ export class TraineesService {
   async joinGroup(joinGroupInput: JoinGroupInput) {
     const { email, userId, traineeId } = joinGroupInput;
 
-    await this.mailService.sendLastStepMessage(email);
+    // await this.mailService.sendLastStepMessage(email);
 
     const job1 = new CronJob(
       new Date(this.addDays(Date.now(), 3)),
@@ -211,7 +211,7 @@ export class TraineesService {
   async confirmContractReceipt(confirmContractReceiptInput: ConfirmContractReceiptInput) {
     const { email, traineeId } = confirmContractReceiptInput;
 
-    await this.mailService.sendAllDoneMessage(email);
+    // await this.mailService.sendAllDoneMessage(email);
 
     return this.changeStatus(
       traineeId,
