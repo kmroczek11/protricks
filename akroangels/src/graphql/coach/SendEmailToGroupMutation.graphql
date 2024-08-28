@@ -1,5 +1,0 @@
-mutation SendEmailToGroup($input: SendEmailToGroupInput!) {
-  sendEmailToGroup(sendEmailToGroupInput: $input){
-    msg
-  }
-}

@@ -1,5 +1,0 @@
-mutation DeleteExercise($id: String!) {
-  deleteExercise(id: $id){
-    msg
-  }
-}

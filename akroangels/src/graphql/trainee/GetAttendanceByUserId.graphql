@@ -1,6 +1,0 @@
-query GetAttendanceByUserId($id: String!) {
-  getAttendanceByUserId(id: $id) {
-    day
-    present
-  }
-}

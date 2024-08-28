@@ -1,5 +1,0 @@
-mutation LogOutUser {
-  logOutUser {
-    msg
-  }
-}

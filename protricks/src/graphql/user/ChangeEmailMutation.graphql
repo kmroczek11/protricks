@@ -1,0 +1,13 @@
+mutation ChangeEmail($input: ChangeEmailInput!) {
+  changeEmail(changeEmailInput: $input){
+    refreshToken
+    user {
+      id
+      firstName
+      lastName
+      email
+      imgSrc
+      roles
+    }
+  }
+}

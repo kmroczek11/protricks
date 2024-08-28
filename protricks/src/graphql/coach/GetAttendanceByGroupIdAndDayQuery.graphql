@@ -1,0 +1,14 @@
+query GetAttendanceByGroupIdAndDay($attendanceByGroupIdAndDayInput: AttendanceByGroupIdAndDayInput!) {
+  getAttendanceByGroupIdAndDay(attendanceByGroupIdAndDayInput: $attendanceByGroupIdAndDayInput) {
+    day
+    present
+    status
+    trainee {
+      status
+      user {
+        firstName
+        lastName
+      }
+    }
+  }
+}

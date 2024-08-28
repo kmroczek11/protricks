@@ -1,5 +1,0 @@
-mutation CreateAttendance($input: CreateAttendanceInput!) {
-  createAttendance(createAttendanceInput: $input){
-    msg
-  }
-}

@@ -1,5 +1,0 @@
-mutation DeleteGroup($id: String!) {
-  deleteGroup(id: $id){
-    msg
-  }
-}

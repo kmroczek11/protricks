@@ -1,0 +1,13 @@
+mutation LogInUser($input: LogInUserInput!) {
+  logInUser(logInUserInput: $input) {
+    accessToken
+    user {
+      id
+      firstName
+      lastName
+      email
+      imgSrc
+      roles
+    }
+  }
+}

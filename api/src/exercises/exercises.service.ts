@@ -97,8 +97,6 @@ export class ExercisesService {
       mo.exercises.push(e)
     })
 
-    console.log(monthObjects)
-
     return { monthObjects, price }
   }
 }

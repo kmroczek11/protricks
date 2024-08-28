@@ -1,5 +1,0 @@
-mutation createPaymentItem($input: CreatePaymentItemInput!) {
-  createPaymentItem(createPaymentItemInput: $input) {
-    msg
-  }
-}

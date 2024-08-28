@@ -1,0 +1,16 @@
+query GetTrainee($id: String!) {
+  getTrainee(id: $id) {
+    id
+    status
+    group {
+      id
+      name
+      exercises {
+        id
+        day
+        start
+        end
+      }
+    }
+  }
+}
