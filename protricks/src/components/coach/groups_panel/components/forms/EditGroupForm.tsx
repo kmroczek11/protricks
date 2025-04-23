@@ -3,8 +3,7 @@ import TextField from "@mui/material/TextField";
 import { ColorButton, LoadingScreen } from "../../../../lib";
 import Box from "@mui/material/Box";
 import { useEditGroupMutation } from "../../../../../generated/graphql";
-import { useAuth } from "../../../../auth";
-import createAccessClient from "../../../../../graphql/clients/accessClient";
+import { useClient } from "../../../../auth/providers/ClientProvider";
 
 interface EditGroupFormProps {
   item: {
@@ -19,9 +18,10 @@ const EditGroupForm: React.FC<EditGroupFormProps> = (props) => {
   const { item } = props;
   const { id, ...payload } = item;
   const [formGroupValues, setFormGroupValues] = useState(payload);
+  const { accessClient } = useClient()
 
   const { isLoading, mutate } = useEditGroupMutation<Error>(
-    createAccessClient(),
+    accessClient!,
     {}
   );
 

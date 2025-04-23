@@ -26,6 +26,7 @@ import { AttendancesModule } from './attendances/attendances.module';
 import { PaymentsModule } from './payments/payments.module';
 import { LostTraineesModule } from './lost_trainees/lost_trainees.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import configuration from './config/configuration'
 
 @Module({
   imports: [
@@ -46,27 +47,6 @@ import { ScheduleModule } from '@nestjs/schedule';
         return graphQLFormattedError;
       },
     }),
-    ConfigModule.forRoot({
-      isGlobal: true,
-      validationSchema: Joi.object({
-        APP_PORT: Joi.number().required().default(5000),
-        APP_HOST: Joi.string().required(),
-        POSTGRES_PORT: Joi.number().required().default(5432),
-        POSTGRES_HOST: Joi.string().required(),
-        POSTGRES_USER: Joi.string().required(),
-        POSTGRES_PASSWORD: Joi.string().required(),
-        POSTGRES_DATABASE: Joi.string().required(),
-        ACCESS_TOKEN_SECRET: Joi.string().required(),
-        ACCESS_TOKEN_EXPIRATION: Joi.number().required(),
-        MAIL_PORT: Joi.number().required().default(465),
-        MAIL_HOST: Joi.string().required(),
-        MAIL_USER: Joi.string().required(),
-        MAIL_PASSWORD: Joi.string().required(),
-        STRIPE_SECRET_KEY: Joi.string().required(),
-        STRIPE_CURRENCY: Joi.string().required(),
-        CLIENT_HOST: Joi.string().required(),
-      }),
-    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       port: parseInt(<string>process.env.POSTGRES_PORT),
@@ -82,6 +62,10 @@ import { ScheduleModule } from '@nestjs/schedule';
       rootPath: join(__dirname, '..', 'public'),
     }),
     ScheduleModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration],
+    }),
     CitiesModule,
     GroupsModule,
     AuthModule,
@@ -89,7 +73,6 @@ import { ScheduleModule } from '@nestjs/schedule';
     CoachesModule,
     ExercisesModule,
     TraineesModule,
-    ConfigModule,
     MailModule,
     AttendancesModule,
     PaymentsModule,

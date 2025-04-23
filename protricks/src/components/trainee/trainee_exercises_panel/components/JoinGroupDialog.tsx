@@ -9,9 +9,9 @@ import Grid from "@mui/material/Grid";
 import { green } from "@mui/material/colors";
 import { ColorButton, CustomAlert, LoadingScreen } from "../../../lib";
 import Typography from "@mui/material/Typography";
-import { useAuth } from "../../../auth";
 import { CreateLostTraineeMutation, CreateLostTraineeMutationVariables, DeleteTraineeWithMessageMutation, DeleteTraineeWithMessageMutationVariables, JoinGroupMutation, JoinGroupMutationVariables, useCreateLostTraineeMutation, useDeleteTraineeWithMessageMutation, useJoinGroupMutation } from "../../../../generated/graphql";
-import createAccessClient from "../../../../graphql/clients/accessClient";
+import { useAuth } from "../../../auth/providers/AuthProvider";
+import { useClient } from "../../../auth/providers/ClientProvider";
 
 interface TraineeInfoDialogProps {
   traineeId: string;
@@ -19,14 +19,15 @@ interface TraineeInfoDialogProps {
 
 const JoinGroupDialog: React.FC<TraineeInfoDialogProps> = (props) => {
   const { traineeId } = props;
-  const { user, setUser } = useAuth();
+  const { user, getUserRefetch } = useAuth();
+  const { accessClient } = useClient()
   const [joinGroupStatus, setJoinGroupStatus] = React.useState<string>("");
   const [deleteTraineeStatus, setDeleteTraineeStatus] = React.useState<string>("");
 
   const {
     isLoading: isDeleteTraineeWithMessageLoading,
     mutate: deleteTraineeWithMessage,
-  } = useDeleteTraineeWithMessageMutation<Error>(createAccessClient(), {
+  } = useDeleteTraineeWithMessageMutation<Error>(accessClient!, {
     onError: (error: Error) => {
       let err: any = {};
       err.data = error;
@@ -37,13 +38,12 @@ const JoinGroupDialog: React.FC<TraineeInfoDialogProps> = (props) => {
       _variables: DeleteTraineeWithMessageMutationVariables,
       _context: unknown
     ) => {
-      // queryClient.invalidateQueries('GetAllAuthors');
-      setUser(data.deleteTraineeWithMessage.user!);
+      getUserRefetch()
     },
   });
 
   const { isLoading: isCreateLostTraineeLoading, mutate: createLostTrainee } =
-    useCreateLostTraineeMutation<Error>(createAccessClient(), {
+    useCreateLostTraineeMutation<Error>(accessClient!, {
       onError: (error: Error) => {
         let err: any = {};
         err.data = error;
@@ -57,7 +57,7 @@ const JoinGroupDialog: React.FC<TraineeInfoDialogProps> = (props) => {
     });
 
   const { isLoading: isJoinGroupLoading, mutate: joinGroup } =
-    useJoinGroupMutation<Error>(createAccessClient(), {
+    useJoinGroupMutation<Error>(accessClient!, {
       onError: (error: Error) => {
         let err: any = {};
         err.data = error;

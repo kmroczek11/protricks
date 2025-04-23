@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { CreatePaymentIntentInput } from './dto/create-payment-intent.input';
 import { CreatePaymentItemResponse } from './dto/create-payment-item-response';
 import { Payment } from './entities/payment.entity';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class PaymentsService {
@@ -13,8 +14,11 @@ export class PaymentsService {
   constructor(
     @InjectRepository(Payment)
     private readonly paymentsRepository: Repository<Payment>,
+    private readonly configService: ConfigService,
   ) {
-    this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+    const stripeSecretKey = this.configService.get<string>('stripeSecretKey')
+
+    this.stripe = new Stripe(stripeSecretKey, {
       apiVersion: '2022-11-15',
     });
   }
@@ -34,10 +38,11 @@ export class PaymentsService {
     createPaymentIntentInput: CreatePaymentIntentInput
   ) {
     const { amount } = createPaymentIntentInput;
+    const stripeCurrency = this.configService.get<string>('stripeCurrency')
 
     const paymentIntent = await this.stripe.paymentIntents.create({
       amount: amount * 100,
-      currency: process.env.STRIPE_CURRENCY,
+      currency: stripeCurrency,
       automatic_payment_methods: {
         enabled: true,
       },

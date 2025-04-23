@@ -27,9 +27,8 @@ import { Status, useDeleteGroupMutation } from "../../../../generated/graphql";
 import ExerciseRow from "./ExerciseRow";
 import Tooltip from "@mui/material/Tooltip";
 import ManageMembersDialog from "./dialogs/ManageMembersDialog";
-import { useAuth } from "../../../auth";
 import SendEmailToGroupDialog from "./dialogs/SendEmailToGroupDialog";
-import createAccessClient from "../../../../graphql/clients/accessClient";
+import { useClient } from "../../../auth/providers/ClientProvider";
 
 interface RowProps {
   i: number;
@@ -67,11 +66,11 @@ const GroupRow: React.FC<RowProps> = (props) => {
   const [openCreateExercise, setOpenCreateExercise] = useState(false);
   const [openDeleteGroup, setOpenDeleteGroup] = useState(false);
   const [openManageMembersDialog, setOpenManageMembersDialog] = useState(false);
-  const [openSendEmailToGroupDialog, setOpenSendEmailToGroupDialog] =
-    useState(false);
+  const [openSendEmailToGroupDialog, setOpenSendEmailToGroupDialog] = useState(false);
+  const { accessClient } = useClient()
 
   const { isLoading, mutate } = useDeleteGroupMutation<Error>(
-    createAccessClient(),
+    accessClient!,
     {}
   );
 

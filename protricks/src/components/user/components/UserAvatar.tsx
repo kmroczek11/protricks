@@ -11,11 +11,11 @@ import {
   useChangeProfilePicMutation,
 } from "../../../generated/graphql";
 import Box from "@mui/material/Box";
-import { useAuth } from "../../auth";
 import Tooltip from "@mui/material/Tooltip";
 import imageCompression from "browser-image-compression";
 import { CustomAlert } from "../../lib";
-import createChangeProfilePicClient from "../../../graphql/clients/changeProfilePicClient";
+import { useAuth } from "../../auth/providers/AuthProvider";
+import { useClient } from "../../auth/providers/ClientProvider";
 
 const stringToColor = (string: string) => {
   let hash = 0;
@@ -66,12 +66,13 @@ const invalidMimeType = "Nieprawidłowy typ MIME.";
 
 const UserAvatar: React.FC<UserAvatarProps> = (props) => {
   const { name, size, imgSrc, BadgeIcon } = props;
-  const { user, setUser } = useAuth();
+  const { user, getUserRefetch } = useAuth();
+  const { fileUploadClient } = useClient();
   const [changeProfilePicStatus, setChangeProfilePicStatus] =
     useState<string>("");
 
   const { isLoading, mutate } = useChangeProfilePicMutation<Error>(
-    createChangeProfilePicClient(),
+    fileUploadClient!,
     {
       onError: (error: Error) => {
         let err: any = {};
@@ -84,9 +85,7 @@ const UserAvatar: React.FC<UserAvatarProps> = (props) => {
         _variables: ChangeProfilePicMutationVariables,
         _context: unknown
       ) => {
-        // queryClient.invalidateQueries('GetAllAuthors');
-        console.log(data.changeProfilePic.user)
-        setUser(data.changeProfilePic.user);
+        getUserRefetch()
       },
     }
   );

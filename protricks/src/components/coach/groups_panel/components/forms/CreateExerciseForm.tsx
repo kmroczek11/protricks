@@ -8,8 +8,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import plLocale from "date-fns/locale/pl";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { useCreateExerciseMutation } from "../../../../../generated/graphql";
-import { useAuth } from "../../../../auth";
-import createAccessClient from "../../../../../graphql/clients/accessClient";
+import { useClient } from "../../../../auth/providers/ClientProvider";
 
 const defaultExerciseValues = {
   day: new Date(),
@@ -26,9 +25,10 @@ const CreateExerciseForm: React.FC<CreateExerciseFormProps> = (props) => {
   const [formExerciseValues, setFormExerciseValues] = useState(
     defaultExerciseValues
   );
+  const { accessClient } = useClient()
 
   const { isLoading, mutate } = useCreateExerciseMutation<Error>(
-    createAccessClient(),
+    accessClient!,
     {}
   );
 

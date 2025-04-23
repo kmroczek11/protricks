@@ -8,7 +8,6 @@ import {
   GetAllCoachesQuery,
   useGetAllCoachesQuery,
 } from "../../../../generated/graphql";
-import accessClient from "../../../../graphql/clients/accessClient";
 import TraineeForm from "./TraineeForm";
 import Paperwork from "./Paperwork";
 import {
@@ -16,7 +15,6 @@ import {
   CreateTraineeMutationVariables,
   useCreateTraineeMutation,
 } from "../../../../generated/graphql";
-import { useAuth } from "../../../auth";
 import { useLocation } from "react-router-dom";
 import { CustomDialog, PhotoCardsLoader } from "../../../lib";
 import {
@@ -26,11 +24,14 @@ import {
 } from "../../../../translations/pl/errorMessages";
 import LinearProgress from "@mui/material/LinearProgress";
 import Typography from "@mui/material/Typography";
+import { useAuth } from "../../../auth/providers/AuthProvider";
+import { useClient } from "../../../auth/providers/ClientProvider";
 
 const MultistepForm: () => JSX.Element | null = () => {
   const [step, setStep] = useState<number>(0);
   const [name, setName] = useState<string>("");
-  const { user, setUser } = useAuth();
+  const { user, getUserRefetch } = useAuth();
+  const { client, accessClient } = useClient();
   const [selectedGroup, setSelectedGroup] = useState<string>();
   const [registrationStatus, setRegistrationStatus] = useState<string>("");
   const [extraData, setExtraData] = useState<any>();
@@ -40,10 +41,10 @@ const MultistepForm: () => JSX.Element | null = () => {
     isLoading: coachesLoading,
     error,
     refetch,
-  } = useGetAllCoachesQuery<GetAllCoachesQuery, Error>(accessClient(), {});
+  } = useGetAllCoachesQuery<GetAllCoachesQuery, Error>(client!, {}, { enabled: client ? true : false });
 
   const { isLoading: creatingTraineeLoading, mutate } =
-    useCreateTraineeMutation<Error>(accessClient(), {
+    useCreateTraineeMutation<Error>(accessClient!, {
       onError: (error: Error) => {
         let err: any = {};
         err.data = error;
@@ -55,7 +56,7 @@ const MultistepForm: () => JSX.Element | null = () => {
         _context: unknown
       ) => {
         setRegistrationStatus("Success");
-        setUser(data.createTrainee.user);
+        getUserRefetch()
       },
     });
 
@@ -141,33 +142,40 @@ const MultistepForm: () => JSX.Element | null = () => {
   return (
     <Box>
       <Container>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            pb: 5,
-          }}
-        >
+        {error ?
           <Typography variant="h1" color="primary" gutterBottom>
-            {step + 1} / 4
-          </Typography>
-          <Box sx={{ width: "100%" }}>
-            <LinearProgress
-              variant="determinate"
-              value={step * 25}
+            Wystąpił błąd podczas ładowania miast: {error.name}
+          </Typography> :
+          <React.Fragment>
+            <Box
               sx={{
-                "& .MuiLinearProgress-colorPrimary": {
-                  backgroundColor: "primary",
-                },
-                "& .MuiLinearProgress-barColorPrimary": {
-                  backgroundColor: "green",
-                },
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                pb: 5,
               }}
-            />
-          </Box>
-        </Box>
-        {renderStep()}
+            >
+              <Typography variant="h1" color="primary" gutterBottom>
+                {step + 1} / 4
+              </Typography>
+              <Box sx={{ width: "100%" }}>
+                <LinearProgress
+                  variant="determinate"
+                  value={step * 25}
+                  sx={{
+                    "& .MuiLinearProgress-colorPrimary": {
+                      backgroundColor: "primary",
+                    },
+                    "& .MuiLinearProgress-barColorPrimary": {
+                      backgroundColor: "green",
+                    },
+                  }}
+                />
+              </Box>
+            </Box>
+            {renderStep()}
+          </React.Fragment>
+        }
       </Container>
       {registrationStatus === "Not logged in" ? (
         <CustomDialog

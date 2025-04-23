@@ -20,7 +20,6 @@ import ListAltIcon from "@mui/icons-material/ListAlt";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import CustomAvatar from "../../lib/CustomAvatar";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../auth";
 import Paper from "@mui/material/Paper";
 import MenuList from "@mui/material/MenuList";
 import ListItemText from "@mui/material/ListItemText";
@@ -30,9 +29,10 @@ import Drawer from "@mui/material/Drawer";
 import { NavItemsObject } from "../../../routes";
 import Toolbar from "@mui/material/Toolbar";
 import Link from "@mui/material/Link";
-import createAccessClient from "../../../graphql/clients/accessClient";
 import PaymentIcon from "@mui/icons-material/Payment";
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
+import { useAuth } from "../../auth/providers/AuthProvider";
+import { useClient } from "../../auth/providers/ClientProvider";
 
 interface UserButtonsBoxProps {
   items: NavItemsObject[];
@@ -45,30 +45,10 @@ const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
   const { items } = props;
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-  const { user, setUser } = useAuth();
+  const { user, logOut } = useAuth();
   const navigate = useNavigate();
   const [logoutStatus, setLogoutStatus] = useState<string>("");
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
-
-  const { isLoading, mutate: logOut } = useLogOutUserMutation<Error>(
-    createAccessClient(),
-    {
-      onError: (error: Error) => {
-        let err: any = {};
-        err.data = error;
-        setLogoutStatus(err?.data?.response.errors[0].message);
-      },
-      onSuccess: (
-        data: LogOutUserMutation,
-        _variables: LogOutUserMutationVariables,
-        _context: unknown
-      ) => {
-        // queryClient.invalidateQueries('GetAllAuthors');
-        localStorage.removeItem(process.env.REACT_APP_ACCESS_TOKEN_SECRET!);
-        setUser(null);
-      },
-    }
-  );
 
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -222,7 +202,7 @@ const UserButtonsBox: React.FC<UserButtonsBoxProps> = (props) => {
               <ColorButton
                 variant="contained"
                 color="error"
-                onClick={() => logOut({})}
+                onClick={() => logOut()}
               >
                 Wyloguj
               </ColorButton>

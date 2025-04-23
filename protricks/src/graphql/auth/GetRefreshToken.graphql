@@ -1,0 +1,3 @@
+query GetRefreshToken($userId: String!) {
+  getRefreshToken(userId: $userId)
+}

@@ -8,8 +8,6 @@ import {
   useCreatePaymentIntentMutation,
   useGetMonthlyExercisesQuery,
 } from "../../../generated/graphql";
-import createAccessClient from "../../../graphql/clients/accessClient";
-import { useAuth } from "../../auth";
 import { LoadingScreen } from "../../lib";
 import { loadStripe } from "@stripe/stripe-js";
 import ExercisesTable from "./components/ExercisesTable";
@@ -17,6 +15,8 @@ import InfoBox from "./components/InfoBox";
 import Box from "@mui/material/Box";
 import { SelectedItem } from "./types/SelectedItem.type";
 import Typography from "@mui/material/Typography";
+import { useAuth } from "../../auth/providers/AuthProvider";
+import { useClient } from "../../auth/providers/ClientProvider";
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
@@ -26,12 +26,13 @@ const TraineePaymentsPanel: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [clientSecret, setClientSecret] = useState("");
   const { user } = useAuth();
+  const { accessClient } = useClient();
 
   const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([])
   const [totalAmount, setTotalAmount] = useState<number>()
 
   const { isLoading: isCreatePaymentIntentLoading, mutate: createPaymentIntent } =
-    useCreatePaymentIntentMutation<Error>(createAccessClient(), {
+    useCreatePaymentIntentMutation<Error>(accessClient!, {
       onError: (error: Error) => {
         let err: any = {};
         err.data = error;
@@ -50,7 +51,7 @@ const TraineePaymentsPanel: React.FC = () => {
     error,
     refetch,
   } = useGetMonthlyExercisesQuery<GetMonthlyExercisesQuery, Error>(
-    createAccessClient(),
+    accessClient!,
     {
       input: {
         userId: user?.id!,

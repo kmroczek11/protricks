@@ -10,14 +10,13 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { useAuth } from "..";
 import {
   ForgotPasswordMutation,
   ForgotPasswordMutationVariables,
   useForgotPasswordMutation,
 } from "../../../generated/graphql";
-import createAccessClient from "../../../graphql/clients/accessClient";
 import { resetPasswordSuccessMessage } from "../../../translations/pl/errorMessages";
+import { useClient } from "../providers/ClientProvider";
 
 interface LogInDialogProps {
   open: boolean;
@@ -26,16 +25,15 @@ interface LogInDialogProps {
 
 const defaultValues = {
   email: "",
-};
-
-
+}
 
 const ForgotPasswordDialog: React.FC<LogInDialogProps> = (props) => {
   const { open, handleClose } = props;
   const [forgotPasswordStatus, setForgotPasswordStatus] = useState<string>("");
+  const { accessClient } = useClient()
 
   const { isLoading, mutate } = useForgotPasswordMutation<Error>(
-    createAccessClient(),
+    accessClient!,
     {
       onError: (error: Error) => {
         let err: any = {};

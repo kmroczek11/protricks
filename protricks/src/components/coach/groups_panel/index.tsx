@@ -14,8 +14,8 @@ import AddIcon from "@mui/icons-material/Add";
 import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
 import CreateGroupForm from "./components/forms/CreateGroupForm";
-import { useAuth } from "../../auth";
-import createAccessClient from "../../../graphql/clients/accessClient";
+import { useAuth } from "../../auth/providers/AuthProvider";
+import { useClient } from "../../auth/providers/ClientProvider";
 
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -50,13 +50,14 @@ export const StyledExerciseTableRow = styled(StyledTableRow)(({ theme }) => ({
 
 const GroupsPanel: React.FC = () => {
   const { user } = useAuth();
+  const { accessClient } = useClient()
   const [openCreateGroup, setOpenCreateGroup] = useState(false);
 
   const { data, isLoading, error, refetch } = useGetCoachQuery<
     GetCoachQuery,
     Error
   >(
-    createAccessClient(),
+    accessClient!,
     {
       id: user?.id!,
     },

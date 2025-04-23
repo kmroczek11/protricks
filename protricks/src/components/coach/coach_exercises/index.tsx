@@ -1,17 +1,18 @@
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import React from "react";
-import { useAuth } from "../../auth";
 import { GetCoachQuery, useGetCoachQuery } from "../../../generated/graphql";
 import ExerciseCard from "./components/ExerciseCard";
 import { LoadingScreen } from "../../lib";
-import createAccessClient from "../../../graphql/clients/accessClient";
+import { useAuth } from "../../auth/providers/AuthProvider";
+import { useClient } from "../../auth/providers/ClientProvider";
 
 const CoachExercisesPanel: React.FC = () => {
   const { user } = useAuth();
+  const { accessClient } = useClient()
 
   const { data, isLoading } = useGetCoachQuery<GetCoachQuery, Error>(
-    createAccessClient(),
+    accessClient!,
     {
       id: user?.id!,
     },

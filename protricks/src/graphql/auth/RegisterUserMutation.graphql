@@ -1,13 +1,5 @@
 mutation RegisterUser($input: RegisterUserInput!) {
-  registerUser(registerUserInput: $input) {
-    accessToken
-    user {
-      id
-      firstName
-      lastName
-      email
-      imgSrc
-      roles
-    }
+  registerUser(registerUserInput: $input){
+    userId
   }
 }

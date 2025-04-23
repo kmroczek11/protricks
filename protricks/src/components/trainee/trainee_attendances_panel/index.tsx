@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import { useAuth } from "../../auth";
 import {
   GetAttendanceByUserIdQuery,
   GetTraineeQuery,
@@ -10,17 +9,19 @@ import {
   useGetTraineeQuery,
 } from "../../../generated/graphql";
 import { CustomAlert, LoadingScreen } from "../../lib";
-import createAccessClient from "../../../graphql/clients/accessClient";
 import AttendanceCard from "./components/AttendanceCard";
+import { useAuth } from "../../auth/providers/AuthProvider";
+import { useClient } from "../../auth/providers/ClientProvider";
 
 const TraineeAttendancesPanel: React.FC = () => {
-  const { user } = useAuth();
+  const { user } = useAuth()
+  const { accessClient } = useClient()
 
   const { data, isLoading, error, refetch } = useGetAttendanceByUserIdQuery<
     GetAttendanceByUserIdQuery,
     Error
   >(
-    createAccessClient(),
+    accessClient!,
     {
       id: user?.id!,
     },

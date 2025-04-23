@@ -7,10 +7,10 @@ import {
   ChangeEmailMutation,
   ChangeEmailMutationVariables,
 } from "../../../generated/graphql";
-import { useAuth } from "../../auth";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import createAccessClient from "../../../graphql/clients/accessClient";
+import { useAuth } from "../../auth/providers/AuthProvider";
+import { useClient } from "../../auth/providers/ClientProvider";
 
 const defaultValues = {
   newEmail: "",
@@ -19,10 +19,11 @@ const defaultValues = {
 const successMessage = "E-mail został zmieniony.";
 
 const EmailForm: React.FC = () => {
-  const { user, setUser } = useAuth();
+  const { user, getUserRefetch } = useAuth();
+  const { accessClient } = useClient();
   const [changeEmailStatus, setChangeEmailStatus] = useState<string>("");
 
-  const { isLoading, mutate } = useChangeEmailMutation<Error>(createAccessClient(), {
+  const { isLoading, mutate } = useChangeEmailMutation<Error>(accessClient!, {
     onError: (error: Error) => {
       let err: any = {};
       err.data = error;
@@ -38,7 +39,7 @@ const EmailForm: React.FC = () => {
         process.env.REACT_APP_REFRESH_TOKEN_SECRET!,
         data.changeEmail.refreshToken
       );
-      setUser(data.changeEmail.user);
+      getUserRefetch()
       setChangeEmailStatus("Success");
     },
   });

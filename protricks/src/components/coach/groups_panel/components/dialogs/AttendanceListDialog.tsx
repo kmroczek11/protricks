@@ -30,8 +30,8 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { Box, Theme, useTheme } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import Switch from "@mui/material/Switch";
-import createAccessClient from "../../../../../graphql/clients/accessClient";
 import StatusBox from "./StatusBox";
+import { useClient } from "../../../../auth/providers/ClientProvider";
 
 interface AttendanceListDialogProps {
   groupId:string;
@@ -105,9 +105,10 @@ const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
       present: boolean;
     }[]
   >([]);
+  const { accessClient } = useClient()
 
   const { isLoading, mutate: createAttendance } =
-    useCreateAttendanceMutation<Error>(createAccessClient(), {
+    useCreateAttendanceMutation<Error>(accessClient!, {
       onSuccess: (
         data: CreateAttendanceMutation,
         _variables: CreateAttendanceMutationVariables,
@@ -116,7 +117,7 @@ const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
     });
 
   const { isLoading: isAcceptToGroupLoading, mutate: acceptToGroup } =
-    useAcceptToGroupMutation<Error>(createAccessClient(), {
+    useAcceptToGroupMutation<Error>(accessClient!, {
       onError: (error: Error) => {
         let err: any = {};
         err.data = error;

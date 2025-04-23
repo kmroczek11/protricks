@@ -1,0 +1,3 @@
+query GetAccessToken($userId: String!) {
+  getAccessToken(userId: $userId)
+}

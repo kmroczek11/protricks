@@ -7,11 +7,11 @@ import {
   ChangePasswordMutation,
   ChangePasswordMutationVariables,
 } from "../../../generated/graphql";
-import { useAuth } from "../../auth";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import YupPassword from "yup-password";
-import createAccessClient from "../../../graphql/clients/accessClient";
+import { useAuth } from "../../auth/providers/AuthProvider";
+import { useClient } from "../../auth/providers/ClientProvider";
 YupPassword(Yup); // extend yup
 
 const defaultValues = {
@@ -24,11 +24,12 @@ const successMessage = "Hasło zostało zmienione.";
 const invalidPasswordMessage = "Nieprawidłowe hasło.";
 
 const PasswordForm: React.FC = () => {
-  const { user, setUser } = useAuth();
+  const { user, getUserRefetch } = useAuth();
+  const { accessClient } = useClient();
   const [changePasswordStatus, setChangePasswordStatus] = useState<string>("");
 
   const { isLoading, mutate } = useChangePasswordMutation<Error>(
-    createAccessClient(),
+    accessClient!,
     {
       onError: (error: Error) => {
         let err: any = {};
@@ -40,8 +41,7 @@ const PasswordForm: React.FC = () => {
         _variables: ChangePasswordMutationVariables,
         _context: unknown
       ) => {
-        // queryClient.invalidateQueries('GetAllAuthors');
-        setUser(data.changePassword.user);
+        getUserRefetch()
         setChangePasswordStatus("Success");
       },
     }

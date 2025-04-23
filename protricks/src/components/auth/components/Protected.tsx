@@ -1,5 +1,5 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { useAuth } from "..";
+import { useAuth } from "../providers/AuthProvider";
 import { Role } from "../../../generated/graphql";
 
 interface ProtectedProps {

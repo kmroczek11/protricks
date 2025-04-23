@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import { useAuth } from "../../auth";
 import {
   GetTraineeQuery,
   Status,
@@ -9,17 +8,19 @@ import {
 } from "../../../generated/graphql";
 import ExerciseCard from "./components/ExerciseCard";
 import { CustomAlert, LoadingScreen } from "../../lib";
-import createAccessClient from "../../../graphql/clients/accessClient";
 import JoinGroupDialog from "./components/JoinGroupDialog";
+import { useAuth } from "../../auth/providers/AuthProvider";
+import { useClient } from "../../auth/providers/ClientProvider";
 
 const TraineeExercisesPanel: React.FC = () => {
   const { user } = useAuth();
+  const { accessClient } = useClient();
 
   const { data, isLoading, error, refetch } = useGetTraineeQuery<
     GetTraineeQuery,
     Error
   >(
-    createAccessClient(),
+    accessClient!,
     {
       id: user?.id!,
     },

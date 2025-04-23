@@ -13,8 +13,8 @@ import {
   amountToSmall,
 } from "../../../../translations/pl/errorMessages";
 import { useCreatePaymentItemMutation } from "../../../../generated/graphql";
-import createAccessClient from "../../../../graphql/clients/accessClient";
 import { SelectedItem } from "../types/SelectedItem.type";
+import { useClient } from "../../../auth/providers/ClientProvider";
 
 interface CheckoutFormProps {
   selectedItems: SelectedItem[],
@@ -23,6 +23,7 @@ interface CheckoutFormProps {
 
 const CheckoutForm: React.FC<CheckoutFormProps> = (props) => {
   const { selectedItems, setSelectedItems } = props;
+  const { accessClient } = useClient();
 
   const stripe = useStripe();
   const elements = useElements();
@@ -31,7 +32,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = (props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { isLoading: isCreatePaymentItemLoading, mutate: createPaymentItem } =
-    useCreatePaymentItemMutation<Error>(createAccessClient(), {});
+    useCreatePaymentItemMutation<Error>(accessClient!, {});
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

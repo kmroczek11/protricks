@@ -3,7 +3,7 @@ import TextField from "@mui/material/TextField";
 import { ColorButton, LoadingScreen } from "../../../../lib";
 import Box from "@mui/material/Box";
 import { useCreateGroupMutation } from "../../../../../generated/graphql";
-import createAccessClient from "../../../../../graphql/clients/accessClient";
+import { useClient } from "../../../../auth/providers/ClientProvider";
 
 const defaultGroupValues = {
   name: "Nowa grupa",
@@ -18,9 +18,10 @@ interface CreateGroupFormProps {
 const CreateGroupForm: React.FC<CreateGroupFormProps> = (props) => {
   const { coachId } = props;
   const [formGroupValues, setFormGroupValues] = useState(defaultGroupValues);
+  const { accessClient } = useClient()
 
   const { isLoading, mutate } = useCreateGroupMutation<Error>(
-    createAccessClient(),
+    accessClient!,
     {}
   );
 

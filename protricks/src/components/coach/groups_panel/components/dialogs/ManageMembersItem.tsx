@@ -15,7 +15,6 @@ import Grid from "@mui/material/Grid";
 import StatusBox from "./StatusBox";
 import InfoIcon from "@mui/icons-material/Info";
 import TraineeInfoDialog from "./TraineeInfoDialog";
-import createAccessClient from "../../../../../graphql/clients/accessClient";
 import { useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -23,6 +22,7 @@ import { useTheme } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import MoveDownIcon from '@mui/icons-material/MoveDown';
 import ChangeGroupDialog from "./ChangeGroupDialog";
+import { useClient } from "../../../../auth/providers/ClientProvider";
 
 interface ManageMembersItemProps {
   groupName: string;
@@ -50,6 +50,7 @@ const ManageMembersItem: React.FC<ManageMembersItemProps> = (props) => {
   const [openDetailedInfo, setOpenDetailedInfo] = useState(false);
   const [openChangeGroup, setOpenChangeGroup] = useState(false);
   const [openDeleteTrainee, setOpenDeleteTrainee] = useState(false);
+  const { accessClient } = useClient()
 
   const { groupName, trainee,groups } = props;
   const theme = useTheme();
@@ -58,10 +59,10 @@ const ManageMembersItem: React.FC<ManageMembersItemProps> = (props) => {
   const {
     isLoading: isConfirmContractReceiptLoading,
     mutate: confirmContractReceipt,
-  } = useConfirmContractReceiptMutation<Error>(createAccessClient(), {});
+  } = useConfirmContractReceiptMutation<Error>(accessClient!, {});
 
   const { isLoading: isDeleteTraineeLoading, mutate: deleteTrainee } =
-    useDeleteTraineeMutation<Error>(createAccessClient(), {});
+    useDeleteTraineeMutation<Error>(accessClient!, {});
 
   const handleDetailedInfoDialogClose = () => {
     setOpenDetailedInfo(false);

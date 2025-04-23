@@ -12,7 +12,6 @@ import {
   useGetAttendanceByGroupIdAndDayQuery,
 } from "../../../../generated/graphql";
 import Tooltip from "@mui/material/Tooltip";
-import { useAuth } from "../../../auth";
 import { CustomDialog } from "../../../lib";
 import * as XLSX from "xlsx";
 import { grey } from "@mui/material/colors";
@@ -20,9 +19,8 @@ import { styled } from "@mui/material/styles";
 import { StyledExerciseTableCell, StyledExerciseTableRow } from "..";
 import DownloadIcon from "@mui/icons-material/Download";
 import AttendanceListDialog from "./dialogs/AttendanceListDialog";
-import createAccessClient from "../../../../graphql/clients/accessClient";
-import accessClient from "../../../../graphql/clients/accessClient";
 import { convertToPlDate, getTimeWithoutMiliseconds } from "./helpers";
+import { useClient } from "../../../auth/providers/ClientProvider";
 
 const StyledIconButton = styled(IconButton)({
   "&:hover": {
@@ -55,6 +53,7 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
   const [openAttendanceList, setOpenAttendanceList] = useState(false);
   const [attendanceChecked, setAttendanceChecked] = useState(false);
   const [openAttendanceWarning, setOpenAttendanceWarning] = useState(false);
+  const { accessClient } = useClient()
 
   const {
     data,
@@ -62,7 +61,7 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
     error,
     refetch,
   } = useGetAttendanceByGroupIdAndDayQuery<GetAttendanceByGroupIdAndDayQuery, Error>(
-    accessClient(),
+    accessClient!,
     {
       attendanceByGroupIdAndDayInput: {
         groupId,
@@ -73,7 +72,7 @@ const ExerciseRow: React.FC<RowProps> = (props) => {
   );
 
   const { isLoading, mutate } = useDeleteExerciseMutation<Error>(
-    createAccessClient(),
+    accessClient!,
     {}
   );
 

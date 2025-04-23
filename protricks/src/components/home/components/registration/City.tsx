@@ -1,7 +1,6 @@
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../../../auth";
 import { Role } from "../../../../generated/graphql";
 import { ColorButton, PhotoCard, CustomAvatar, ButtonBox } from "../../../lib";
 import GroupList from "./GroupList";
@@ -11,6 +10,7 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import PriceList from "./PriceList";
 import { useTheme, useMediaQuery } from "@mui/material";
+import { useAuth } from "../../../auth/providers/AuthProvider";
 
 interface CityProps {
   visible: boolean;

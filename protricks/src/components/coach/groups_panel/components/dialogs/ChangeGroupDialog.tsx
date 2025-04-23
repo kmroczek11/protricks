@@ -12,7 +12,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Typography from "@mui/material/Typography";
 import { ColorButton } from "../../../../lib";
 import { ChangeGroupMutation, useChangeGroupMutation } from "../../../../../generated/graphql";
-import createAccessClient from "../../../../../graphql/clients/accessClient";
+import { useClient } from "../../../../auth/providers/ClientProvider";
 
 interface TraineeInfoDialogProps {
   traineeId: string;
@@ -25,9 +25,10 @@ interface TraineeInfoDialogProps {
 const TraineeInfoDialog: React.FC<TraineeInfoDialogProps> = (props) => {
   const { traineeId, groups, open, handleClose, onClose } = props;
   const [groupId, setGroupId] = React.useState(groups![0].id);
+  const { accessClient } = useClient()
 
   const { isLoading, mutate: changeGroup } =
-    useChangeGroupMutation<Error>(createAccessClient(), {});
+    useChangeGroupMutation<Error>(accessClient!, {});
 
   const handleChange = (event: SelectChangeEvent) => {
     setGroupId(event.target.value as string);

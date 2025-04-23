@@ -16,8 +16,8 @@ import Autocomplete from "@mui/material/Autocomplete";
 import Grid from "@mui/material/Grid";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { useAuth } from "../../../../auth";
-import createAccessClient from "../../../../../graphql/clients/accessClient";
+import { useAuth } from "../../../../auth/providers/AuthProvider";
+import { useClient } from "../../../../auth/providers/ClientProvider";
 
 const defaultValues = {
   subject: "",
@@ -41,9 +41,10 @@ const SendEmailToGroupDialog: React.FC<SendEmailToGroupDialogProps> = (
   const [sendEmailToGroupStatus, setSendEmailToGroupStatus] =
     useState<string>("");
   const { user } = useAuth();
+  const { accessClient } = useClient()
 
   const { isLoading, mutate } = useSendEmailToGroupMutation<Error>(
-    createAccessClient(),
+    accessClient!,
     {
       onError: (error: Error) => {
         let err: any = {};

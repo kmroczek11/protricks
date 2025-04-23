@@ -1,30 +1,36 @@
-import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
-import { ChangeEmailResponse } from './responses/change-email-response';
 import { LogInResponse } from './responses/logIn-response';
-import { ChangeEmailInput } from './inputs/change-email.input';
 import { RegisterUserInput } from './inputs/register-user.input';
-import { ChangePasswordResponse } from './responses/change-password-response';
-import { ChangePasswordInput } from './inputs/change-password.input';
 import { Public } from './decorators/public.decorator';
-import { Roles } from './decorators/roles.decorator';
-import { Role } from 'src/users/entities/role.enum';
-import { ChangeProfilePicResponse } from './responses/change-profile-pic-response';
-import { ChangeProfilePicInput } from './inputs/change-profile-pic.input';
-import { LogOutResponse } from './responses/logOut-response';
 import { LogInUserInput } from './inputs/logIn-user.input';
 import { LogInAuthGuard } from './guards/logIn-auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { AutoLogInUserInput } from './inputs/autoLogIn-user.input';
-import { CurrentUser } from './decorators/user.decorator';
-import { User } from 'src/users/entities/user.entity';
-import { ForgotPasswordInput } from './inputs/forgot-password.input';
+import { LogOutResponse } from './responses/logOut-response';
+import { Roles } from './decorators/roles.decorator';
+import { Role } from 'src/users/entities/role.enum';
+import { LogOutUserInput } from './inputs/logOut-user.input';
+import { ChangeEmailResponse } from './responses/change-email-response';
+import { ChangeEmailInput } from './inputs/change-email.input';
+import { ChangePasswordResponse } from './responses/change-password-response';
+import { ChangePasswordInput } from './inputs/change-password.input';
+import { ChangeProfilePicResponse } from './responses/change-profile-pic-response';
+import { ChangeProfilePicInput } from './inputs/change-profile-pic.input';
 import { ForgotPasswordResponse } from './responses/forgot-password-response';
-import { AutoLogInGuard } from './guards/autoLogIn-auth.guard';
+import { ForgotPasswordInput } from './inputs/forgot-password.input';
+import { RefreshTokenInput } from './inputs/refresh-token.input';
+import { RefreshTokenResponse } from './responses/refresh-token-response';
+import { RedisService } from 'src/redis/redis.service';
+import { User } from 'src/users/entities/user.entity';
 
 @Resolver()
 export class AuthResolver {
-  constructor(private authService: AuthService) {}
+  constructor
+    (
+      private authService: AuthService,
+      private readonly redisService: RedisService
+    ) { }
 
   @Mutation(() => LogInResponse)
   @Public()
@@ -35,29 +41,35 @@ export class AuthResolver {
   }
 
   @Mutation(() => LogInResponse)
-  @UseGuards(LogInAuthGuard)
   @Public()
+  @UseGuards(LogInAuthGuard)
   logInUser(
     @Args('logInUserInput') logInUserInput: LogInUserInput,
-    @Context() context,
-  ) {
-    return this.authService.logIn(context.user);
+  ): Promise<LogInResponse> {
+    return this.authService.logIn(logInUserInput);
   }
 
   @Mutation(() => LogInResponse)
   @Public()
-  @UseGuards(AutoLogInGuard)
+  // @UseGuards(AutoLogInAuthGuard)
   autoLogInUser(
     @Args('autoLogInUserInput') autoLogInUserInput: AutoLogInUserInput,
-    @CurrentUser() user: User,
   ) {
-    return this.authService.logIn(user);
+    return this.authService.autoLogIn(autoLogInUserInput);
   }
 
   @Mutation(() => LogOutResponse)
-  @Roles(Role.USER)
-  logOutUser(@CurrentUser() user: User): Promise<LogOutResponse> {
-    return this.authService.logOut(user);
+  @Public()
+  logOutUser(
+    @Args('logOutUserInput') logOutUserInput: LogOutUserInput,
+  ): Promise<LogOutResponse> {
+    return this.authService.logOut(logOutUserInput);
+  }
+
+  @Mutation(() => RefreshTokenResponse)
+  @Public()
+  refreshToken(@Args('refreshTokenInput') refreshTokenInput: RefreshTokenInput) {
+    return this.authService.refreshToken(refreshTokenInput);
   }
 
   @Mutation(() => ChangeEmailResponse)
@@ -88,5 +100,23 @@ export class AuthResolver {
     @Args('forgotPasswordInput') forgotPasswordInput: ForgotPasswordInput,
   ) {
     return this.authService.forgotPassword(forgotPasswordInput);
+  }
+
+  @Query(() => User)
+  @Public()
+  getUser(@Args('userId') userId: string): Promise<User | null> {
+    return this.redisService.getUser(userId);
+  }
+
+  @Query(() => String)
+  @Public()
+  getAccessToken(@Args('userId') userId: string): Promise<string | null> {
+    return this.redisService.getAccessToken(userId);
+  }
+
+  @Query(() => String)
+  @Public()
+  getRefreshToken(@Args('userId') userId: string): Promise<string | null> {
+    return this.redisService.getRefreshToken(userId);
   }
 }

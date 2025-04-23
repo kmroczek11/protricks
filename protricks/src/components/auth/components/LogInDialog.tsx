@@ -10,11 +10,11 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { useAuth } from "..";
 import ForgotPasswordDialog from "./ForgotPasswordDialog";
-import createAccessClient from "../../../graphql/clients/accessClient";
 import useLogInUser from "../hooks/useLogInUser";
 import { invalidEmailOrPasswordMessage } from "../../../translations/pl/errorMessages";
+import { useClient } from "../providers/ClientProvider";
+import { useCookies } from "react-cookie";
 
 interface LogInDialogProps {
   open: boolean;
@@ -29,20 +29,17 @@ const defaultValues = {
 
 const LogInDialog: React.FC<LogInDialogProps> = (props) => {
   const { open, handleClose, setActive } = props;
-  const { setUser } = useAuth();
   const [openForgotPasswordDialog, setOpenForgotPasswordDialog] =
     useState(false);
   const [logInError, setLogInError] = useState<string>("");
+  const [cookies, setCookie, removeCookie] = useCookies(['userId'])
+  const { client } = useClient()
 
   const { isLogInLoading, logIn } = useLogInUser(
-    createAccessClient(),
+    client!,
     setLogInError,
     (data) => {
-      localStorage.setItem(
-        process.env.REACT_APP_ACCESS_TOKEN_SECRET!,
-        data.logInUser.accessToken
-      );
-      setUser(data.logInUser.user);
+      setCookie('userId', data.logInUser.userId)
     }
   );
 
