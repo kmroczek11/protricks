@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import LogInDialog from "./LogInDialog";
+import LogInDialog from "./LoginDialog";
 import RegisterDialog from "./RegisterDialog";
 
 interface UserDialogProps {
