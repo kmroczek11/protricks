@@ -18,10 +18,9 @@ const AuthContext = createContext<AuthProviderProps | undefined>(undefined);
 
 const client = new GraphQLClient(`${process.env.REACT_APP_HOST}/graphql`)
 
-export default function AuthProvider({ children }: { children: React.ReactNode }) {
+const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [cookies, setCookie, removeCookie] = useCookies(["userId"]);
   const [user, setUser] = useState<User | null>(null);
-  const [autoLoginUserError, setAutoLoginError] = useState<string>("");
 
   const { data, refetch: getUserRefetch } = useGetUserQuery<GetUserQuery, Error>(
     client,
@@ -35,18 +34,16 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   const { mutate } = useLogOutUserMutation<Error>(client, {
     onError: (error) => console.error("Logout error:", error),
     onSuccess: () => {
-      removeCookie("userId");
+      removeCookie("userId", { path: '/' });
       setUser(null);
     },
   });
 
   const logOut = () => mutate({ input: { userId: user?.id! } })
 
-  const { isAutoLogInUserLoading, autoLogIn } = useAutoLogInUser(client, setAutoLoginError, () => { })
-
   useEffect(() => {
     if (!cookies.userId) return;
-    autoLogIn({ input: { userId: cookies.userId } });
+    getUserRefetch();
   }, [cookies.userId]);
 
   return (
@@ -63,3 +60,5 @@ export const useAuth = () => {
   }
   return context;
 };
+
+export default AuthProvider;

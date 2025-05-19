@@ -26,11 +26,13 @@ import LinearProgress from "@mui/material/LinearProgress";
 import Typography from "@mui/material/Typography";
 import { useAuth } from "../../../auth/providers/AuthProvider";
 import { useClient } from "../../../auth/providers/ClientProvider";
+import { useCookies } from "react-cookie";
 
 const MultistepForm: () => JSX.Element | null = () => {
   const [step, setStep] = useState<number>(0);
   const [name, setName] = useState<string>("");
-  const { user, getUserRefetch } = useAuth();
+  const { user } = useAuth();
+  const [cookies, setCookie] = useCookies(['userId']);
   const { client, accessClient } = useClient();
   const [selectedGroup, setSelectedGroup] = useState<string>();
   const [registrationStatus, setRegistrationStatus] = useState<string>("");
@@ -55,8 +57,8 @@ const MultistepForm: () => JSX.Element | null = () => {
         _variables: CreateTraineeMutationVariables,
         _context: unknown
       ) => {
+        setCookie('userId', data.createTrainee.userId)
         setRegistrationStatus("Success");
-        getUserRefetch()
       },
     });
 

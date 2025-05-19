@@ -20,10 +20,10 @@ import * as generator from 'generate-password';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { RedisService } from 'src/redis/redis.service';
-import { LogInUserInput } from './inputs/logIn-user.input';
+import { LogInUserInput } from './inputs/log-in-user.input';
 import { RefreshTokenInput } from './inputs/refresh-token.input';
 import { AutoLogInUserInput } from './inputs/autoLogIn-user.input';
-import { LogOutUserInput } from './inputs/logOut-user.input';
+import { LogOutUserInput } from './inputs/log-out-user.input';
 
 @Injectable()
 export class AuthService {
@@ -175,7 +175,7 @@ export class AuthService {
       },
     );
 
-    return this.logIn(updatedUser);
+    return this.sign(updatedUser)
   }
 
   async changePassword(changePasswordInput: ChangePasswordInput) {
@@ -204,9 +204,7 @@ export class AuthService {
       },
     );
 
-    return {
-      user: updatedUser,
-    };
+    return this.sign(updatedUser)
   }
 
   async changeProfilePic(changeProfilePicInput: ChangeProfilePicInput) {
@@ -230,9 +228,7 @@ export class AuthService {
       imgSrc: filePath,
     });
 
-    return {
-      user: updatedUser,
-    };
+    return this.sign(updatedUser)
   }
 
   async forgotPassword(forgotPasswordInput: ForgotPasswordInput) {

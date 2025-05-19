@@ -39,7 +39,8 @@ const LogInDialog: React.FC<LogInDialogProps> = (props) => {
     client!,
     setLogInError,
     (data) => {
-      setCookie('userId', data.logInUser.userId)
+      console.log('in login:',data.logInUser.userId)
+      setCookie('userId', data.logInUser.userId, { path: '/' })
     }
   );
 

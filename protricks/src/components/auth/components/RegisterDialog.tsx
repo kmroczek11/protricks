@@ -15,6 +15,7 @@ import { useCookies } from "react-cookie";
 import Typography from "@mui/material/Typography";
 import useRegisterUser from "../hooks/useRegisterUser";
 import { useClient } from "../providers/ClientProvider";
+import { useTokens } from "../providers/TokensProvider";
 YupPassword(Yup); // extend yup
 
 interface RegisterDialogProps {
@@ -37,12 +38,14 @@ const RegisterDialog: React.FC<RegisterDialogProps> = (props) => {
   const [registerError, setRegisterError] = useState<string>("");
   const [cookies, setCookie, removeCookie] = useCookies(['userId'])
   const { client } = useClient()
+  const { getAccessTokenRefetch } = useTokens()
 
   const { isRegisterLoading, register } = useRegisterUser(
     client!,
     setRegisterError,
     (data) => {
       setCookie('userId', data.registerUser.userId)
+      getAccessTokenRefetch()
     }
   );
 

@@ -12,6 +12,7 @@ import * as Yup from "yup";
 import YupPassword from "yup-password";
 import { useAuth } from "../../auth/providers/AuthProvider";
 import { useClient } from "../../auth/providers/ClientProvider";
+import { useCookies } from "react-cookie";
 YupPassword(Yup); // extend yup
 
 const defaultValues = {
@@ -25,6 +26,7 @@ const invalidPasswordMessage = "Nieprawidłowe hasło.";
 
 const PasswordForm: React.FC = () => {
   const { user, getUserRefetch } = useAuth();
+  const [cookies, setCookie] = useCookies(['userId']);
   const { accessClient } = useClient();
   const [changePasswordStatus, setChangePasswordStatus] = useState<string>("");
 
@@ -41,7 +43,7 @@ const PasswordForm: React.FC = () => {
         _variables: ChangePasswordMutationVariables,
         _context: unknown
       ) => {
-        getUserRefetch()
+        setCookie('userId', data.changePassword.userId)
         setChangePasswordStatus("Success");
       },
     }

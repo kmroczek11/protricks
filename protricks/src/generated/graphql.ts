@@ -66,8 +66,7 @@ export type ChangeEmailInput = {
 
 export type ChangeEmailResponse = {
   __typename?: 'ChangeEmailResponse';
-  refreshToken: Scalars['String'];
-  user: User;
+  userId: Scalars['String'];
 };
 
 export type ChangeGroupInput = {
@@ -88,7 +87,7 @@ export type ChangePasswordInput = {
 
 export type ChangePasswordResponse = {
   __typename?: 'ChangePasswordResponse';
-  user: User;
+  userId: Scalars['String'];
 };
 
 export type ChangeProfilePicInput = {
@@ -98,9 +97,7 @@ export type ChangeProfilePicInput = {
 
 export type ChangeProfilePicResponse = {
   __typename?: 'ChangeProfilePicResponse';
-  accessToken: Scalars['String'];
-  expiresIn: Scalars['String'];
-  user: User;
+  userId: Scalars['String'];
 };
 
 export type City = {
@@ -227,7 +224,7 @@ export type CreateTraineeInput = {
 
 export type CreateTraineeResponse = {
   __typename?: 'CreateTraineeResponse';
-  user: User;
+  userId: Scalars['String'];
 };
 
 export type CreateUserInput = {
@@ -254,7 +251,7 @@ export type DeleteTraineeInput = {
 
 export type DeleteTraineeResponse = {
   __typename?: 'DeleteTraineeResponse';
-  user?: Maybe<User>;
+  msg: Scalars['String'];
 };
 
 export type DeleteTraineeWithMessageInput = {
@@ -264,7 +261,7 @@ export type DeleteTraineeWithMessageInput = {
 
 export type DeleteTraineeWithMessageResponse = {
   __typename?: 'DeleteTraineeWithMessageResponse';
-  user?: Maybe<User>;
+  userId: Scalars['String'];
 };
 
 export type EditExerciseInput = {
@@ -817,7 +814,7 @@ export type DeleteTraineeMutationVariables = Exact<{
 }>;
 
 
-export type DeleteTraineeMutation = { __typename?: 'Mutation', deleteTrainee: { __typename?: 'DeleteTraineeResponse', user?: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } | null } };
+export type DeleteTraineeMutation = { __typename?: 'Mutation', deleteTrainee: { __typename?: 'DeleteTraineeResponse', msg: string } };
 
 export type EditExerciseMutationVariables = Exact<{
   input: EditExerciseInput;
@@ -859,7 +856,7 @@ export type CreateTraineeMutationVariables = Exact<{
 }>;
 
 
-export type CreateTraineeMutation = { __typename?: 'Mutation', createTrainee: { __typename?: 'CreateTraineeResponse', user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
+export type CreateTraineeMutation = { __typename?: 'Mutation', createTrainee: { __typename?: 'CreateTraineeResponse', userId: string } };
 
 export type GetAllCoachesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -892,7 +889,7 @@ export type DeleteTraineeWithMessageMutationVariables = Exact<{
 }>;
 
 
-export type DeleteTraineeWithMessageMutation = { __typename?: 'Mutation', deleteTraineeWithMessage: { __typename?: 'DeleteTraineeWithMessageResponse', user?: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } | null } };
+export type DeleteTraineeWithMessageMutation = { __typename?: 'Mutation', deleteTraineeWithMessage: { __typename?: 'DeleteTraineeWithMessageResponse', userId: string } };
 
 export type GetAttendanceByUserIdQueryVariables = Exact<{
   id: Scalars['String'];
@@ -927,21 +924,21 @@ export type ChangeEmailMutationVariables = Exact<{
 }>;
 
 
-export type ChangeEmailMutation = { __typename?: 'Mutation', changeEmail: { __typename?: 'ChangeEmailResponse', refreshToken: string, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
+export type ChangeEmailMutation = { __typename?: 'Mutation', changeEmail: { __typename?: 'ChangeEmailResponse', userId: string } };
 
 export type ChangePasswordMutationVariables = Exact<{
   input: ChangePasswordInput;
 }>;
 
 
-export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: { __typename?: 'ChangePasswordResponse', user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
+export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: { __typename?: 'ChangePasswordResponse', userId: string } };
 
 export type ChangeProfilePicMutationVariables = Exact<{
   input: ChangeProfilePicInput;
 }>;
 
 
-export type ChangeProfilePicMutation = { __typename?: 'Mutation', changeProfilePic: { __typename?: 'ChangeProfilePicResponse', user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } } };
+export type ChangeProfilePicMutation = { __typename?: 'Mutation', changeProfilePic: { __typename?: 'ChangeProfilePicResponse', userId: string } };
 
 
 export const AutoLogInUserDocument = `
@@ -1320,14 +1317,7 @@ useDeleteGroupMutation.fetcher = (client: GraphQLClient, variables: DeleteGroupM
 export const DeleteTraineeDocument = `
     mutation DeleteTrainee($input: DeleteTraineeInput!) {
   deleteTrainee(deleteTraineeInput: $input) {
-    user {
-      id
-      firstName
-      lastName
-      email
-      imgSrc
-      roles
-    }
+    msg
   }
 }
     `;
@@ -1507,14 +1497,7 @@ useSendEmailToGroupMutation.fetcher = (client: GraphQLClient, variables: SendEma
 export const CreateTraineeDocument = `
     mutation CreateTrainee($input: CreateTraineeInput!) {
   createTrainee(createTraineeInput: $input) {
-    user {
-      id
-      firstName
-      lastName
-      email
-      imgSrc
-      roles
-    }
+    userId
   }
 }
     `;
@@ -1648,14 +1631,7 @@ useCreatePaymentItemMutation.fetcher = (client: GraphQLClient, variables: Create
 export const DeleteTraineeWithMessageDocument = `
     mutation DeleteTraineeWithMessage($input: DeleteTraineeWithMessageInput!) {
   deleteTraineeWithMessage(deleteTraineeWithMessageInput: $input) {
-    user {
-      id
-      firstName
-      lastName
-      email
-      imgSrc
-      roles
-    }
+    userId
   }
 }
     `;
@@ -1795,15 +1771,7 @@ useJoinGroupMutation.fetcher = (client: GraphQLClient, variables: JoinGroupMutat
 export const ChangeEmailDocument = `
     mutation ChangeEmail($input: ChangeEmailInput!) {
   changeEmail(changeEmailInput: $input) {
-    refreshToken
-    user {
-      id
-      firstName
-      lastName
-      email
-      imgSrc
-      roles
-    }
+    userId
   }
 }
     `;
@@ -1824,14 +1792,7 @@ useChangeEmailMutation.fetcher = (client: GraphQLClient, variables: ChangeEmailM
 export const ChangePasswordDocument = `
     mutation ChangePassword($input: ChangePasswordInput!) {
   changePassword(changePasswordInput: $input) {
-    user {
-      id
-      firstName
-      lastName
-      email
-      imgSrc
-      roles
-    }
+    userId
   }
 }
     `;
@@ -1852,14 +1813,7 @@ useChangePasswordMutation.fetcher = (client: GraphQLClient, variables: ChangePas
 export const ChangeProfilePicDocument = `
     mutation ChangeProfilePic($input: ChangeProfilePicInput!) {
   changeProfilePic(changeProfilePicInput: $input) {
-    user {
-      id
-      firstName
-      lastName
-      email
-      imgSrc
-      roles
-    }
+    userId
   }
 }
     `;

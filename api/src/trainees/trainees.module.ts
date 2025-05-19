@@ -7,6 +7,7 @@ import { UsersModule } from 'src/users/users.module';
 import { Trainee } from './entities/trainee.entity';
 import { TraineesResolver } from './trainees.resolver';
 import { TraineesService } from './trainees.service';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
@@ -14,7 +15,8 @@ import { TraineesService } from './trainees.service';
     UsersModule,
     GroupsModule,
     MailModule,
-    LostTraineesModule
+    LostTraineesModule,
+    AuthModule
   ],
   providers: [TraineesService, TraineesResolver],
   exports: [TraineesService],

@@ -231,7 +231,7 @@ const City: React.FC<CityProps> = (props) => {
         <ColorButton
           variant="outlined"
           color="primary"
-          disabled={selected ? false : true}
+          disabled={selected && ![Role.Coach, Role.Trainee].some((e) => user?.roles?.includes(e)) ? false : true}
           onClick={nextStep}
         >
           Dalej

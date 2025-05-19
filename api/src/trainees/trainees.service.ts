@@ -20,6 +20,7 @@ import { DeleteTraineeWithMessageInput } from './dto/delete-trainee-with-message
 import { v4 as uuidv4 } from 'uuid';
 import { ConfirmContractReceiptInput } from './dto/confirm-contract-receipt.input';
 import { ChangeGroupInput } from './dto/change-group.input';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class TraineesService {
@@ -30,7 +31,8 @@ export class TraineesService {
     private readonly groupsService: GroupsService,
     private readonly mailService: MailService,
     private readonly schedulerRegistry: SchedulerRegistry,
-    private readonly lostTraineesService: LostTraineesService
+    private readonly lostTraineesService: LostTraineesService,
+    private readonly authService: AuthService
   ) { }
 
   async createTrainee(createTraineeInput: CreateTraineeInput) {
@@ -52,9 +54,7 @@ export class TraineesService {
 
     // await this.mailService.sendFirstTimeMessage(user.email);
 
-    return {
-      user: user,
-    };
+    return this.authService.sign(user)
   }
 
   findAll() {
@@ -91,8 +91,8 @@ export class TraineesService {
     const user = await this.usersService.findOneById(userId);
 
     return {
-      user,
-    };
+      msg: "Success"
+    }
   }
 
   async deleteTraineeWithMessage(
@@ -108,9 +108,7 @@ export class TraineesService {
 
     // await this.mailService.sendLeaveMessage(email);
 
-    return {
-      user,
-    };
+    return this.authService.sign(user)
   }
 
   addDays(date, days) {

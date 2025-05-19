@@ -1,16 +1,15 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
-import { LogInResponse } from './responses/logIn-response';
+import { LogInResponse } from './responses/log-in-response';
 import { RegisterUserInput } from './inputs/register-user.input';
 import { Public } from './decorators/public.decorator';
-import { LogInUserInput } from './inputs/logIn-user.input';
+import { LogInUserInput } from './inputs/log-in-user.input';
 import { LogInAuthGuard } from './guards/logIn-auth.guard';
 import { UseGuards } from '@nestjs/common';
-import { AutoLogInUserInput } from './inputs/autoLogIn-user.input';
-import { LogOutResponse } from './responses/logOut-response';
+import { LogOutResponse } from './responses/log-out-response';
 import { Roles } from './decorators/roles.decorator';
 import { Role } from 'src/users/entities/role.enum';
-import { LogOutUserInput } from './inputs/logOut-user.input';
+import { LogOutUserInput } from './inputs/log-out-user.input';
 import { ChangeEmailResponse } from './responses/change-email-response';
 import { ChangeEmailInput } from './inputs/change-email.input';
 import { ChangePasswordResponse } from './responses/change-password-response';
@@ -47,15 +46,6 @@ export class AuthResolver {
     @Args('logInUserInput') logInUserInput: LogInUserInput,
   ): Promise<LogInResponse> {
     return this.authService.logIn(logInUserInput);
-  }
-
-  @Mutation(() => LogInResponse)
-  @Public()
-  // @UseGuards(AutoLogInAuthGuard)
-  autoLogInUser(
-    @Args('autoLogInUserInput') autoLogInUserInput: AutoLogInUserInput,
-  ) {
-    return this.authService.autoLogIn(autoLogInUserInput);
   }
 
   @Mutation(() => LogOutResponse)

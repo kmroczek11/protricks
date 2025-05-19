@@ -56,7 +56,7 @@ export class TraineesResolver {
   @Roles(Role.TRAINEE)
   deleteTraineeWithMessage(
     @Args('deleteTraineeWithMessageInput') deleteTraineeWithMessageInput: DeleteTraineeWithMessageInput,
-  ): Promise<DeleteTraineeResponse> {
+  ): Promise<DeleteTraineeWithMessageResponse> {
     return this.traineesService.deleteTraineeWithMessage(deleteTraineeWithMessageInput);
   }
 

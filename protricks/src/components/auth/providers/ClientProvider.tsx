@@ -23,11 +23,11 @@ const REFRESH_TOKEN_MUTATION = gql`
   }
 `
 
-export default function ClientProvider({ children }: { children: React.ReactNode }) {
+const ClientProvider = ({ children }: { children: React.ReactNode }) => {
   const [client, setClient] = useState<GraphQLClient | null>(null)
   const [accessClient, setAccessClient] = useState<GraphQLClient | null>(null)
   const [fileUploadClient, setFileUploadClient] = useState<GraphQLClient | null>(null)
-  const { refreshToken, accessToken, setAccessToken } = useTokens()
+  const { refreshToken, accessToken, setAccessToken, getAccessTokenRefetch } = useTokens()
   const { logOut } = useAuth()
 
   function initializeClient() {
@@ -80,7 +80,8 @@ export default function ClientProvider({ children }: { children: React.ReactNode
               throw new Error("No access token received after refresh.")
             }
 
-            setAccessToken(newAccessToken);
+            setAccessToken(newAccessToken)
+            getAccessTokenRefetch()
 
             client.setHeaders({
               Authorization: `Bearer ${newAccessToken}`,
@@ -124,3 +125,5 @@ export default function ClientProvider({ children }: { children: React.ReactNode
 }
 
 export const useClient = () => useContext(ClientContext)
+
+export default ClientProvider;

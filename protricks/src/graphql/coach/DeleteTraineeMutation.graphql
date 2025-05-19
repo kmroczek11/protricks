@@ -1,12 +1,5 @@
 mutation DeleteTrainee($input: DeleteTraineeInput!) {
   deleteTrainee(deleteTraineeInput: $input) {
-    user {
-      id
-      firstName
-      lastName
-      email
-      imgSrc
-      roles
-    }
+    msg
   }
 }
