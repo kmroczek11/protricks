@@ -11,10 +11,10 @@ import CloseIcon from "@mui/icons-material/Close";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import YupPassword from "yup-password";
-import { useCookies } from "react-cookie";
 import Typography from "@mui/material/Typography";
 import useRegisterUser from "../hooks/useRegisterUser";
 import { useClient } from "../providers/ClientProvider";
+import { useAuth } from "../providers/AuthProvider";
 import { useTokens } from "../providers/TokensProvider";
 YupPassword(Yup); // extend yup
 
@@ -36,15 +36,16 @@ const userExistsMessage = "Użytkownik o podanym adresie e-mail już istnieje.";
 const RegisterDialog: React.FC<RegisterDialogProps> = (props) => {
   const { open, handleClose, setActive } = props;
   const [registerError, setRegisterError] = useState<string>("");
-  const [cookies, setCookie, removeCookie] = useCookies(['userId'])
-  const { client } = useClient()
+  const { setUserId, getUserRefetch } = useAuth();
   const { getAccessTokenRefetch } = useTokens()
+  const { client } = useClient()
 
   const { isRegisterLoading, register } = useRegisterUser(
     client!,
     setRegisterError,
     (data) => {
-      setCookie('userId', data.registerUser.userId)
+      setUserId(data.registerUser.userId)
+      getUserRefetch()
       getAccessTokenRefetch()
     }
   );

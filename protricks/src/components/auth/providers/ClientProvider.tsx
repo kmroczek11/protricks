@@ -27,7 +27,7 @@ const ClientProvider = ({ children }: { children: React.ReactNode }) => {
   const [client, setClient] = useState<GraphQLClient | null>(null)
   const [accessClient, setAccessClient] = useState<GraphQLClient | null>(null)
   const [fileUploadClient, setFileUploadClient] = useState<GraphQLClient | null>(null)
-  const { refreshToken, accessToken, setAccessToken, getAccessTokenRefetch } = useTokens()
+  const { refreshToken, accessToken, setAccessToken } = useTokens()
   const { logOut } = useAuth()
 
   function initializeClient() {
@@ -81,7 +81,6 @@ const ClientProvider = ({ children }: { children: React.ReactNode }) => {
             }
 
             setAccessToken(newAccessToken)
-            getAccessTokenRefetch()
 
             client.setHeaders({
               Authorization: `Bearer ${newAccessToken}`,

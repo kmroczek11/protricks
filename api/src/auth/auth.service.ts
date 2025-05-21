@@ -22,8 +22,8 @@ import { ConfigService } from '@nestjs/config';
 import { RedisService } from 'src/redis/redis.service';
 import { LogInUserInput } from './inputs/log-in-user.input';
 import { RefreshTokenInput } from './inputs/refresh-token.input';
-import { AutoLogInUserInput } from './inputs/autoLogIn-user.input';
 import { LogOutUserInput } from './inputs/log-out-user.input';
+import { AutoLogInUserInput } from './inputs/auto-log-in-user.input';
 
 @Injectable()
 export class AuthService {

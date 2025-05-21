@@ -22,6 +22,7 @@ import { RefreshTokenInput } from './inputs/refresh-token.input';
 import { RefreshTokenResponse } from './responses/refresh-token-response';
 import { RedisService } from 'src/redis/redis.service';
 import { User } from 'src/users/entities/user.entity';
+import { AutoLogInUserInput } from './inputs/auto-log-in-user.input';
 
 @Resolver()
 export class AuthResolver {
@@ -46,6 +47,14 @@ export class AuthResolver {
     @Args('logInUserInput') logInUserInput: LogInUserInput,
   ): Promise<LogInResponse> {
     return this.authService.logIn(logInUserInput);
+  }
+
+  @Mutation(() => LogInResponse)
+  @Public()
+  autoLogInUser(
+    @Args('autoLogInUserInput') autoLogInUserInput: AutoLogInUserInput,
+  ) {
+    return this.authService.autoLogIn(autoLogInUserInput);
   }
 
   @Mutation(() => LogOutResponse)

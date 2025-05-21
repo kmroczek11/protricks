@@ -2,17 +2,13 @@ import * as React from "react";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 import { DialogContent } from "@mui/material";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import { green } from "@mui/material/colors";
 import { ColorButton, CustomAlert, LoadingScreen } from "../../../lib";
 import Typography from "@mui/material/Typography";
 import { CreateLostTraineeMutation, CreateLostTraineeMutationVariables, DeleteTraineeWithMessageMutation, DeleteTraineeWithMessageMutationVariables, JoinGroupMutation, JoinGroupMutationVariables, useCreateLostTraineeMutation, useDeleteTraineeWithMessageMutation, useJoinGroupMutation } from "../../../../generated/graphql";
 import { useAuth } from "../../../auth/providers/AuthProvider";
 import { useClient } from "../../../auth/providers/ClientProvider";
-import { useCookies } from "react-cookie";
 
 interface TraineeInfoDialogProps {
   traineeId: string;
@@ -20,8 +16,7 @@ interface TraineeInfoDialogProps {
 
 const JoinGroupDialog: React.FC<TraineeInfoDialogProps> = (props) => {
   const { traineeId } = props;
-  const { user, getUserRefetch } = useAuth();
-  const [cookies, setCookie] = useCookies(['userId']);
+  const { user, setUserId } = useAuth();
   const { accessClient } = useClient()
   const [joinGroupStatus, setJoinGroupStatus] = React.useState<string>("");
   const [deleteTraineeStatus, setDeleteTraineeStatus] = React.useState<string>("");
@@ -40,7 +35,7 @@ const JoinGroupDialog: React.FC<TraineeInfoDialogProps> = (props) => {
       _variables: DeleteTraineeWithMessageMutationVariables,
       _context: unknown
     ) => {
-      setCookie('userId', data.deleteTraineeWithMessage.userId)
+      setUserId(data.deleteTraineeWithMessage.userId)
     },
   });
 

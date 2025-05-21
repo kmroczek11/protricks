@@ -11,7 +11,7 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useAuth } from "../../auth/providers/AuthProvider";
 import { useClient } from "../../auth/providers/ClientProvider";
-import { useCookies } from "react-cookie";
+import { useTokens } from "../../auth/providers/TokensProvider";
 
 const defaultValues = {
   newEmail: "",
@@ -20,10 +20,10 @@ const defaultValues = {
 const successMessage = "E-mail został zmieniony.";
 
 const EmailForm: React.FC = () => {
-  const { user, getUserRefetch } = useAuth();
-  const [cookies, setCookie] = useCookies(['userId']);
+  const { user, setUserId, getUserRefetch } = useAuth();
   const { accessClient } = useClient();
   const [changeEmailStatus, setChangeEmailStatus] = useState<string>("");
+  const { getAccessTokenRefetch } = useTokens()
 
   const { isLoading, mutate } = useChangeEmailMutation<Error>(accessClient!, {
     onError: (error: Error) => {
@@ -36,7 +36,9 @@ const EmailForm: React.FC = () => {
       _variables: ChangeEmailMutationVariables,
       _context: unknown
     ) => {
-      setCookie('userId', data.changeEmail.userId)
+      setUserId(data.changeEmail.userId)
+      getUserRefetch()
+      getAccessTokenRefetch()
       setChangeEmailStatus("Success");
     },
   });

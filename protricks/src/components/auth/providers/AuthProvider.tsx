@@ -1,13 +1,15 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
-import { QueryObserverResult, RefetchOptions, RefetchQueryFilters, UseMutateFunction } from "@tanstack/react-query";
-import { Exact, GetUserQuery, LogOutUserInput, LogOutUserMutation, LogOutUserMutationVariables, useGetUserQuery, useLogOutUserMutation } from "../../../generated/graphql";
+import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from "@tanstack/react-query";
+import { GetUserQuery, useGetUserQuery, useLogOutUserMutation } from "../../../generated/graphql";
 import { User } from "../models/User";
-import useAutoLogInUser from "../hooks/useAutoLogInUser";
 import { GraphQLClient } from "graphql-request";
+import useSyncedLocalStorage from "../hooks/useSyncedLocalStorage";
+import useAutoLogInUser from "../hooks/useAutoLogInUser";
 
 interface AuthProviderProps {
   user: User | null;
+  userId: string | null;
+  setUserId: (id: string | null) => void;
   getUserRefetch: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<QueryObserverResult<GetUserQuery, Error>>;
@@ -19,14 +21,15 @@ const AuthContext = createContext<AuthProviderProps | undefined>(undefined);
 const client = new GraphQLClient(`${process.env.REACT_APP_HOST}/graphql`)
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [cookies, setCookie, removeCookie] = useCookies(["userId"]);
+  const [userId, setUserId] = useSyncedLocalStorage<string | null>("userId", null);
   const [user, setUser] = useState<User | null>(null);
+  const [autoLoginUserError, setAutoLoginError] = useState<string>("");
 
   const { data, refetch: getUserRefetch } = useGetUserQuery<GetUserQuery, Error>(
     client,
-    { userId: cookies.userId },
+    { userId: userId! },
     {
-      enabled: !!cookies.userId,
+      enabled: !!userId,
       onSuccess: (data) => setUser(data.getUser),
     }
   );
@@ -34,20 +37,22 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { mutate } = useLogOutUserMutation<Error>(client, {
     onError: (error) => console.error("Logout error:", error),
     onSuccess: () => {
-      removeCookie("userId", { path: '/' });
+      setUserId(null)
       setUser(null);
     },
   });
 
   const logOut = () => mutate({ input: { userId: user?.id! } })
 
+  const { isAutoLogInUserLoading, autoLogIn } = useAutoLogInUser(client, setAutoLoginError, () => { })
+
   useEffect(() => {
-    if (!cookies.userId) return;
-    getUserRefetch();
-  }, [cookies.userId]);
+    if (!userId) return;
+    autoLogIn({ input: { userId } });
+  }, [userId]);
 
   return (
-    <AuthContext.Provider value={{ user: user ?? null, getUserRefetch, logOut }}>
+    <AuthContext.Provider value={{ user: user ?? null, userId, setUserId, getUserRefetch, logOut }}>
       {children}
     </AuthContext.Provider>
   );

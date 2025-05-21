@@ -16,7 +16,7 @@ import imageCompression from "browser-image-compression";
 import { CustomAlert } from "../../lib";
 import { useAuth } from "../../auth/providers/AuthProvider";
 import { useClient } from "../../auth/providers/ClientProvider";
-import { useCookies } from "react-cookie";
+import { useTokens } from "../../auth/providers/TokensProvider";
 
 const stringToColor = (string: string) => {
   let hash = 0;
@@ -67,11 +67,11 @@ const invalidMimeType = "Nieprawidłowy typ MIME.";
 
 const UserAvatar: React.FC<UserAvatarProps> = (props) => {
   const { name, size, imgSrc, BadgeIcon } = props;
-  const { user, getUserRefetch } = useAuth();
-  const [cookies, setCookie] = useCookies(['userId']);
+  const { user, setUserId, getUserRefetch } = useAuth();
   const { fileUploadClient } = useClient();
   const [changeProfilePicStatus, setChangeProfilePicStatus] =
     useState<string>("");
+  const { getAccessTokenRefetch } = useTokens()
 
   const { isLoading, mutate } = useChangeProfilePicMutation<Error>(
     fileUploadClient!,
@@ -87,7 +87,9 @@ const UserAvatar: React.FC<UserAvatarProps> = (props) => {
         _variables: ChangeProfilePicMutationVariables,
         _context: unknown
       ) => {
-        setCookie('userId', data.changeProfilePic.userId)
+        setUserId(data.changeProfilePic.userId)
+        getUserRefetch()
+        getAccessTokenRefetch()
       },
     }
   );

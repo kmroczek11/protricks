@@ -1,13 +1,13 @@
 import { createContext, useContext, useEffect, useState } from "react"
-import { useCookies } from "react-cookie";
 import { GetAccessTokenQuery, GetRefreshTokenQuery, useGetAccessTokenQuery, useGetRefreshTokenQuery } from "../../../generated/graphql";
 import { GraphQLClient } from "graphql-request";
-import { QueryObserverResult, RefetchOptions, RefetchQueryFilters, UseMutateFunction } from "@tanstack/react-query";
+import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from "@tanstack/react-query";
+import { useAuth } from "./AuthProvider";
 
 interface TokensProviderProps {
     refreshToken: string | null;
     accessToken: string | null;
-    setAccessToken: (token: string) => void;
+    setAccessToken: (token: string | null) => void;
     getAccessTokenRefetch: <TPageData>(
         options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
     ) => Promise<QueryObserverResult<GetAccessTokenQuery, Error>>;
@@ -18,26 +18,26 @@ const TokensContext = createContext<TokensProviderProps | undefined>(undefined);
 const client = new GraphQLClient(`${process.env.REACT_APP_HOST}/graphql`)
 
 const TokensProvider = ({ children }: { children: React.ReactNode }) => {
-    const [cookies, setCookie, removeCookie] = useCookies(["userId"])
+    const { userId } = useAuth()
     const [accessToken, setAccessToken] = useState<string | null>(null);
 
     const { data: refreshTokenData } = useGetRefreshTokenQuery<GetRefreshTokenQuery, Error>(
         client,
         {
-            userId: cookies.userId
+            userId: userId!
         },
         {
-            enabled: !!cookies.userId,
+            enabled: !!userId,
         }
     )
 
     const { data: accessTokenData, refetch: getAccessTokenRefetch } = useGetAccessTokenQuery<GetAccessTokenQuery, Error>(
         client,
         {
-            userId: cookies.userId
+            userId: userId!
         },
         {
-            enabled: !!cookies.userId,
+            enabled: !!userId,
         }
     )
 
@@ -45,18 +45,6 @@ const TokensProvider = ({ children }: { children: React.ReactNode }) => {
         if (!accessTokenData?.getAccessToken) return;
         setAccessToken(accessTokenData.getAccessToken);
     }, [accessTokenData]);
-
-    useEffect(() => {
-        console.log('cookies changed',cookies.userId)
-        if (!cookies.userId) return;
-      
-        getAccessTokenRefetch().then(result => {
-          const token = result.data?.getAccessToken;
-          if (token) {
-            setAccessToken(token);
-          }
-        });
-      }, [cookies.userId]);      
 
     return (
         <TokensContext.Provider value={{

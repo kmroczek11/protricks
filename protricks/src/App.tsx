@@ -4,7 +4,6 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { routes } from "./routes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { } from "@mui/x-date-pickers/themeAugmentation";
-import { CookiesProvider } from 'react-cookie';
 import TokensProvider from "./components/auth/providers/TokensProvider";
 import AuthProvider from "./components/auth/providers/AuthProvider";
 import ClientProvider from "./components/auth/providers/ClientProvider";
@@ -54,15 +53,13 @@ const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
-        <CookiesProvider defaultSetOptions={{ path: '/' }}>
+        <AuthProvider>
           <TokensProvider>
-            <AuthProvider>
-              <ClientProvider>
-                {element}
-              </ClientProvider>
-            </AuthProvider>
+            <ClientProvider>
+              {element}
+            </ClientProvider>
           </TokensProvider>
-        </CookiesProvider>
+        </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );

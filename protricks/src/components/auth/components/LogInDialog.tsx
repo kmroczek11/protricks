@@ -14,7 +14,8 @@ import ForgotPasswordDialog from "./ForgotPasswordDialog";
 import useLogInUser from "../hooks/useLogInUser";
 import { invalidEmailOrPasswordMessage } from "../../../translations/pl/errorMessages";
 import { useClient } from "../providers/ClientProvider";
-import { useCookies } from "react-cookie";
+import { useAuth } from "../providers/AuthProvider";
+import { useTokens } from "../providers/TokensProvider";
 
 interface LogInDialogProps {
   open: boolean;
@@ -32,15 +33,17 @@ const LogInDialog: React.FC<LogInDialogProps> = (props) => {
   const [openForgotPasswordDialog, setOpenForgotPasswordDialog] =
     useState(false);
   const [logInError, setLogInError] = useState<string>("");
-  const [cookies, setCookie, removeCookie] = useCookies(['userId'])
+  const { setUserId, getUserRefetch } = useAuth()
+  const { getAccessTokenRefetch } = useTokens()
   const { client } = useClient()
 
   const { isLogInLoading, logIn } = useLogInUser(
     client!,
     setLogInError,
     (data) => {
-      console.log('in login:',data.logInUser.userId)
-      setCookie('userId', data.logInUser.userId, { path: '/' })
+      setUserId(data.logInUser.userId)
+      getUserRefetch()
+      getAccessTokenRefetch()
     }
   );
 
