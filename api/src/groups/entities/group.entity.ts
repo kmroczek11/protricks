@@ -1,8 +1,8 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { Attendance } from 'src/attendances/entities/attendance';
-import { Coach } from 'src/coaches/entities/coach.entity';
-import { Exercise } from 'src/exercises/entities/exercise.entity';
-import { Trainee } from 'src/trainees/entities/trainee.entity';
+import { Attendance } from '../../attendances/entities/attendance.entity';
+import { Coach } from '../../coaches/entities/coach.entity';
+import { Exercise } from '../../exercises/entities/exercise.entity';
+import { Trainee } from '../../trainees/entities/trainee.entity';
 import {
   Entity,
   PrimaryColumn,

@@ -6,7 +6,7 @@ import { TraineesService } from 'src/trainees/trainees.service';
 import { Repository } from 'typeorm';
 import { AttendanceByGroupIdAndDayInput } from './dto/attendance-by-group-id-and-day.input';
 import { CreateAttendanceInput } from './dto/create-attendance.input';
-import { Attendance } from './entities/attendance';
+import { Attendance } from './entities/attendance.entity';
 
 @Injectable()
 export class AttendancesService {

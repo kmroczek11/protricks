@@ -1,0 +1,18 @@
+services:
+  protricks:
+    build:
+      context: .
+      dockerfile: .docker/protricks/dev/Dockerfile
+      args:
+        REACT_APP_HOST: ${REACT_APP_HOST}
+    environment:
+      - REACT_APP_HOST
+      - REACT_APP_GOOGLE_MAPS_API_KEY
+      - REACT_APP_GOOGLE_MAPS_MAP_ID
+    ports:
+      - "8080:80"
+    networks:
+      - frontend
+
+networks:
+  frontend:

@@ -1,7 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { City } from 'src/cities/entities/city.entity';
-import { Group } from 'src/groups/entities/group.entity';
-import { User } from 'src/users/entities/user.entity';
+import { City } from '../../cities/entities/city.entity';
+import { Group } from '../../groups/entities/group.entity';
+import { User } from '../../users/entities/user.entity';
 import {
   Entity,
   PrimaryColumn,

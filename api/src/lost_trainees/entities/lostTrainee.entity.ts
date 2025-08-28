@@ -1,11 +1,8 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { LocalDateResolver, LocalTimeResolver } from 'graphql-scalars';
-import { Group } from 'src/groups/entities/group.entity';
 import {
   Entity,
   PrimaryColumn,
   Column,
-  ManyToOne,
   BeforeInsert,
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';

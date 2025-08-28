@@ -1,7 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { IsString } from 'class-validator';
-import { Coach } from 'src/coaches/entities/coach.entity';
-import { Trainee } from 'src/trainees/entities/trainee.entity';
+import { Coach } from '../../coaches/entities/coach.entity';
+import { Trainee } from '../../trainees/entities/trainee.entity';
 import { Exclude } from 'class-transformer';
 import { Column, Entity, PrimaryColumn, OneToOne, BeforeInsert } from 'typeorm';
 import { Role } from './role.enum';

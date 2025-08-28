@@ -1,7 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { EmailAddressResolver, PhoneNumberResolver } from 'graphql-scalars';
-import { Group } from 'src/groups/entities/group.entity';
-import { User } from 'src/users/entities/user.entity';
+import { Group } from '../../groups/entities/group.entity';
+import { User } from '../../users/entities/user.entity';
 import { LocalDateResolver } from 'graphql-scalars';
 import {
   Entity,
@@ -14,7 +14,7 @@ import {
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { Status } from './status.enum';
-import { Attendance } from 'src/attendances/entities/attendance';
+import { Attendance } from '../../attendances/entities/attendance.entity';
 
 @Entity('trainees')
 @ObjectType()

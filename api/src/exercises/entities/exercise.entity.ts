@@ -1,6 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { LocalDateResolver, LocalTimeResolver } from 'graphql-scalars';
-import { Group } from 'src/groups/entities/group.entity';
+import { Group } from '../../groups/entities/group.entity';
 import {
   Entity,
   PrimaryColumn,

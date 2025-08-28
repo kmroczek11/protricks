@@ -1,9 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { LocalDateResolver } from 'graphql-scalars';
-import { Group } from 'src/groups/entities/group.entity';
-import { Status } from 'src/trainees/entities/status.enum';
-import { Trainee } from 'src/trainees/entities/trainee.entity';
-import { User } from 'src/users/entities/user.entity';
+import { Group } from '../../groups/entities/group.entity';
+import { Trainee } from '../../trainees/entities/trainee.entity';
 import {
   Entity,
   PrimaryColumn,

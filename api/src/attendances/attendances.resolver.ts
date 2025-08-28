@@ -15,7 +15,7 @@ import { AttendancesService } from './attendances.service';
 import { AttendanceByGroupIdAndDayInput } from './dto/attendance-by-group-id-and-day.input';
 import { CreateAttendanceResponse } from './dto/create-attendance-response.ts';
 import { CreateAttendanceInput } from './dto/create-attendance.input';
-import { Attendance } from './entities/attendance';
+import { Attendance } from './entities/attendance.entity';
 
 @Resolver(() => Attendance)
 export class AttendancesResolver {
