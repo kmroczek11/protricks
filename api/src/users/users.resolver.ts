@@ -23,7 +23,7 @@ export class UsersResolver {
   }
 
   @Query(() => User)
-  findOne(@Args('email') email: string): Promise<User> {
-    return this.usersService.findOneByEmail(email);
+  findOne(@Args('emailPlain') emailPlain: string): Promise<User> {
+    return this.usersService.findOneByEmail(emailPlain);
   }
 }

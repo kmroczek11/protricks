@@ -3,7 +3,7 @@ query GetUser($userId: String!) {
       id
       firstName
       lastName
-      email
+      emailPlain
       imgSrc
       roles
   }

@@ -44,7 +44,7 @@ interface AttendanceListDialogProps {
       id: string;
       firstName: string;
       lastName: string;
-      email: string;
+      emailPlain: string;
       imgSrc?: string;
     };
   }> | null;
@@ -99,7 +99,7 @@ const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
         id: string;
         firstName: string;
         lastName: string;
-        email: string;
+        emailPlain: string;
         imgSrc?: string;
       };
       present: boolean;
@@ -162,7 +162,7 @@ const AttendanceListDialog: React.FC<AttendanceListDialogProps> = (props) => {
           input: {
             userId: t.user.id,
             traineeId: t.id,
-            email: t.user.email,
+            emailPlain: t.user.emailPlain,
           },
         });
       }

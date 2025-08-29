@@ -1,0 +1,451 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: String!
+  firstName: String!
+  lastName: String!
+  emailPlain: String!
+  password: String!
+  imgSrc: String!
+  roles: [Role!]!
+}
+
+"""User role"""
+enum Role {
+  USER
+  TRAINEE
+  COACH
+  ADMIN
+}
+
+type Trainee {
+  id: String!
+  user: User!
+  attendances: [Attendance!]
+  birthDate: LocalDate!
+  traineeName: String!
+  parentPhone: PhoneNumber!
+  parentEmail: EmailAddress!
+  feedback: String!
+  status: Status!
+  dateJoined: LocalDate!
+  group: Group!
+}
+
+"""
+A local date string (i.e., with no associated timezone) in `YYYY-MM-DD` format, e.g. `2020-01-01`.
+"""
+scalar LocalDate
+
+"""
+A field whose value conforms to the standard E.164 format as specified in: https://en.wikipedia.org/wiki/E.164. Basically this is +17895551234.
+"""
+scalar PhoneNumber
+
+"""
+A field whose value conforms to the standard internet email address format as specified in HTML Spec: https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address.
+"""
+scalar EmailAddress @specifiedBy(url: "https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address")
+
+"""Trainee status"""
+enum Status {
+  FIRST_TIME
+  EXPECTATION
+  ACCEPTED_WITHOUT_CONTRACT
+  ACCEPTED
+}
+
+type Attendance {
+  id: String!
+  group: Group!
+  trainee: Trainee!
+  day: LocalDate!
+  present: Boolean!
+  status: String!
+}
+
+type Exercise {
+  id: String!
+  day: LocalDate!
+  start: LocalTime!
+  end: LocalTime!
+  group: Group!
+}
+
+"""
+A local time string (i.e., with no associated timezone) in 24-hr `HH:mm[:ss[.SSS]]` format, e.g. `14:25` or `14:25:06` or `14:25:06.123`.
+"""
+scalar LocalTime
+
+type Group {
+  id: String!
+  name: String!
+  limit: Int!
+  price: Float!
+  exercises: [Exercise!]
+  trainees: [Trainee!]
+  attendances: [Attendance!]
+  coach: Coach!
+}
+
+type Coach {
+  id: String!
+  facebookUrl: String!
+  instagramUrl: String!
+  city: City!
+  groups: [Group!]
+  user: User!
+}
+
+type City {
+  id: String!
+  name: String!
+  room: String!
+  citySrc: String!
+  roomSrc: String!
+  mapSrc: String!
+  priceListSrc: String!
+  coach: Coach!
+}
+
+type CreateGroupResponse {
+  msg: String!
+}
+
+type EditGroupResponse {
+  msg: String!
+}
+
+type DeleteGroupResponse {
+  msg: String!
+}
+
+type SendEmailToGroupResponse {
+  msg: String!
+}
+
+type CreatePaymentIntentResponse {
+  clientSecret: String!
+}
+
+type CreatePaymentItemResponse {
+  msg: String!
+}
+
+type LogInResponse {
+  userId: String!
+}
+
+type LogOutResponse {
+  msg: String!
+}
+
+type ChangeEmailResponse {
+  userId: String!
+}
+
+type ChangePasswordResponse {
+  userId: String!
+}
+
+type ChangeProfilePicResponse {
+  userId: String!
+}
+
+type ForgotPasswordResponse {
+  msg: String!
+}
+
+type RefreshTokenResponse {
+  accessToken: String!
+}
+
+type CreateExerciseResponse {
+  msg: String!
+}
+
+type DeleteExerciseResponse {
+  msg: String!
+}
+
+type EditExerciseResponse {
+  msg: String!
+}
+
+type MonthObject {
+  month: String!
+  exercises: [Exercise!]!
+  payed: Boolean!
+}
+
+type GetMonthlyExercisesResponse {
+  monthObjects: [MonthObject!]!
+  price: Float!
+}
+
+type CreateLostTraineeResponse {
+  msg: String!
+}
+
+type AcceptToGroupResponse {
+  msg: String!
+}
+
+type ChangeGroupResponse {
+  msg: String!
+}
+
+type ConfirmContractReceiptResponse {
+  msg: String!
+}
+
+type CreateTraineeResponse {
+  userId: String!
+}
+
+type DeleteTraineeResponse {
+  msg: String!
+}
+
+type DeleteTraineeWithMessageResponse {
+  userId: String!
+}
+
+type JoinGroupResponse {
+  msg: String!
+}
+
+type CreateAttendanceResponse {
+  msg: String!
+}
+
+"""File upload scalar type"""
+scalar Upload
+
+type Query {
+  groups: [Group!]!
+  users: [User!]!
+  findOne(emailPlain: String!): User!
+  coaches: [Coach!]!
+  getCoach(id: String!): Coach!
+  getUser(userId: String!): User!
+  getAccessToken(userId: String!): String!
+  getRefreshToken(userId: String!): String!
+  exercises: [Exercise!]!
+  getMonthlyExercises(getMonthlyExercisesInput: GetMonthlyExercisesInput!): GetMonthlyExercisesResponse!
+  trainees: [Trainee!]!
+  getTrainee(id: String!): Trainee!
+  getAttendanceByGroupIdAndDay(attendanceByGroupIdAndDayInput: AttendanceByGroupIdAndDayInput!): [Attendance!]!
+  getAttendanceByUserId(id: String!): [Attendance!]!
+}
+
+input GetMonthlyExercisesInput {
+  userId: String!
+}
+
+input AttendanceByGroupIdAndDayInput {
+  groupId: String!
+  day: LocalDate!
+}
+
+type Mutation {
+  createCity(createCityInput: CreateCityInput!): City!
+  deleteCity(id: String!): City!
+  createGroup(createGroupInput: CreateGroupInput!): CreateGroupResponse!
+  editGroup(editGroupInput: EditGroupInput!): EditGroupResponse!
+  deleteGroup(id: String!): DeleteGroupResponse!
+  sendEmailToGroup(sendEmailToGroupInput: SendEmailToGroupInput!): SendEmailToGroupResponse!
+  createUser(createUserInput: CreateUserInput!): User!
+  createPaymentIntent(createPaymentIntentInput: CreatePaymentIntentInput!): CreatePaymentIntentResponse!
+  createPaymentItem(createPaymentItemInput: CreatePaymentItemInput!): CreatePaymentItemResponse!
+  createCoach(createCoachInput: CreateCoachInput!): Coach!
+  registerUser(registerUserInput: RegisterUserInput!): LogInResponse!
+  logInUser(logInUserInput: LogInUserInput!): LogInResponse!
+  autoLogInUser(autoLogInUserInput: AutoLogInUserInput!): LogInResponse!
+  logOutUser(logOutUserInput: LogOutUserInput!): LogOutResponse!
+  refreshToken(refreshTokenInput: RefreshTokenInput!): RefreshTokenResponse!
+  changeEmail(changeEmailInput: ChangeEmailInput!): ChangeEmailResponse!
+  changePassword(changePasswordInput: ChangePasswordInput!): ChangePasswordResponse!
+  changeProfilePic(changeProfilePicInput: ChangeProfilePicInput!): ChangeProfilePicResponse!
+  forgotPassword(forgotPasswordInput: ForgotPasswordInput!): ForgotPasswordResponse!
+  createExercise(createExerciseInput: CreateExerciseInput!): CreateExerciseResponse!
+  editExercise(editExerciseInput: EditExerciseInput!): EditExerciseResponse!
+  deleteExercise(id: String!): DeleteExerciseResponse!
+  createTrainee(createTraineeInput: CreateTraineeInput!): CreateTraineeResponse!
+  deleteTrainee(deleteTraineeInput: DeleteTraineeInput!): DeleteTraineeResponse!
+  deleteTraineeWithMessage(deleteTraineeWithMessageInput: DeleteTraineeWithMessageInput!): DeleteTraineeWithMessageResponse!
+  acceptToGroup(acceptToGroupInput: AcceptToGroupInput!): AcceptToGroupResponse!
+  joinGroup(joinGroupInput: JoinGroupInput!): JoinGroupResponse!
+  confirmContractReceipt(confirmContractReceiptInput: ConfirmContractReceiptInput!): ConfirmContractReceiptResponse!
+  changeGroup(changeGroupInput: ChangeGroupInput!): ChangeGroupResponse!
+  createLostTrainee(createLostTraineeInput: CreateLostTraineeInput!): CreateLostTraineeResponse!
+  createAttendance(createAttendanceInput: CreateAttendanceInput!): CreateAttendanceResponse!
+}
+
+input CreateCityInput {
+  name: String!
+  room: String!
+  citySrc: String!
+  roomSrc: String!
+  mapSrc: String!
+  priceListSrc: String!
+}
+
+input CreateGroupInput {
+  name: String!
+  coachId: String!
+  limit: Int!
+  price: Float!
+}
+
+input EditGroupInput {
+  groupId: String!
+  name: String!
+  limit: Int!
+  price: Float!
+}
+
+input SendEmailToGroupInput {
+  groupId: String!
+  sender: String!
+  from: EmailAddress!
+  subject: String!
+  message: String!
+}
+
+input CreateUserInput {
+  firstName: String!
+  lastName: String!
+  emailPlain: EmailAddress!
+  password: String!
+  roles: [Role!]
+}
+
+input CreatePaymentIntentInput {
+  amount: Float!
+}
+
+input CreatePaymentItemInput {
+  month: String!
+  amount: Float!
+}
+
+input CreateCoachInput {
+  userId: String!
+  cityId: String!
+}
+
+input RegisterUserInput {
+  firstName: String!
+  lastName: String!
+  emailPlain: String!
+  password: String!
+  roles: [Role!]
+}
+
+input LogInUserInput {
+  emailPlain: EmailAddress!
+  password: String!
+}
+
+input AutoLogInUserInput {
+  userId: String!
+}
+
+input LogOutUserInput {
+  userId: String!
+}
+
+input RefreshTokenInput {
+  refreshToken: String!
+}
+
+input ChangeEmailInput {
+  id: String!
+  emailPlain: EmailAddress!
+}
+
+input ChangePasswordInput {
+  id: String!
+  oldPassword: String!
+  newPassword: String!
+}
+
+input ChangeProfilePicInput {
+  userId: String!
+  image: Upload!
+}
+
+input ForgotPasswordInput {
+  email: EmailAddress!
+}
+
+input CreateExerciseInput {
+  day: LocalDate!
+  start: LocalTime!
+  end: LocalTime!
+  groupId: String!
+}
+
+input EditExerciseInput {
+  exerciseId: String!
+  day: LocalDate!
+  start: LocalTime!
+  end: LocalTime!
+}
+
+input CreateTraineeInput {
+  userId: String!
+  groupId: String!
+  birthDate: LocalDate!
+  traineeName: String!
+  parentPhone: PhoneNumber!
+  parentEmail: EmailAddress!
+  feedback: String!
+  dateJoined: LocalDate!
+}
+
+input DeleteTraineeInput {
+  userId: String!
+}
+
+input DeleteTraineeWithMessageInput {
+  userId: String!
+  email: String!
+}
+
+input AcceptToGroupInput {
+  userId: String!
+  traineeId: String!
+  emailPlain: String!
+}
+
+input JoinGroupInput {
+  userId: String!
+  traineeId: String!
+  emailPlain: String!
+}
+
+input ConfirmContractReceiptInput {
+  traineeId: String!
+  email: String!
+}
+
+input ChangeGroupInput {
+  traineeId: String!
+  groupId: String!
+}
+
+input CreateLostTraineeInput {
+  traineeId: String!
+}
+
+input CreateAttendanceInput {
+  groupId: String!
+  traineeId: String!
+  day: LocalDate!
+  present: Boolean!
+  status: String!
+}

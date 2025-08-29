@@ -30,7 +30,7 @@ export type Scalars = {
 };
 
 export type AcceptToGroupInput = {
-  email: Scalars['String'];
+  emailPlain: Scalars['String'];
   traineeId: Scalars['String'];
   userId: Scalars['String'];
 };
@@ -60,7 +60,7 @@ export type AutoLogInUserInput = {
 };
 
 export type ChangeEmailInput = {
-  email: Scalars['EmailAddress'];
+  emailPlain: Scalars['EmailAddress'];
   id: Scalars['String'];
 };
 
@@ -228,7 +228,7 @@ export type CreateTraineeResponse = {
 };
 
 export type CreateUserInput = {
-  email: Scalars['EmailAddress'];
+  emailPlain: Scalars['EmailAddress'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
   password: Scalars['String'];
@@ -329,7 +329,7 @@ export type Group = {
 };
 
 export type JoinGroupInput = {
-  email: Scalars['String'];
+  emailPlain: Scalars['String'];
   traineeId: Scalars['String'];
   userId: Scalars['String'];
 };
@@ -345,7 +345,7 @@ export type LogInResponse = {
 };
 
 export type LogInUserInput = {
-  email: Scalars['EmailAddress'];
+  emailPlain: Scalars['EmailAddress'];
   password: Scalars['String'];
 };
 
@@ -575,7 +575,7 @@ export type Query = {
 
 
 export type QueryFindOneArgs = {
-  email: Scalars['String'];
+  emailPlain: Scalars['String'];
 };
 
 
@@ -628,7 +628,7 @@ export type RefreshTokenResponse = {
 };
 
 export type RegisterUserInput = {
-  email: Scalars['String'];
+  emailPlain: Scalars['String'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
   password: Scalars['String'];
@@ -681,7 +681,7 @@ export type Trainee = {
 
 export type User = {
   __typename?: 'User';
-  email: Scalars['String'];
+  emailPlain: Scalars['String'];
   firstName: Scalars['String'];
   id: Scalars['String'];
   imgSrc: Scalars['String'];
@@ -723,7 +723,7 @@ export type GetUserQueryVariables = Exact<{
 }>;
 
 
-export type GetUserQuery = { __typename?: 'Query', getUser: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string, roles: Array<Role> } };
+export type GetUserQuery = { __typename?: 'Query', getUser: { __typename?: 'User', id: string, firstName: string, lastName: string, emailPlain: string, imgSrc: string, roles: Array<Role> } };
 
 export type LogInUserMutationVariables = Exact<{
   input: LogInUserInput;
@@ -842,7 +842,7 @@ export type GetCoachQueryVariables = Exact<{
 }>;
 
 
-export type GetCoachQuery = { __typename?: 'Query', getCoach: { __typename?: 'Coach', id: string, city: { __typename?: 'City', id: string, name: string }, groups?: Array<{ __typename?: 'Group', id: string, name: string, limit: number, price: number, exercises?: Array<{ __typename?: 'Exercise', id: string, day: any, start: any, end: any }> | null, trainees?: Array<{ __typename?: 'Trainee', id: string, birthDate: any, traineeName: string, parentPhone: any, parentEmail: any, feedback: string, status: Status, dateJoined: any, user: { __typename?: 'User', id: string, firstName: string, lastName: string, email: string, imgSrc: string } }> | null }> | null } };
+export type GetCoachQuery = { __typename?: 'Query', getCoach: { __typename?: 'Coach', id: string, city: { __typename?: 'City', id: string, name: string }, groups?: Array<{ __typename?: 'Group', id: string, name: string, limit: number, price: number, exercises?: Array<{ __typename?: 'Exercise', id: string, day: any, start: any, end: any }> | null, trainees?: Array<{ __typename?: 'Trainee', id: string, birthDate: any, traineeName: string, parentPhone: any, parentEmail: any, feedback: string, status: Status, dateJoined: any, user: { __typename?: 'User', id: string, firstName: string, lastName: string, emailPlain: string, imgSrc: string } }> | null }> | null } };
 
 export type SendEmailToGroupMutationVariables = Exact<{
   input: SendEmailToGroupInput;
@@ -1037,7 +1037,7 @@ export const GetUserDocument = `
     id
     firstName
     lastName
-    email
+    emailPlain
     imgSrc
     roles
   }
@@ -1446,7 +1446,7 @@ export const GetCoachDocument = `
           id
           firstName
           lastName
-          email
+          emailPlain
           imgSrc
         }
       }

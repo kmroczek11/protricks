@@ -24,7 +24,7 @@ interface LogInDialogProps {
 }
 
 const defaultValues = {
-  email: "",
+  emailPlain: "",
   password: "",
 };
 
@@ -72,17 +72,17 @@ const LogInDialog: React.FC<LogInDialogProps> = (props) => {
           onSubmit={(values, { setSubmitting }) => {
             setSubmitting(true);
 
-            const { email, password } = values;
+            const { emailPlain, password } = values;
 
             logIn({
               input: {
-                email: email,
+                emailPlain: emailPlain,
                 password: password,
               },
             });
           }}
           validationSchema={Yup.object().shape({
-            email: Yup.string()
+            emailPlain: Yup.string()
               .email("Nieprawidłowy email")
               .required("Wymagane"),
             password: Yup.string().required("Wymagane"),
@@ -111,15 +111,15 @@ const LogInDialog: React.FC<LogInDialogProps> = (props) => {
                 >
                   <Grid item>
                     <TextField
-                      id="email-input"
-                      name="email"
+                      id="emailPlain-input"
+                      name="emailPlain"
                       label="E-mail"
                       type="email"
-                      value={values.email}
+                      value={values.emailPlain}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      helperText={errors.email && touched.email && errors.email}
-                      error={errors.email && touched.email ? true : false}
+                      helperText={errors.emailPlain && touched.emailPlain && errors.emailPlain}
+                      error={errors.emailPlain && touched.emailPlain ? true : false}
                       required
                     />
                   </Grid>

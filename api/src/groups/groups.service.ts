@@ -69,7 +69,7 @@ export class GroupsService {
     group.trainees.forEach(async (trainee) => {
       const user = await this.usersService.findOneById(trainee.userId);
 
-      await this.mailService.sendMessage(user.email, subject, message, sender);
+      await this.mailService.sendMessage(user.emailPlain, subject, message, sender);
     });
 
     return {

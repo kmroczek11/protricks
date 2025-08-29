@@ -4,7 +4,7 @@ import { EmailAddressResolver } from 'graphql-scalars';
 @InputType()
 export class LogInUserInput {
   @Field(() => EmailAddressResolver)
-  email: string;
+  emailPlain: string;
 
   @Field()
   password: string;

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from "@tanstack/react-query";
 import { GetUserQuery, useGetUserQuery, useLogOutUserMutation } from "../../../generated/graphql";
-import { User } from "../models/user";
+import { User } from "../models/User";
 import { GraphQLClient } from "graphql-request";
 import useSyncedLocalStorage from "../hooks/useSyncedLocalStorage";
 import useAutoLogInUser from "../hooks/useAutoLogInUser";

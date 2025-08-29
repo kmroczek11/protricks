@@ -9,5 +9,5 @@ export class AcceptToGroupInput {
   traineeId: string;
 
   @Field()
-  email: string;
+  emailPlain: string;
 }

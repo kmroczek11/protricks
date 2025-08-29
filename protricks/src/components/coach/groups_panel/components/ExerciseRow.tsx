@@ -41,7 +41,7 @@ interface RowProps {
   trainees?: Array<{
     id: string;
     status: string;
-    user: { id: string; firstName: string; lastName: string; email: string };
+    user: { id: string; firstName: string; lastName: string; emailPlain: string };
   }> | null;
 }
 

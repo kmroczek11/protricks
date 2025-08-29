@@ -26,7 +26,7 @@ interface ManageMembersDialogProps {
       id: string;
       firstName: string;
       lastName: string;
-      email: string;
+      emailPlain: string;
       imgSrc?: string;
     };
   }> | null;

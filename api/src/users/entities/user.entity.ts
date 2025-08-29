@@ -27,9 +27,14 @@ export class User {
   @Field()
   lastName: string;
 
+  @Column({ type: 'bytea', nullable: false })
+  email: Buffer;
+
   @Column({ unique: true })
+  emailHash: string;
+
   @Field()
-  email: string;
+  emailPlain: string;
 
   @Column({ select: false })
   @Field()

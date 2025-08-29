@@ -96,7 +96,7 @@ const SendEmailToGroupDialog: React.FC<SendEmailToGroupDialogProps> = (
               input: {
                 groupId,
                 sender: `${user?.firstName} ${user?.lastName}`,
-                from: user?.email,
+                from: user?.emailPlain,
                 subject,
                 message,
               },

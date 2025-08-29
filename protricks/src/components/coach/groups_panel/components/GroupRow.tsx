@@ -52,7 +52,7 @@ interface RowProps {
       feedback: string;
       status: Status;
       dateJoined: string;
-      user: { id: string; firstName: string; lastName: string; email: string };
+      user: { id: string; firstName: string; lastName: string; emailPlain: string };
     }> | null;
   };
   groups: Array<{ id: string, name: string }> | null

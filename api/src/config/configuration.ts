@@ -8,5 +8,6 @@ export default () => ({
 	refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
 	refreshTokenExpiration: process.env.REFRESH_TOKEN_EXPIRATION,
 	stripeSecretKey: process.env.STRIPE_SECRET_KEY,
-	stripeCurrency: process.env.STRIPE_CURRENCY
+	stripeCurrency: process.env.STRIPE_CURRENCY,
+	encryptionKey: process.env.ENCRYPTION_KEY
 })

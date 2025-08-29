@@ -35,8 +35,8 @@ export class AuthService {
     private readonly redisService: RedisService,
   ) { }
 
-  async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.usersService.findOneByEmail(email, {
+  async validateUser(emailPlain: string, password: string): Promise<any> {
+    const user = await this.usersService.findOneByEmail(emailPlain, {
       select: [
         'id',
         'firstName',
@@ -59,7 +59,7 @@ export class AuthService {
 
   async register(registerUserInput: RegisterUserInput) {
     const user = await this.usersService.findOneByEmail(
-      registerUserInput.email,
+      registerUserInput.emailPlain,
     );
 
     if (user) {
@@ -77,13 +77,13 @@ export class AuthService {
   }
 
   async logIn(logInUserInput: LogInUserInput) {
-    const user = await this.usersService.findOneByEmail(logInUserInput.email)
+    const user = await this.usersService.findOneByEmail(logInUserInput.emailPlain)
 
     return this.sign(user)
   }
 
   async sign(user: User) {
-    const payload = { sub: user.id, email: user.email }
+    const payload = { sub: user.id, email: user.emailPlain }
 
     const accessTokenSecret = this.configService.get<string>('accessTokenSecret')
     const accessTokenExpiration = this.configService.get<string>('accessTokenExpiration')
@@ -171,7 +171,7 @@ export class AuthService {
     const updatedUser = await this.usersService.updateById(
       changeEmailInput.id,
       {
-        email: changeEmailInput.email,
+        emailPlain: changeEmailInput.emailPlain,
       },
     );
 

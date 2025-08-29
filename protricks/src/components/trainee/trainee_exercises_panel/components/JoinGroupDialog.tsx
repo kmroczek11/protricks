@@ -113,7 +113,7 @@ const JoinGroupDialog: React.FC<TraineeInfoDialogProps> = (props) => {
                     input: {
                       userId: user?.id!,
                       traineeId: traineeId,
-                      email: user?.email!,
+                      emailPlain: user?.emailPlain!,
                     },
                   })
                 }
@@ -129,7 +129,7 @@ const JoinGroupDialog: React.FC<TraineeInfoDialogProps> = (props) => {
                   deleteTraineeWithMessage({
                     input: {
                       userId: user?.id!,
-                      email: user?.email!,
+                      email: user?.emailPlain!,
                     },
                   });
 

@@ -27,7 +27,7 @@ interface RegisterDialogProps {
 const defaultValues = {
   firstName: "",
   lastName: "",
-  email: "",
+  emailPlain: "",
   password: "",
 };
 
@@ -75,13 +75,13 @@ const RegisterDialog: React.FC<RegisterDialogProps> = (props) => {
           onSubmit={(values, { setSubmitting }) => {
             setSubmitting(true);
 
-            const { firstName, lastName, email, password } = values;
+            const { firstName, lastName, emailPlain, password } = values;
 
             register({
               input: {
                 firstName: firstName,
                 lastName: lastName,
-                email: email,
+                emailPlain: emailPlain,
                 password: password,
               },
             });
@@ -89,7 +89,7 @@ const RegisterDialog: React.FC<RegisterDialogProps> = (props) => {
           validationSchema={Yup.object().shape({
             firstName: Yup.string().required("Wymagane"),
             lastName: Yup.string().required("Wymagane"),
-            email: Yup.string()
+            emailPlain: Yup.string()
               .email("Nieprawidłowy email")
               .required("Wymagane"),
             password: Yup.string()
@@ -159,15 +159,15 @@ const RegisterDialog: React.FC<RegisterDialogProps> = (props) => {
                   </Grid>
                   <Grid item>
                     <TextField
-                      id="email-input"
-                      name="email"
+                      id="emailPlain-input"
+                      name="emailPlain"
                       label="E-mail"
                       type="email"
-                      value={values.email}
+                      value={values.emailPlain}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      helperText={errors.email && touched.email && errors.email}
-                      error={errors.email && touched.email ? true : false}
+                      helperText={errors.emailPlain && touched.emailPlain && errors.emailPlain}
+                      error={errors.emailPlain && touched.emailPlain ? true : false}
                       required
                     />
                   </Grid>

@@ -39,7 +39,7 @@ interface ManageMembersItemProps {
       id: string;
       firstName: string;
       lastName: string;
-      email: string;
+      emailPlain: string;
       imgSrc?: string;
     };
   };
@@ -119,7 +119,7 @@ const ManageMembersItem: React.FC<ManageMembersItemProps> = (props) => {
                     confirmContractReceipt({
                       input: {
                         traineeId: trainee.id,
-                        email: trainee.user.email,
+                        email: trainee.user.emailPlain,
                       },
                     })
                   }

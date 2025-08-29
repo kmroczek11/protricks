@@ -126,9 +126,9 @@ export class TraineesService {
   }
 
   async acceptToGroup(acceptToGroupInput: AcceptToGroupInput) {
-    const { email, userId, traineeId } = acceptToGroupInput;
+    const { emailPlain, userId, traineeId } = acceptToGroupInput;
 
-    this.mailService.sendDecisionMessage(email);
+    this.mailService.sendDecisionMessage(emailPlain);
 
     const job = new CronJob(new Date(this.addDays(Date.now(), 3)), async () => {
       const trainee = await this.traineesRepository.findOne({
@@ -140,7 +140,7 @@ export class TraineesService {
         await this.traineesRepository.delete({ id: traineeId });
         await this.usersService.deleteRole(userId, Role.TRAINEE);
         await this.lostTraineesService.createLostTrainee({ traineeId });
-        this.mailService.sendLeaveMessage(email);
+        this.mailService.sendLeaveMessage(emailPlain);
       }
     });
 
@@ -155,7 +155,7 @@ export class TraineesService {
   }
 
   async joinGroup(joinGroupInput: JoinGroupInput) {
-    const { email, userId, traineeId } = joinGroupInput;
+    const { emailPlain, userId, traineeId } = joinGroupInput;
 
     // await this.mailService.sendLastStepMessage(email);
 
@@ -167,7 +167,7 @@ export class TraineesService {
         });
 
         if (trainee.status === Status.ACCEPTED_WITHOUT_CONTRACT) {
-          this.mailService.sendDecisionMessage(email);
+          this.mailService.sendDecisionMessage(emailPlain);
         }
       },
     );
@@ -183,7 +183,7 @@ export class TraineesService {
           await this.traineesRepository.delete({ id: traineeId });
           await this.usersService.deleteRole(userId, Role.TRAINEE);
           await this.lostTraineesService.createLostTrainee({ traineeId });
-          this.mailService.sendLeaveMessage(email);
+          this.mailService.sendLeaveMessage(emailPlain);
         }
       },
     );

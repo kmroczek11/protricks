@@ -34,9 +34,7 @@ import configuration from './config/configuration'
       driver: ApolloDriver,
       autoSchemaFile: join(
         process.cwd(),
-        process.env.NODE_ENV === 'development'
-          ? 'src/schema.gql'
-          : 'dist/schema.gql',
+        'src/schema.gql'
       ),
       playground: true,
       uploads: false,

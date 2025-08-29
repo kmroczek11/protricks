@@ -21,7 +21,7 @@ const UserPanel: React.FC = () => {
   const { user } = useAuth();
   const fullName = `${user?.firstName} ${user?.lastName}`;
   const items = [
-    { name: "Email", value: user?.email },
+    { name: "Email", value: user?.emailPlain },
     { name: "Hasło", value: "********" },
   ];
   const [selected, setSelected] = useState<string>("");

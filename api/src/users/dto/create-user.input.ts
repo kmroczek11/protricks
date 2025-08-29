@@ -11,7 +11,7 @@ export class CreateUserInput {
   lastName: string;
 
   @Field(() => EmailAddressResolver)
-  email: string;
+  emailPlain: string;
 
   @Field()
   password: string;

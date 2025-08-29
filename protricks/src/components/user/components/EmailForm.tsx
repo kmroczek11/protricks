@@ -56,7 +56,7 @@ const EmailForm: React.FC = () => {
         mutate({
           input: {
             id: user?.id!,
-            email: newEmail,
+            emailPlain: newEmail,
           },
         });
       }}

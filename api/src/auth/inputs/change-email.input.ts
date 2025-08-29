@@ -7,5 +7,5 @@ export class ChangeEmailInput {
   id: string;
 
   @Field(() => EmailAddressResolver)
-  email: string;
+  emailPlain: string;
 }
